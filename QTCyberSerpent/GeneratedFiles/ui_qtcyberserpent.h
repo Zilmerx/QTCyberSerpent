@@ -14,7 +14,6 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -31,7 +30,6 @@ public:
     QAction *actionOptions;
     QAction *actionQuitter;
     QWidget *centralWidget;
-    QLabel *Label1;
     QMenuBar *menuBar;
     QMenu *menuHERPDERP;
     QToolBar *mainToolBar;
@@ -41,7 +39,7 @@ public:
     {
         if (QTCyberSerpentClass->objectName().isEmpty())
             QTCyberSerpentClass->setObjectName(QStringLiteral("QTCyberSerpentClass"));
-        QTCyberSerpentClass->resize(776, 580);
+        QTCyberSerpentClass->resize(819, 631);
         actionCECI_EST_UN_BOUTONN = new QAction(QTCyberSerpentClass);
         actionCECI_EST_UN_BOUTONN->setObjectName(QStringLiteral("actionCECI_EST_UN_BOUTONN"));
         actionOptions = new QAction(QTCyberSerpentClass);
@@ -50,13 +48,10 @@ public:
         actionQuitter->setObjectName(QStringLiteral("actionQuitter"));
         centralWidget = new QWidget(QTCyberSerpentClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        Label1 = new QLabel(centralWidget);
-        Label1->setObjectName(QStringLiteral("Label1"));
-        Label1->setGeometry(QRect(80, 70, 561, 361));
         QTCyberSerpentClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(QTCyberSerpentClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 776, 21));
+        menuBar->setGeometry(QRect(0, 0, 819, 21));
         menuHERPDERP = new QMenu(menuBar);
         menuHERPDERP->setObjectName(QStringLiteral("menuHERPDERP"));
         QTCyberSerpentClass->setMenuBar(menuBar);
@@ -83,7 +78,6 @@ public:
         actionCECI_EST_UN_BOUTONN->setText(QApplication::translate("QTCyberSerpentClass", "Commencer la partie", 0));
         actionOptions->setText(QApplication::translate("QTCyberSerpentClass", "Options", 0));
         actionQuitter->setText(QApplication::translate("QTCyberSerpentClass", "Quitter", 0));
-        Label1->setText(QApplication::translate("QTCyberSerpentClass", "TextLabel", 0));
         menuHERPDERP->setTitle(QApplication::translate("QTCyberSerpentClass", "Jeu", 0));
     } // retranslateUi
 

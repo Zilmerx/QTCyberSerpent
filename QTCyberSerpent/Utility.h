@@ -2,7 +2,6 @@
 
 #include <ctime>
 #include <cstdlib>
-#include <algorithm>    // std::min
 #include <string>
 
 class Utility
@@ -20,9 +19,14 @@ public:
       return rand() % (max - min + 1) + min;
    }
 
+   static int Min(int a, int b)
+   {
+      return (((a) < (b)) ? (a) : (b));
+   }
+
    static int MinDistance(Point2D point1, Point2D point2)
    {
-      return std::min(abs(abs(point1.x)-abs(point2.x)), abs(abs(point1.y)- abs(point2.y)));
+      return Min(abs(abs(point1.x) - abs(point2.x)), abs(abs(point1.y) - abs(point2.y)));
    }
 
    static void Error(std::string Message)

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <mutex>
 #include <memory>
 
@@ -35,10 +37,18 @@ public:
       std::swap(PointeurGet, PointeurSet);
    }
 
-   T Get()
+   T& Get()
    {
       std::lock_guard<std::mutex> lockGet(MutexGet);
-      return *PointeurGet;
+
+      if (PointeurGet == nullptr)
+      {
+         throw std::runtime_error("Value non settée.");
+      }
+      else
+      {
+         return *PointeurGet;
+      }
    }
 
    void Set(T &value)

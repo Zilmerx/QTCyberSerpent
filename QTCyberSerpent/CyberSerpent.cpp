@@ -1,6 +1,6 @@
 
 #include "CyberSerpent.h"
-
+#include <qtimer.h>
 
 void DoShit()
 {
@@ -28,6 +28,7 @@ bool CyberSerpent::Initialize()
 	//	return false;
 
 	m_VideoAnalyzer.Initialize(this);
+   m_QTCyberSerpent.Initialize(this);
 
 	m_Initialized = true;
 	return true;

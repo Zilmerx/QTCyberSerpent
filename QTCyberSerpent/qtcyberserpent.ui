@@ -6,34 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>776</width>
-    <height>580</height>
+    <width>819</width>
+    <height>631</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>QTCyberSerpent</string>
   </property>
-  <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="Label1">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>70</y>
-      <width>561</width>
-      <height>361</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-  </widget>
+  <widget class="QWidget" name="centralWidget"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>776</width>
+     <width>819</width>
      <height>21</height>
     </rect>
    </property>
