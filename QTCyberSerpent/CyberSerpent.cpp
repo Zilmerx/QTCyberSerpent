@@ -10,7 +10,7 @@ void DoShit()
 }
 
 CyberSerpent::CyberSerpent(int argc, char *argv[])
-: m_Gameplay{}, m_IRobotDriver{}, m_VideoAnalyzer{}, m_Initialized{ false }, m_QTApplication{ argc, argv }, m_QTCyberSerpent{}
+: m_Gameplay{}, m_IRobotDriver{}, m_Initialized{ false }, m_QTApplication{ argc, argv }, m_QTCyberSerpent{}, m_VideoAnalyzer{}
 {
    m_QTCyberSerpent.show();
 

@@ -27,13 +27,11 @@ class QTCyberSerpent : public QMainWindow
 
    CyberSerpent* m_Game;
 
-   GUIUpdater *updater;
+   std::unique_ptr<QThread> qthread;
+   std::unique_ptr<GUIUpdater> updater;
 
    std::map<int, std::function<void()>> m_FuncList;
 
-private:
-   std::thread GenerateurEventUpdateVideo;
-   void PutImagesFromVideoAnalyzerToQLabel();
 private slots:
    void UpdateImage(QPixmap image);
 
@@ -44,15 +42,16 @@ public:
 
    void Initialize(CyberSerpent* linked);
 
+   void Stop();
+
+   void PutImage(QPixmap image);
+
     QTCyberSerpent(QWidget *parent = 0);
     ~QTCyberSerpent();
 
     void SetFunc(int key, std::function<void()> func);
 
     void Error(std::string Message);
-
-    static QImage Mat2QImage(const cv::Mat &mat);
-    static QPixmap Mat2QPixmap(const cv::Mat& mat);
 
 private:
     Ui::QTCyberSerpentClass ui;

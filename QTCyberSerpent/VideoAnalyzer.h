@@ -19,7 +19,8 @@ class VideoAnalyzer
 
    DoubleBuffer<cv::Mat> m_Image;
 
-   std::thread ThreadLecture;
+   bool RunThreads;
+
 public:
 
    cv::Mat& GetImage();
@@ -32,6 +33,10 @@ public:
 private:
    // Est utilisée par le thread "ThreadLecture"
    // Fonction qui prend le fichier dans le path, le convertis en Mat, puis le met dans m_Image;
+   std::thread ThreadLecture;
    void LireFichier(std::string path);
+
+   std::thread ThreadAffichage;
+   void Afficher();
 
 };

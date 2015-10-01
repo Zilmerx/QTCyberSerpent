@@ -9,17 +9,20 @@
 
 class CyberSerpent
 {
+   friend QTCyberSerpent;
+   friend VideoAnalyzer;
+
+   const std::chrono::milliseconds REFRESH_RATE =
+      std::chrono::milliseconds(200);
+
 	Gameplay m_Gameplay;
 	IRobot::IRobot m_IRobotDriver;
-   //VideoAnalyzer m_VideoAnalyzer;
-   //QApplication m_QTApplication;
-   //QTCyberSerpent m_QTCyberSerpent;
-
-	bool m_Initialized;
-public:
    QApplication m_QTApplication;
    VideoAnalyzer m_VideoAnalyzer;
    QTCyberSerpent m_QTCyberSerpent;
+
+	bool m_Initialized;
+public:
 
    CyberSerpent(int argc, char *argv[]);
 	~CyberSerpent();
