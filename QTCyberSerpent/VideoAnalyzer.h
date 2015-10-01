@@ -19,8 +19,6 @@ class VideoAnalyzer
 
    DoubleBuffer<cv::Mat> m_Image;
 
-   bool RunThreads;
-
 public:
 
    cv::Mat& GetImage();
@@ -30,12 +28,16 @@ public:
 
 	void Initialize(CyberSerpent* linked);
 
+   void Stop();
+
 private:
    // Est utilisée par le thread "ThreadLecture"
    // Fonction qui prend le fichier dans le path, le convertis en Mat, puis le met dans m_Image;
+   bool RunLecture;
    std::thread ThreadLecture;
    void LireFichier(std::string path);
 
+   bool RunAffichage;
    std::thread ThreadAffichage;
    void Afficher();
 

@@ -4,7 +4,7 @@
 #include "Utility.h"
 
 QTCyberSerpent::QTCyberSerpent(QWidget *parent)
-    : QMainWindow(parent)
+   : QMainWindow(parent)
 {
     ui.setupUi(this);
 
@@ -75,4 +75,9 @@ void QTCyberSerpent::Initialize(CyberSerpent* linked)
 
 void QTCyberSerpent::Stop()
 {
+   disconnect(updater.get(), SIGNAL(requestNewImage(QPixmap)), this, SLOT(UpdateImage(QPixmap)));
+   m_Game->m_QTApplication.processEvents();
+
+   qthread->terminate();
+   while (!qthread->isFinished());
 }

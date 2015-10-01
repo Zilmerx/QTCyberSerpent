@@ -2,15 +2,12 @@
 #include "CyberSerpent.h"
 #include "Utility.h"
 
-VideoAnalyzer::VideoAnalyzer() : RunThreads{ false }
+VideoAnalyzer::VideoAnalyzer() : RunLecture{ false }, RunAffichage{ false }
 {
 }
 
 VideoAnalyzer::~VideoAnalyzer()
 {
-   RunThreads = false;
-   ThreadLecture.join();
-   ThreadAffichage.join();
 }
 
 cv::Mat& VideoAnalyzer::GetImage()
@@ -29,16 +26,24 @@ void VideoAnalyzer::Initialize(CyberSerpent* linked)
 {
 	m_Game = linked;
    std::string s = "image.bmp";
-   RunThreads = true;
-
+   RunLecture = true;
    ThreadLecture = std::thread(&VideoAnalyzer::LireFichier, this, s);
+   RunAffichage = true;
    ThreadAffichage = std::thread(&VideoAnalyzer::Afficher, this);
+}
+
+void VideoAnalyzer::Stop()
+{
+   RunAffichage = false;
+   ThreadAffichage.join();
+   RunLecture = false;
+   ThreadLecture.join();
 }
 
 void VideoAnalyzer::LireFichier(std::string path)
 {
    cv::Mat mat;
-   while (RunThreads)
+   while (RunLecture)
    {
       cv::imread(path, CV_LOAD_IMAGE_UNCHANGED).copyTo(mat);
 
@@ -53,7 +58,7 @@ void VideoAnalyzer::LireFichier(std::string path)
 void VideoAnalyzer::Afficher()
 {
    cv::Mat img;
-   while (RunThreads)
+   while (RunAffichage)
    {
       try
       {

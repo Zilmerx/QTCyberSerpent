@@ -18,8 +18,8 @@ class CyberSerpent
 	Gameplay m_Gameplay;
 	IRobot::IRobot m_IRobotDriver;
    QApplication m_QTApplication;
-   VideoAnalyzer m_VideoAnalyzer;
    QTCyberSerpent m_QTCyberSerpent;
+   VideoAnalyzer m_VideoAnalyzer;
 
 	bool m_Initialized;
 public:

@@ -19,6 +19,8 @@ CyberSerpent::CyberSerpent(int argc, char *argv[])
 
 CyberSerpent::~CyberSerpent()
 {
+   m_VideoAnalyzer.Stop();
+   m_QTCyberSerpent.Stop();
 }
 
 
