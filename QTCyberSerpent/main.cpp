@@ -14,7 +14,7 @@ Le 15 Septembre 2015.
 
 int main(int argc, char *argv[])
 {
-   CyberSerpent jeu{ argc , argv };
+   CyberSerpent jeu{ argc , argv, "image.bmp" };
 
    jeu.Initialize();
 

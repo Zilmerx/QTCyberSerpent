@@ -9,8 +9,13 @@ void DoShit()
    b.show();
 }
 
-CyberSerpent::CyberSerpent(int argc, char *argv[])
-: m_Gameplay{}, m_IRobotDriver{}, m_Initialized{ false }, m_QTApplication{ argc, argv }, m_QTCyberSerpent{}, m_VideoAnalyzer{}
+CyberSerpent::CyberSerpent(int argc, char *argv[], const std::string camImagePath)
+	: m_Gameplay{},
+	m_IRobotDriver{},
+	m_QTApplication{ argc, argv },
+	m_QTCyberSerpent{},
+	m_VideoAnalyzer{ camImagePath },
+	m_Initialized{ false }
 {
    m_QTCyberSerpent.show();
 
@@ -41,7 +46,9 @@ void CyberSerpent::Start()
 	if (!m_Initialized)
 		return;
 
-   m_QTApplication.exec();
+	m_VideoAnalyzer.Start();
+
+	m_QTApplication.exec();
 }
 
 void CyberSerpent::TournerRobotGauche()

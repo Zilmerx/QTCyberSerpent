@@ -16,29 +16,40 @@ class CyberSerpent;
 class VideoAnalyzer
 {
 	CyberSerpent* m_Game;
-
-   DoubleBuffer<cv::Mat> m_Image;
+	const std::string m_CamImagePath;
 
 public:
 
-   cv::Mat& GetImage();
-
-	VideoAnalyzer();
+	VideoAnalyzer(const std::string camImagePath);
 	~VideoAnalyzer();
 
 	void Initialize(CyberSerpent* linked);
 
-   void Stop();
+	void Start();
+
+	void Stop();
 
 private:
-   // Est utilisée par le thread "ThreadLecture"
-   // Fonction qui prend le fichier dans le path, le convertis en Mat, puis le met dans m_Image;
-   bool RunLecture;
-   std::thread ThreadLecture;
-   void LireFichier(std::string path);
+	// Thread qui prend le fichier dans le path, le convertis en Mat, 
+	// puis le met dans m_ImageLue;
+	bool RunLecture;
+	std::thread ThreadLecture;
+	void LireFichier();
 
-   bool RunAffichage;
-   std::thread ThreadAffichage;
-   void Afficher();
+	DoubleBuffer<cv::Mat> m_ImageLue;
+
+	// Thread qui prend le Mat dans m_ImageLue, l'analyse et la modifie,
+	// puis le met dans m_ImageAnalysee;
+	bool RunAnalyse;
+	std::thread ThreadAnalyse;
+	void Analyser();
+
+	DoubleBuffer<cv::Mat> m_ImageAnalysee;
+
+	// Thread qui prend le Mat dans m_ImageAnalysee, la convertis en 
+	// QPixmap puis demande à l'interface de l'afficher.
+	bool RunAffichage;
+	std::thread ThreadAffichage;
+	void Afficher();
 
 };
