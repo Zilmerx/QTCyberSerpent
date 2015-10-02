@@ -57,7 +57,7 @@ void VideoAnalyzer::LireFichier()
 		if (mat.data)
 		{
 			m_ImageLue.Set(mat);
-			m_ImageLue.Switch();
+			//m_ImageLue.Switch();
 		}
 	}
 }
@@ -75,7 +75,7 @@ void VideoAnalyzer::Analyser()
 			// Analyse quelquonque.
 
 			m_ImageAnalysee.Set(*mat);
-			m_ImageAnalysee.Switch();
+			//m_ImageAnalysee.Switch();
 		}
 		catch (...)
 		{

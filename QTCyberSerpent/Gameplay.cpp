@@ -6,6 +6,9 @@
 
 #pragma region Constructeur / Destructeur
 Gameplay::Gameplay()
+: m_Score{ 0 },
+m_Obstacles{},
+m_Points{}
 {
 }
 

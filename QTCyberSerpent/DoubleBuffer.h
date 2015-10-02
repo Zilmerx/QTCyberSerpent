@@ -11,8 +11,8 @@ private:
    T* PointeurGet;
    T* PointeurSet;
 
-   std::mutex MutexGet;
-   std::mutex MutexSet;
+   //std::mutex MutexGet;
+   //std::mutex MutexSet;
 
 public:
 
@@ -21,29 +21,29 @@ public:
       PointeurGet = nullptr;
       PointeurSet = nullptr;
 
-      MutexGet;
-      MutexSet;
+      //MutexGet;
+      //MutexSet;
    }
    ~DoubleBuffer()
    {
 
    }
 
-   void Switch()
-   {
-      std::lock_guard<std::mutex> lockGet(MutexGet);
-      std::lock_guard<std::mutex> lockSet(MutexSet);
+   //void Switch()
+   //{
+   //   //std::lock_guard<std::mutex> lockGet(MutexGet);
+   //   //std::lock_guard<std::mutex> lockSet(MutexSet);
 
-      std::swap(PointeurGet, PointeurSet);
-   }
+   //   std::swap(PointeurGet, PointeurSet);
+   //}
 
    T& Get()
    {
-      std::lock_guard<std::mutex> lockGet(MutexGet);
+      //std::lock_guard<std::mutex> lockGet(MutexGet);
 
       if (PointeurGet == nullptr)
       {
-         throw std::runtime_error("Value non settée.");
+         throw std::runtime_error("NULL_VALUE");
       }
       else
       {
@@ -53,7 +53,9 @@ public:
 
    void Set(T &value)
    {
-      std::lock_guard<std::mutex> lockSet(MutexSet);
+      //std::lock_guard<std::mutex> lockSet(MutexSet);
       PointeurSet = &value;
+
+	  std::swap(PointeurGet, PointeurSet);
    }
 };
