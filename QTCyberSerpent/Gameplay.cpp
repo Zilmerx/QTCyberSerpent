@@ -1,14 +1,16 @@
 #include "Gameplay.h"
 #include "Utility.h"
 
-
 // PUBLIC
 
 #pragma region Constructeur / Destructeur
 Gameplay::Gameplay()
-: m_Score{ 0 },
+: m_ZoneJeu{ 0, 0, MAPSIZE_X, MAPSIZE_Y },
+m_IRobotPos{ 0, 0, 0, 0 },
 m_Obstacles{},
-m_Points{}
+m_Points{},
+m_QueueSerpent{},
+m_Score{ 0 }
 {
 }
 

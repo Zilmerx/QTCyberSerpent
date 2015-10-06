@@ -1,3 +1,18 @@
 TODO
 
 Essayer d'ajouter un QLabel sur le UI, et dessiner l'image .bmp dans le UI.
+
+
+Faire les fonctions permettant l'analyse d'image, les mettre dans Analyse1 et Analyse2 :
+
+-Sommes sur une pastille :
+if (currentIRobotLocation.closeto(pastille.location))
+
+-Sommes dans les limites :
+if(currentIRobotlocation.insideof(0 to mapsize.x, ...))
+
+-Avons touché un obstacle :
+if(currentIRobotlocation.closeto(m_obstacles...))
+
+-Avons touché notre queue :
+if(currentIRobotlocation.closeto(m_queueserpent))

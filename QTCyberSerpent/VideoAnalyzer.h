@@ -15,8 +15,14 @@ class CyberSerpent;
 
 class VideoAnalyzer
 {
+   static double PRECISION_TEMPLATEMATCHING()
+   {
+      return 0.8;
+   }
+
 	CyberSerpent* m_Game;
 	const std::string m_CamImagePath;
+   cv::Mat m_IRobotTemplate;
 
 public:
 
@@ -38,13 +44,26 @@ private:
 
 	DoubleBuffer<cv::Mat> m_ImageLue;
 
-	// Thread qui prend le Mat dans m_ImageLue, l'analyse et la modifie,
-	// puis le met dans m_ImageAnalysee;
-	bool RunAnalyse;
-	std::thread ThreadAnalyse;
-	void Analyser();
+	// Thread qui prend le Mat dans m_ImageLue, trouve la position du IRobot
+   // puis la met dans m_Game->m_Gameplay.m_IRobotPos
+   bool RunTrouverRobot;
+   std::thread ThreadTrouverRobot;
+   void TrouverRobot();
 
-	DoubleBuffer<cv::Mat> m_ImageAnalysee;
+   // Thread qui prend le Mat dans m_ImageLue, fais différentes analyses
+   // en se servant de la position du IRobot, puis détecte les collisions.
+   // S'occupe aussi d'appeller les fonctions liées, en cas de collision.
+   bool RunAnalyse;
+   std::thread ThreadAnalyse;
+   void Analyse();
+
+   // Créée une nouvelle image en se servant des informations stockées dans
+   // la classe de Gameplay.
+   bool RunCreerImage;
+   std::thread ThreadCreationImage;
+   void CreerImage();
+
+   DoubleBuffer<cv::Mat> m_ImageFinale;
 
 	// Thread qui prend le Mat dans m_ImageAnalysee, la convertis en 
 	// QPixmap puis demande à l'interface de l'afficher.

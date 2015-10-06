@@ -219,7 +219,6 @@
     <ClInclude Include="Incopiable.h" />
     <ClInclude Include="IRobotDriver.h" />
     <ClInclude Include="Point2D.h" />
-    <ClInclude Include="Zone2D.h" />
     <CustomBuild Include="GUIUpdater.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing GUIUpdater.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>

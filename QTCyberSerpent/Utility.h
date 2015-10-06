@@ -87,4 +87,27 @@ public:
       return QPixmap::fromImage(Mat2QImage(mat));
    }
 
+   static bool CvRect1TouchesRect2(const cv::Rect R1, const cv::Rect R2)
+   {
+      return (R1.contains(cv::Point(R2.x, R2.y)) ||
+         R1.contains(cv::Point(R2.x + R2.width, R2.y)) ||
+         R1.contains(cv::Point(R2.x, R2.y + R2.height)) ||
+         R1.contains(cv::Point(R2.x + R2.width, R2.y + R2.height)));
+   }
+
+   static bool CvRect1ContainsRect2(const cv::Rect R1, const cv::Rect R2)
+   {
+      if ((R2.x + R2.width) < (R1.x + R1.width)
+         && (R2.x) > (R1.x)
+         && (R2.y) > (R1.y)
+         && (R2.y + R2.height) < (R1.y + R1.height))
+      {
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
+
 };

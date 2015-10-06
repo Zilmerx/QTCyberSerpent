@@ -2,7 +2,8 @@
 
 #include <vector>
 #include "Point2D.h"
-
+#include "opencv2\core.hpp"
+#include "Utility.h"
 
 class Gameplay
 {
@@ -11,11 +12,17 @@ public:
 	const static int MAPSIZE_X = 500;
 	const static int MAPSIZE_Y = 500;
 
+   friend class VideoAnalyzer;
 
 private:
 
-	std::vector<Point2D> m_Obstacles;
-	std::vector<Point2D> m_Points; // Contient les trucs à manger.
+   cv::Rect m_ZoneJeu;                   // Définis la zone de jeu.
+
+   cv::Rect m_IRobotPos;
+
+   std::vector<cv::Rect> m_Obstacles;   // Contient des obstacles.
+   std::vector<cv::Rect> m_Points;      // Contient les trucs à manger.
+   std::vector<cv::Rect> m_QueueSerpent;// Contient la queue du serpent.
 	int m_Score;
 
 public:
