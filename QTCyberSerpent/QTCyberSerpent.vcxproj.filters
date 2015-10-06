@@ -114,6 +114,9 @@
     <ClInclude Include="DoubleBuffer.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="Zone2D.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Derp.txt">

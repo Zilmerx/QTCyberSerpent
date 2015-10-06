@@ -2,12 +2,6 @@
 #include "CyberSerpent.h"
 #include <qtimer.h>
 
-void DoShit()
-{
-   QMessageBox b;
-   b.setText("HERPDERP");
-   b.show();
-}
 
 CyberSerpent::CyberSerpent(int argc, char *argv[], const std::string camImagePath)
 	: m_Gameplay{},
@@ -19,7 +13,7 @@ CyberSerpent::CyberSerpent(int argc, char *argv[], const std::string camImagePat
 {
    m_QTCyberSerpent.show();
 
-   m_QTCyberSerpent.SetFunc(Qt::Key_Enter, std::bind(DoShit));
+   m_QTCyberSerpent.SetFunc(Qt::Key_Space, std::bind(&CyberSerpent::TournerRobotGauche, this));
 }
 
 CyberSerpent::~CyberSerpent()
@@ -53,6 +47,7 @@ void CyberSerpent::Start()
 
 void CyberSerpent::TournerRobotGauche()
 {
+   m_QTCyberSerpent.PutError("DERP");
 	std::cout << "GAUCHE" << std::endl;
 	m_IRobotDriver.Gauche(100, 75);
 }

@@ -1,6 +1,7 @@
 #include "VideoAnalyzer.h"
 #include "CyberSerpent.h"
 #include "Utility.h"
+#include "Zone2D.h"
 
 VideoAnalyzer::VideoAnalyzer(const std::string camImagePath) 
 	: m_CamImagePath{ camImagePath }, 

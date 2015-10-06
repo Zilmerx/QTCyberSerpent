@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_GUIUpdater_t {
-    QByteArrayData data[3];
-    char stringdata0[28];
+    QByteArrayData data[6];
+    char stringdata0[61];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -31,10 +31,14 @@ static const qt_meta_stringdata_GUIUpdater_t qt_meta_stringdata_GUIUpdater = {
     {
 QT_MOC_LITERAL(0, 0, 10), // "GUIUpdater"
 QT_MOC_LITERAL(1, 11, 15), // "requestNewImage"
-QT_MOC_LITERAL(2, 27, 0) // ""
+QT_MOC_LITERAL(2, 27, 0), // ""
+QT_MOC_LITERAL(3, 28, 12), // "requestError"
+QT_MOC_LITERAL(4, 41, 11), // "std::string"
+QT_MOC_LITERAL(5, 53, 7) // "message"
 
     },
-    "GUIUpdater\0requestNewImage\0"
+    "GUIUpdater\0requestNewImage\0\0requestError\0"
+    "std::string\0message"
 };
 #undef QT_MOC_LITERAL
 
@@ -44,18 +48,20 @@ static const uint qt_meta_data_GUIUpdater[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
+       2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   19,    2, 0x06 /* Public */,
+       1,    1,   24,    2, 0x06 /* Public */,
+       3,    1,   27,    2, 0x06 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QPixmap,    2,
+    QMetaType::Void, 0x80000000 | 4,    5,
 
        0        // eod
 };
@@ -67,6 +73,7 @@ void GUIUpdater::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->requestNewImage((*reinterpret_cast< const QPixmap(*)>(_a[1]))); break;
+        case 1: _t->requestError((*reinterpret_cast< const std::string(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -76,6 +83,12 @@ void GUIUpdater::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             typedef void (GUIUpdater::*_t)(const QPixmap & );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GUIUpdater::requestNewImage)) {
                 *result = 0;
+            }
+        }
+        {
+            typedef void (GUIUpdater::*_t)(const std::string );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GUIUpdater::requestError)) {
+                *result = 1;
             }
         }
     }
@@ -106,13 +119,13 @@ int GUIUpdater::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 2)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
 }
@@ -122,5 +135,12 @@ void GUIUpdater::requestNewImage(const QPixmap & _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+
+// SIGNAL 1
+void GUIUpdater::requestError(const std::string _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 QT_END_MOC_NAMESPACE

@@ -52,6 +52,12 @@ void QTCyberSerpent::PutImage(QPixmap image)
    updater->newImage(image);
 }
 
+void QTCyberSerpent::PutError(const std::string message)
+{
+   updater->newError(message);
+}
+
+
 void QTCyberSerpent::UpdateImage(QPixmap image)
 {
    std::unique_ptr<QLabel> temp = std::make_unique<QLabel>(this);
@@ -62,6 +68,14 @@ void QTCyberSerpent::UpdateImage(QPixmap image)
    m_LabelImage->show();
 }
 
+void QTCyberSerpent::CreateError(const std::string message)
+{
+   QMessageBox b;
+   b.setText(QString::fromStdString(message));
+   b.show();
+   std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
 void QTCyberSerpent::Initialize(CyberSerpent* linked)
 {
    m_Game = linked;
@@ -70,14 +84,17 @@ void QTCyberSerpent::Initialize(CyberSerpent* linked)
    updater = std::make_unique<GUIUpdater>(m_Game->REFRESH_RATE);
    updater->moveToThread(qthread.get());
    connect(updater.get(), SIGNAL(requestNewImage(QPixmap)), this, SLOT(UpdateImage(QPixmap)));
+   connect(updater.get(), SIGNAL(requestError(std::string)), this, SLOT(CreateError(std::string)));
    connect(qthread.get(), SIGNAL(destroyed()), updater.get(), SLOT(deleteLater()));
 }
 
 void QTCyberSerpent::Stop()
 {
    disconnect(updater.get(), SIGNAL(requestNewImage(QPixmap)), this, SLOT(UpdateImage(QPixmap)));
+   disconnect(updater.get(), SIGNAL(requestError(std::string)), this, SLOT(CreateError(std::string)));
+
    m_Game->m_QTApplication.processEvents();
 
    qthread->terminate();
-   while (!qthread->isFinished());
+   while (qthread->isRunning());
 }

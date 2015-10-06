@@ -34,6 +34,7 @@ class QTCyberSerpent : public QMainWindow
 
 private slots:
    void UpdateImage(QPixmap image);
+   void CreateError(const std::string message);
 
 private :
    std::unique_ptr<QLabel> m_LabelImage;
@@ -45,6 +46,7 @@ public:
    void Stop();
 
    void PutImage(QPixmap image);
+   void PutError(const std::string message);
 
     QTCyberSerpent(QWidget *parent = 0);
     ~QTCyberSerpent();

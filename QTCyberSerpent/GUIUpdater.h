@@ -24,7 +24,13 @@ public:
       }
    }
 
+   void newError(const std::string message)
+   {
+      emit requestError(message);
+   }
+
 private:
 signals:
    void requestNewImage(const QPixmap &);
+   void requestError(const std::string message);
 };

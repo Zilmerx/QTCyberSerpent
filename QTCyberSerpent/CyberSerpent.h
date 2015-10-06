@@ -13,7 +13,7 @@ class CyberSerpent
 	friend VideoAnalyzer;
 
 	const std::chrono::milliseconds REFRESH_RATE =
-		std::chrono::milliseconds(200);
+		std::chrono::milliseconds(100);
 
 	Gameplay m_Gameplay;
 	IRobot::IRobot m_IRobotDriver;
