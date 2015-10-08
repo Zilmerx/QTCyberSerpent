@@ -4,6 +4,7 @@
 #include "opencv2\core.hpp"
 #include "Utility.h"
 #include <thread>
+#include "RectImage.h"
 
 class Gameplay
 {
@@ -16,30 +17,18 @@ public:
 
 private:
 
-   cv::Rect m_ZoneJeu;                  // Définis la zone de jeu.
+   cv::Mat m_ImageObstacle;
+   cv::Mat m_ImagePoint;
+   cv::Mat m_ImageQueue;
 
-   cv::Rect m_IRobotPos;                // Zone occupée par le robot présentement.
+   cv::Rect m_ZoneJeu;                       // Définis la zone de jeu.
 
-   std::vector<cv::Rect> m_Obstacles;   // Contient des obstacles.
-   std::vector<cv::Rect> m_Points;      // Contient les trucs à manger.
-   std::vector<cv::Rect> m_QueueSerpent;// Contient la queue du serpent.
+   cv::Rect m_IRobotPos;                     // Zone occupée par le robot présentement.
+
+   std::vector<RectImage> m_Obstacles;   // Contient des obstacles.
+   std::vector<RectImage> m_Points;      // Contient les trucs à manger.
+   std::vector<RectImage> m_QueueSerpent;// Contient la queue du serpent.
 	int m_Score;
-
-
-   // Thread qui fais différentes analyses en se servant de la position du IRobot, puis détecte les collisions.
-   // S'occupe aussi d'appeller les fonctions liées, en cas de collision.
-   bool RunMAJ;
-   std::thread ThreadMAJ;
-   void MettreAJourInfos();
-
-   // Events de collision.
-   void CollisionObstacle();
-
-   void CollisionLimiteJeu();
-
-   void CollisionPoint();
-
-   void CollisionQueue();
 
 public:
 	Gameplay();
@@ -53,9 +42,15 @@ public:
 
    // Modifie l'image en se servant des informations stockées dans cette instance de Gameplay.
    void ModifierImage(cv::Mat& mat);
-
 private:
+
+   // Thread qui fais différentes analyses en se servant de la position du IRobot, puis détecte les collisions.
+   // S'occupe aussi d'appeller les fonctions liées, en cas de collision.
+   bool RunMAJ;
+   std::thread ThreadMAJ;
+   void MettreAJourInfos();
+
 	// Mets "amount" cv::Rect dans le tableau, qui ont un x,y entre "0" et "MAPSIZE_X"/"MAPSIZE_Y".
-   void fillWithRandRects(std::vector<cv::Rect>& tab, int amount);
+   void fillWithRandRects(std::vector<RectImage>& vec, RectImage rectimage, int amount);
 
 };

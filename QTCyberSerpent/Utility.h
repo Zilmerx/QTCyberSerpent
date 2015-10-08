@@ -5,6 +5,8 @@
 #include <string>
 #include <qpixmap.h>
 
+#include "RectImage.h"
+
 #include "opencv2\imgproc.hpp"
 
 class Utility
@@ -100,4 +102,8 @@ public:
          && (R2.y + R2.height) < (R1.y + R1.height));
    }
 
+   static void DrawRectImageOnMat(RectImage& mat1, cv::Mat& mat2)
+   {
+      mat1.m_Image.copyTo(mat2.colRange(mat1.x, mat1.x + mat1.width).rowRange(mat1.y, mat1.y + mat1.height));
+   }
 };

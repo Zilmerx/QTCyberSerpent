@@ -6,6 +6,7 @@
 #include "IRobotDriver.h"
 #include "VideoAnalyzer.h"
 #include "qtcyberserpent.h"
+#include "Utility.h"
 
 class CyberSerpent
 {

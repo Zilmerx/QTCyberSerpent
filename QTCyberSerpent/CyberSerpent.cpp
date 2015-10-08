@@ -27,6 +27,8 @@ CyberSerpent::~CyberSerpent()
 
 bool CyberSerpent::Initialize()
 {
+   Utility::Initialize();
+
 	//if (!m_IRobotDriver.Initialize())
 	//	return false;
 

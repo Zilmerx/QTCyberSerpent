@@ -114,10 +114,8 @@
     <ClInclude Include="DoubleBuffer.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Derp.txt">
-      <Filter>Source Files</Filter>
-    </Text>
+    <ClInclude Include="RectImage.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

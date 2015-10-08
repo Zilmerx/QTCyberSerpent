@@ -96,7 +96,8 @@ void VideoAnalyzer::TrouverRobot()
 
          if (MaxVal >= PRECISION_TEMPLATEMATCHING())
          {
-            m_Game->m_Gameplay.m_IRobotPos = cv::Rect(MaxLoc.x, MaxLoc.y, m_IRobotTemplate.cols, m_IRobotTemplate.rows);
+            m_Game->m_Gameplay.m_IRobotPos.x = MaxLoc.x;
+            m_Game->m_Gameplay.m_IRobotPos.y = MaxLoc.y;
          }
 		}
 		catch (...)
