@@ -496,11 +496,11 @@ void IRobot::Music(int Numero) const
 
 /////////////////////////////////////        INITIALISATION          //////////////////////////////////////////
 //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-void IRobot::SetConnection()
+void IRobot::SetConnection(const char* port)
 {
    // Mise a jour du membre "PortSerie"
 
-   PortSerie = CreateFileA( "COM3", GENERIC_READ | GENERIC_WRITE, 0, 0,OPEN_EXISTING, 0, 0 );
+   PortSerie = CreateFileA( port, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
    if( PortSerie == INVALID_HANDLE_VALUE )
    {Erreur(std::cout, "Erreur dans la tentative de connection ( Robot ferme ? ). Error #" + std::to_string(GetLastError()) ,true);}
 
@@ -565,7 +565,7 @@ void IRobot::Flush(int Quantité) const
    DWORD NbEcrits = 0;
    char *Tampon = new char[Quantité];
 
-   ComTimeoutSetup(MAXDWORD,MAXDWORD,15*Quantité,MAXDWORD,15*Quantité);
+   ComTimeoutSetup(MAXDWORD,MAXDWORD,Quantité,MAXDWORD,Quantité);
 
    if( !ReadFile(PortSerie, Tampon, strlen(Tampon), &NbEcrits, 0) )
    { Erreur(std::cout, " Erreur dans la reception d'un parametre (Flush).", false);}
@@ -579,79 +579,62 @@ void IRobot::Flush(int Quantité) const
 
 ///////////////////////////////////////           SEND            /////////////////////////////////////////////
 //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-// Permet d'envoyer un ou plusieurs chars au robot.
-void IRobot::Send(char arg1, ...) const
+void IRobot::Send() const
 {
-	DWORD NbEcrits = 0;
-
-	va_list ap;
-
-	va_start(ap, arg1);
-
-	try
-	{
-		for (char i = arg1; ; i = va_arg(ap, char))
-		{
-			if (!WriteFile(PortSerie, &i, 1, &NbEcrits, 0))
-			{
-				Erreur(std::cout, " Erreur dans l'envoi d'un parametre.", true);
-			}
-		}
-	}
-	catch (std::runtime_error)
-	{
-	}
-
-	va_end(ap);
 }
+
+template <typename ...Tail>
+void IRobot::Send(unsigned char head, Tail&&... tail) const
+{
+   DWORD NbEcrits = 0;
+   if (!WriteFile(PortSerie, &head, 1, &NbEcrits, 0))
+   {
+      Erreur(std::cout, " Erreur dans l'envoi d'un parametre.", false);
+   }
+
+   Send(std::forward<Tail>(tail)...);
+}
+
 
 ///////////////////////////////////////           READ            /////////////////////////////////////////////
 //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-// Permet d'envoyer une ou plusieurs valeurs au robot et de recevoir le message de retour.
-int IRobot::Read(bool HighByte, char arg1, ...) const
+
+int IRobot::Read(bool HighByte) const
 {
    int Retour = 0;
    DWORD NbEcrits = 0;
 
-   va_list ap;
-
-   va_start(ap, arg1);
-
-	try
-	{
-	   for (char i = arg1; ; i = va_arg(ap, char))
-	   {
-		   if (!WriteFile(PortSerie, &i, 1, &NbEcrits, 0))
-		   {
-			   Erreur(std::cout, " Erreur dans l'envoi d'un parametre.", false);
-		   }
-	   }
-	}
-	catch (std::runtime_error)
-	{
-	}
-
-	va_end(ap);
-
-	try
-	{
-		if (!ReadFile(PortSerie, &Retour, 1, &NbEcrits, 0))
-		{
-			Erreur(std::cout, " Erreur dans la reception d'un parametre (Read-1).", false);
-		}
-	}
-	catch (std::runtime_error)
-	{
-	}
+   try
+   {
+      if (!ReadFile(PortSerie, &Retour, 1, &NbEcrits, 0))
+      {
+         Erreur(std::cout, " Erreur dans la reception d'un parametre (Read-1).", false);
+      }
+   }
+   catch (std::runtime_error)
+   {
+   }
 
    if (HighByte)
    {
-	   Retour = Retour >> 4;
+      Retour = Retour >> 4;
    }
 
    return Retour;
-
 }
+
+template <typename ...Tail>
+int IRobot::Read(bool HighByte, unsigned char head, Tail&&... tail) const
+{
+   DWORD NbEcrits = 0;
+   if (!WriteFile(PortSerie, &head, 1, &NbEcrits, 0))
+   {
+      Erreur(std::cout, " Erreur dans l'envoi d'un parametre.", false);
+   }
+
+   return Read(HighByte, std::forward<Tail>(tail)...);
+}
+
 
 //////////////////////////////////////           ERREUR            ////////////////////////////////////////////
 //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
@@ -691,11 +674,11 @@ char IRobot::ShortToChar(short Valeur, int PositionQuartet) const
 }
 
 
-bool IRobot::Initialize()
+bool IRobot::Initialize(const char* port)
 {
 	try
 	{
-		SetConnection();			// Met a jour le HANDLE "PortSerie", set les paramètres de communication.
+      SetConnection(port);			// Met a jour le HANDLE "PortSerie", set les paramètres de communication.
 
 		Flush(1000);				// Vide le port série des messages reçus à l'initialisation.
 

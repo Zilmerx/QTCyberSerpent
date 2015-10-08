@@ -86,7 +86,7 @@ namespace IRobot
 	   void Music(int Numero) const;
 
 	   // Permet de connecter déconnecter. True = Connection reussie.
-	   bool Initialize();
+      bool Initialize(const char* port);
 	   void Deconnecter() const;
 
 	   // Constructeur --- Destructeur.
@@ -102,7 +102,7 @@ namespace IRobot
 
 
 	   // Fonction de démarrage - Throws runtime_error
-	   void SetConnection();
+      void SetConnection(const char* port);
 	   // Sette les paramètres de communication. - Throws runtime_error
 	   void ComSetup(HANDLE PortSerie, int BaudRate, short ByteSize, short Parity, short StopBits) const;
 	   // Sette les paramètres pour le timeout de la communication. - Throws runtime_error
@@ -120,10 +120,14 @@ namespace IRobot
 	   void Flush(int Quantité) const;
 
 	   // Fonction d'écriture, permet d'envoyer le nombre de valeurs voulues au robot.
-	   void Send(char arg1, ...) const;
+      void Send() const;
+      template <typename ...Tail>
+      void Send(unsigned char head, Tail&&... tail) const;
 
 	   // Fonction de lecture, permet d'envoyer des valeurs au robot et de lire le message de retour.
-	   int Read(bool HighByte, char arg1, ...) const;
+      int Read(bool HighByte) const;
+      template <typename ...Tail>
+      int Read(bool HighByte, unsigned char head, Tail&&... tail) const;
 
 	   // Envoi de message d'erreur à l'utilisateur.
 	   void Erreur(std::ostream& stream, std::string message, bool SendException) const;

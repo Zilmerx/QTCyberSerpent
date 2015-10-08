@@ -22,6 +22,8 @@ CyberSerpent::~CyberSerpent()
    m_VideoAnalyzer.Stop();
    m_Gameplay.Stop();
    m_QTCyberSerpent.Stop();
+
+   //m_IRobotDriver.Deconnecter(); // Le destructeur fait la job.
 }
 
 
@@ -29,8 +31,8 @@ bool CyberSerpent::Initialize()
 {
    Utility::Initialize();
 
-	//if (!m_IRobotDriver.Initialize())
-	//	return false;
+	if (!m_IRobotDriver.Initialize("COM1"))
+		return false;
 
 	m_VideoAnalyzer.Initialize(this);
    m_Gameplay.Initialize();
@@ -53,12 +55,14 @@ void CyberSerpent::Start()
 
 void CyberSerpent::TournerRobotGauche()
 {
-   m_QTCyberSerpent.PutError("GAUCHE");
-	m_IRobotDriver.Gauche(100, 75);
+   m_QTCyberSerpent.PutError("AVANT");
+   m_IRobotDriver.Gauche(100, 50);
+   m_QTCyberSerpent.PutError("APRES");
 }
 
 void CyberSerpent::TournerRobotDroite()
 {
-   m_QTCyberSerpent.PutError("DROITE");
-	m_IRobotDriver.Droite(100, 75);
+   m_QTCyberSerpent.PutError("AVANT");
+	m_IRobotDriver.Droite(100, 50);
+   m_QTCyberSerpent.PutError("APRES");
 }
