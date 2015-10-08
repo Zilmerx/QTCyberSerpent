@@ -50,13 +50,6 @@ private:
    std::thread ThreadTrouverRobot;
    void TrouverRobot();
 
-   // Thread qui prend le Mat dans m_ImageLue, fais différentes analyses
-   // en se servant de la position du IRobot, puis détecte les collisions.
-   // S'occupe aussi d'appeller les fonctions liées, en cas de collision.
-   bool RunAnalyse;
-   std::thread ThreadAnalyse;
-   void Analyse();
-
    // Créée une nouvelle image en se servant des informations stockées dans
    // la classe de Gameplay.
    bool RunCreerImage;

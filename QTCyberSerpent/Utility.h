@@ -9,6 +9,8 @@
 
 class Utility
 {
+private:
+   Utility(){}
 
 public:
    static void Initialize()
@@ -16,24 +18,19 @@ public:
       srand(static_cast <unsigned int> (time(0)));
    }
 
-   static int RandMinMax(int min, int max)
+   static int RandMinMax(const int min, const int max)
    {
       return rand() % (max - min + 1) + min;
    }
 
-   static int Min(int a, int b)
+   static int Min(const int a, const  int b)
    {
       return (((a) < (b)) ? (a) : (b));
    }
 
-   static int MinDistance(Point2D point1, Point2D point2)
+   static int MinDistance(const cv::Point point1, const cv::Point point2)
    {
       return Min(abs(abs(point1.x) - abs(point2.x)), abs(abs(point1.y) - abs(point2.y)));
-   }
-
-   static void Error(std::string Message)
-   {
-      throw 42;
    }
 
    static QImage Mat2QImage(const cv::Mat &mat)
@@ -97,17 +94,10 @@ public:
 
    static bool CvRect1ContainsRect2(const cv::Rect R1, const cv::Rect R2)
    {
-      if ((R2.x + R2.width) < (R1.x + R1.width)
+      return ((R2.x + R2.width) < (R1.x + R1.width)
          && (R2.x) > (R1.x)
          && (R2.y) > (R1.y)
-         && (R2.y + R2.height) < (R1.y + R1.height))
-      {
-         return true;
-      }
-      else
-      {
-         return false;
-      }
+         && (R2.y + R2.height) < (R1.y + R1.height));
    }
 
 };

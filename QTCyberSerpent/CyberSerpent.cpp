@@ -13,12 +13,14 @@ CyberSerpent::CyberSerpent(int argc, char *argv[], const std::string camImagePat
 {
    m_QTCyberSerpent.show();
 
-   m_QTCyberSerpent.SetFunc(Qt::Key_Space, std::bind(&CyberSerpent::TournerRobotGauche, this));
+   m_QTCyberSerpent.SetFunc(Qt::Key_Left, std::bind(&CyberSerpent::TournerRobotGauche, this));
+   m_QTCyberSerpent.SetFunc(Qt::Key_Right, std::bind(&CyberSerpent::TournerRobotDroite, this));
 }
 
 CyberSerpent::~CyberSerpent()
 {
    m_VideoAnalyzer.Stop();
+   m_Gameplay.Stop();
    m_QTCyberSerpent.Stop();
 }
 
@@ -29,6 +31,7 @@ bool CyberSerpent::Initialize()
 	//	return false;
 
 	m_VideoAnalyzer.Initialize(this);
+   m_Gameplay.Initialize();
    m_QTCyberSerpent.Initialize(this);
 
 	m_Initialized = true;
@@ -41,19 +44,19 @@ void CyberSerpent::Start()
 		return;
 
 	m_VideoAnalyzer.Start();
+   m_Gameplay.Start();
 
 	m_QTApplication.exec();
 }
 
 void CyberSerpent::TournerRobotGauche()
 {
-   m_QTCyberSerpent.PutError("DERP");
-	std::cout << "GAUCHE" << std::endl;
+   m_QTCyberSerpent.PutError("GAUCHE");
 	m_IRobotDriver.Gauche(100, 75);
 }
 
 void CyberSerpent::TournerRobotDroite()
 {
-	std::cout << "DROITE" << std::endl;
+   m_QTCyberSerpent.PutError("DROITE");
 	m_IRobotDriver.Droite(100, 75);
 }

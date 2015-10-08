@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_GUIUpdater_t {
-    QByteArrayData data[6];
-    char stringdata0[61];
+    QByteArrayData data[5];
+    char stringdata0[53];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,12 +33,11 @@ QT_MOC_LITERAL(0, 0, 10), // "GUIUpdater"
 QT_MOC_LITERAL(1, 11, 15), // "requestNewImage"
 QT_MOC_LITERAL(2, 27, 0), // ""
 QT_MOC_LITERAL(3, 28, 12), // "requestError"
-QT_MOC_LITERAL(4, 41, 11), // "std::string"
-QT_MOC_LITERAL(5, 53, 7) // "message"
+QT_MOC_LITERAL(4, 41, 11) // "std::string"
 
     },
     "GUIUpdater\0requestNewImage\0\0requestError\0"
-    "std::string\0message"
+    "std::string"
 };
 #undef QT_MOC_LITERAL
 
@@ -61,7 +60,7 @@ static const uint qt_meta_data_GUIUpdater[] = {
 
  // signals: parameters
     QMetaType::Void, QMetaType::QPixmap,    2,
-    QMetaType::Void, 0x80000000 | 4,    5,
+    QMetaType::Void, 0x80000000 | 4,    2,
 
        0        // eod
 };
@@ -86,7 +85,7 @@ void GUIUpdater::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             }
         }
         {
-            typedef void (GUIUpdater::*_t)(const std::string );
+            typedef void (GUIUpdater::*_t)(const std::string & );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GUIUpdater::requestError)) {
                 *result = 1;
             }
@@ -138,7 +137,7 @@ void GUIUpdater::requestNewImage(const QPixmap & _t1)
 }
 
 // SIGNAL 1
-void GUIUpdater::requestError(const std::string _t1)
+void GUIUpdater::requestError(const std::string & _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);

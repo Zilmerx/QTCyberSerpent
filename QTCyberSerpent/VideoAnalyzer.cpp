@@ -6,7 +6,6 @@ VideoAnalyzer::VideoAnalyzer(const std::string camImagePath)
 	: m_CamImagePath{ camImagePath }, 
 	RunLecture{ false }, 
    RunTrouverRobot{ false },
-   RunAnalyse{ false },
    RunCreerImage{ false },
 	RunAffichage{ false }
 {
@@ -31,9 +30,6 @@ void VideoAnalyzer::Start()
    RunTrouverRobot = true;
    ThreadTrouverRobot = std::thread(&VideoAnalyzer::TrouverRobot, this);
 
-   RunAnalyse = true;
-   ThreadAnalyse = std::thread(&VideoAnalyzer::Analyse, this);
-
    RunCreerImage = true;
    ThreadCreationImage = std::thread(&VideoAnalyzer::CreerImage, this);
 
@@ -48,9 +44,6 @@ void VideoAnalyzer::Stop()
 
    RunCreerImage = false;
    ThreadCreationImage.join();
-
-   RunAnalyse = false;
-   ThreadAnalyse.join();
 
    RunTrouverRobot = false;
    ThreadTrouverRobot.join();
@@ -110,57 +103,6 @@ void VideoAnalyzer::TrouverRobot()
 		{
 		}
 	}
-}
-
-void VideoAnalyzer::Analyse()
-{
-   cv::Mat* mat;
-
-   while (RunAnalyse)
-   {
-      try
-      {
-         mat = &m_ImageLue.Get();
-
-         // Detection obstacles.
-         for (cv::Rect rect : m_Game->m_Gameplay.m_Obstacles)
-         {
-            if (Utility::CvRect1TouchesRect2(m_Game->m_Gameplay.m_IRobotPos, rect))
-            {
-               
-            }
-         }
-
-         // Detection limites de zone de jeu.
-         if (!Utility::CvRect1ContainsRect2(
-            m_Game->m_Gameplay.m_ZoneJeu,
-            m_Game->m_Gameplay.m_IRobotPos))
-         {
-            
-         }
-
-         // Manger une pastille
-         for (cv::Rect rect : m_Game->m_Gameplay.m_Points)
-         {
-            if (Utility::CvRect1TouchesRect2(m_Game->m_Gameplay.m_IRobotPos, rect))
-            {
-
-            }
-         }
-
-         // Detection de si on touche notre queue.
-         for (cv::Rect rect : m_Game->m_Gameplay.m_QueueSerpent)
-         {
-            if (Utility::CvRect1TouchesRect2(m_Game->m_Gameplay.m_IRobotPos, rect))
-            {
-
-            }
-         }
-      }
-      catch (...)
-      {
-      }
-   }
 }
 
 void VideoAnalyzer::CreerImage()

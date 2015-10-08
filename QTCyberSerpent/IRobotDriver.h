@@ -1,12 +1,5 @@
 #pragma once
 
-/*
- TODO LIST :
-
- Ajouter des mutex dans Send et autour de PortSerie.
-
-*/
-
 #include <iostream>
 #include <windows.h>
 

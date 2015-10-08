@@ -1,7 +1,8 @@
-#include <qthread.h>
 #include <chrono>
 #include <qobject.h>
 
+// Classe qui s'occupe d'actualiser différentes parties de l'interface
+// usager QT en se servant de signaux.
 class GUIUpdater : public QObject 
 {
    const std::chrono::milliseconds REFRESH_INTERVAL;
@@ -11,26 +12,14 @@ class GUIUpdater : public QObject
 public:
    std::chrono::steady_clock::time_point lastRequest;
 
-   explicit GUIUpdater(const std::chrono::milliseconds refresh_rate, QObject *parent = 0) : QObject(parent), REFRESH_INTERVAL{ refresh_rate }
-   {
-      lastRequest = std::chrono::steady_clock::now();
-   }
-   void newImage(const QPixmap &image)
-   { 
-      if ((std::chrono::steady_clock::now() - lastRequest) >= REFRESH_INTERVAL)
-      {
-         lastRequest = std::chrono::steady_clock::now();
-         emit requestNewImage(image);
-      }
-   }
+   explicit GUIUpdater(const std::chrono::milliseconds refresh_rate, QObject *parent = 0);
+   
+   void newImage(const QPixmap &image);
 
-   void newError(const std::string message)
-   {
-      emit requestError(message);
-   }
+   void newError(const std::string message);
 
 private:
 signals:
    void requestNewImage(const QPixmap &);
-   void requestError(const std::string message);
+   void requestError(const std::string &);
 };

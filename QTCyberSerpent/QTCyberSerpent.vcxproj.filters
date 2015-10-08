@@ -71,6 +71,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_GUIUpdater.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GUIUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="qtcyberserpent.ui">
@@ -100,9 +103,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Incopiable.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Point2D.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Utility.h">

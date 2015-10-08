@@ -2,6 +2,7 @@
 #include <string>
 #include "CyberSerpent.h"
 #include "Utility.h"
+#include <qlist.h>
 
 QTCyberSerpent::QTCyberSerpent(QWidget *parent)
    : QMainWindow(parent)
@@ -17,63 +18,6 @@ QTCyberSerpent::QTCyberSerpent(QWidget *parent)
 
 QTCyberSerpent::~QTCyberSerpent()
 {
-}
-
-bool QTCyberSerpent::eventFilter(QObject* obj, QEvent* event)
-{
-   if (event->type() == QEvent::KeyPress) 
-   {
-      QKeyEvent* key = static_cast<QKeyEvent*>(event);
-
-      try
-      {
-         m_FuncList[key->key()]();
-      }
-      catch (...)
-      {
-         return QObject::eventFilter(obj, event);
-      }
-      return true;
-   }
-   else 
-   {
-      return QObject::eventFilter(obj, event);
-   }
-   return false;
-}
-
-void QTCyberSerpent::SetFunc(int key, std::function<void()> func)
-{
-   m_FuncList.insert(std::pair<int, std::function<void()>>(key, func));
-}
-
-void QTCyberSerpent::PutImage(QPixmap image)
-{
-   updater->newImage(image);
-}
-
-void QTCyberSerpent::PutError(const std::string message)
-{
-   updater->newError(message);
-}
-
-
-void QTCyberSerpent::UpdateImage(QPixmap image)
-{
-   std::unique_ptr<QLabel> temp = std::make_unique<QLabel>(this);
-   temp->setPixmap(image);
-   temp->setGeometry(QRect(QPoint(Utility::RandMinMax(0, 500), Utility::RandMinMax(0, 500)), QSize(image.width(), image.height())));
-
-   m_LabelImage.swap(temp);
-   m_LabelImage->show();
-}
-
-void QTCyberSerpent::CreateError(const std::string message)
-{
-   QMessageBox b;
-   b.setText(QString::fromStdString(message));
-   b.show();
-   std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 void QTCyberSerpent::Initialize(CyberSerpent* linked)
@@ -98,3 +42,62 @@ void QTCyberSerpent::Stop()
    qthread->terminate();
    while (qthread->isRunning());
 }
+
+#pragma region Update de UI
+void QTCyberSerpent::PutImage(QPixmap image)
+{
+   updater->newImage(image);
+}
+
+void QTCyberSerpent::PutError(const std::string message)
+{
+   updater->newError(message);
+}
+
+void QTCyberSerpent::UpdateImage(QPixmap image)
+{
+   std::unique_ptr<QLabel> temp = std::make_unique<QLabel>(this);
+   temp->setPixmap(image);
+   temp->setGeometry(QRect(QPoint(Utility::RandMinMax(0, 500), Utility::RandMinMax(0, 500)), QSize(image.width(), image.height())));
+
+   m_LabelImage.swap(temp);
+   m_LabelImage->show();
+}
+
+void QTCyberSerpent::CreateError(const std::string message)
+{
+   QMessageBox b;
+   b.setText(QString::fromStdString(message));
+   b.exec();
+}
+#pragma endregion
+
+#pragma region Detection clavier
+bool QTCyberSerpent::eventFilter(QObject* obj, QEvent* event)
+{
+   if (event->type() == QEvent::KeyPress)
+   {
+      QKeyEvent* key = static_cast<QKeyEvent*>(event);
+
+      try
+      {
+         m_FuncList[key->key()]();
+      }
+      catch (...)
+      {
+         return QObject::eventFilter(obj, event);
+      }
+      return true;
+   }
+   else
+   {
+      return QObject::eventFilter(obj, event);
+   }
+   return false;
+}
+
+void QTCyberSerpent::SetFunc(int key, std::function<void()> func)
+{
+   m_FuncList.insert(std::pair<int, std::function<void()>>(key, func));
+}
+#pragma endregion

@@ -166,6 +166,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GUIUpdater.cpp" />
     <ClCompile Include="IRobotDriver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="qtcyberserpent.cpp" />
@@ -218,7 +219,6 @@
     <ClInclude Include="GeneratedFiles\ui_qtcyberserpent.h" />
     <ClInclude Include="Incopiable.h" />
     <ClInclude Include="IRobotDriver.h" />
-    <ClInclude Include="Point2D.h" />
     <CustomBuild Include="GUIUpdater.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing GUIUpdater.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
