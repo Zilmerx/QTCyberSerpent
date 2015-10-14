@@ -9,7 +9,7 @@ GUIUpdater::GUIUpdater(const std::chrono::milliseconds refresh_rate, QObject *pa
    lastRequest = std::chrono::steady_clock::now();
 }
 
-void GUIUpdater::newImage(const QPixmap &image)
+void GUIUpdater::newImage(const QImage &image)
 {
    if ((std::chrono::steady_clock::now() - lastRequest) >= REFRESH_INTERVAL)
    {
@@ -21,4 +21,9 @@ void GUIUpdater::newImage(const QPixmap &image)
 void GUIUpdater::newError(const std::string message)
 {
    emit requestError(message);
+}
+
+void GUIUpdater::newMessageInList(const std::string message)
+{
+   emit requestListMessage(message);
 }

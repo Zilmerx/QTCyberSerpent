@@ -108,7 +108,7 @@ namespace IRobot
 	   // Sette les paramètres pour le timeout de la communication. - Throws runtime_error
 	   void ComTimeoutSetup( int IT, int RTTM, int RTTC, int WTTM, int WTTC) const;
 	   // Envoie un message de salutation sonore.
-	   void Bonjour() const;
+	   bool Bonjour() const;
 	   // Permet de mettre des musiques dans le robot.
 	   /*
 	   1. Charge.

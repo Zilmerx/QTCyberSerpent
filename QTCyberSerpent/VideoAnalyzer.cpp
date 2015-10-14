@@ -19,7 +19,7 @@ void VideoAnalyzer::Initialize(CyberSerpent* linked)
 {
 	m_Game = linked;
 
-   cv::imread("templateIRobot.bmp", CV_LOAD_IMAGE_UNCHANGED).copyTo(m_IRobotTemplate);
+   cv::imread("templateIRobot.bmp", CV_LOAD_IMAGE_COLOR).copyTo(m_IRobotTemplate);
 }
 
 void VideoAnalyzer::Start()
@@ -61,7 +61,7 @@ void VideoAnalyzer::LireFichier()
 	cv::Mat mat;
 	while (RunLecture)
 	{
-		cv::imread(m_CamImagePath, CV_LOAD_IMAGE_UNCHANGED).copyTo(mat);
+      cv::imread(m_CamImagePath, CV_LOAD_IMAGE_COLOR).copyTo(mat);
 
 		if (mat.data)
 		{
@@ -74,8 +74,11 @@ void VideoAnalyzer::LireFichier()
 //void VideoAnalyzer::LireFichier()
 //{
 //   // Risque plutôt d'être ça.
-//
 //   cv::VideoCapture video = cv::VideoCapture();
+//   cv::Mat mat;
+//   while (RunLecture)
+//   {
+//   }
 //}
 
 void VideoAnalyzer::TrouverRobot()
@@ -129,11 +132,12 @@ void VideoAnalyzer::CreerImage()
 
 void VideoAnalyzer::Afficher()
 {
+   cv::Mat temp;
 	while (RunAffichage)
 	{
 		try
 		{
-         m_Game->m_QTCyberSerpent.PutImage(Utility::Mat2QPixmap(m_ImageFinale.Get()));
+         m_Game->m_QTCyberSerpent.PutImage(Utility::Mat2QImage(m_ImageFinale.Get()));
 		}
 		catch (...)
 		{

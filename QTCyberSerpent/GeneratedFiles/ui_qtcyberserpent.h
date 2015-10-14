@@ -18,7 +18,6 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -26,22 +25,21 @@ QT_BEGIN_NAMESPACE
 class Ui_QTCyberSerpentClass
 {
 public:
-    QAction *actionCECI_EST_UN_BOUTONN;
+    QAction *actionCommencerPartie;
     QAction *actionOptions;
     QAction *actionQuitter;
     QWidget *centralWidget;
     QMenuBar *menuBar;
-    QMenu *menuHERPDERP;
-    QToolBar *mainToolBar;
+    QMenu *menuMain;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *QTCyberSerpentClass)
     {
         if (QTCyberSerpentClass->objectName().isEmpty())
             QTCyberSerpentClass->setObjectName(QStringLiteral("QTCyberSerpentClass"));
-        QTCyberSerpentClass->resize(819, 631);
-        actionCECI_EST_UN_BOUTONN = new QAction(QTCyberSerpentClass);
-        actionCECI_EST_UN_BOUTONN->setObjectName(QStringLiteral("actionCECI_EST_UN_BOUTONN"));
+        QTCyberSerpentClass->resize(550, 500);
+        actionCommencerPartie = new QAction(QTCyberSerpentClass);
+        actionCommencerPartie->setObjectName(QStringLiteral("actionCommencerPartie"));
         actionOptions = new QAction(QTCyberSerpentClass);
         actionOptions->setObjectName(QStringLiteral("actionOptions"));
         actionQuitter = new QAction(QTCyberSerpentClass);
@@ -51,21 +49,18 @@ public:
         QTCyberSerpentClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(QTCyberSerpentClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 819, 21));
-        menuHERPDERP = new QMenu(menuBar);
-        menuHERPDERP->setObjectName(QStringLiteral("menuHERPDERP"));
+        menuBar->setGeometry(QRect(0, 0, 550, 21));
+        menuMain = new QMenu(menuBar);
+        menuMain->setObjectName(QStringLiteral("menuMain"));
         QTCyberSerpentClass->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(QTCyberSerpentClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        QTCyberSerpentClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(QTCyberSerpentClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         QTCyberSerpentClass->setStatusBar(statusBar);
 
-        menuBar->addAction(menuHERPDERP->menuAction());
-        menuHERPDERP->addAction(actionCECI_EST_UN_BOUTONN);
-        menuHERPDERP->addAction(actionOptions);
-        menuHERPDERP->addAction(actionQuitter);
+        menuBar->addAction(menuMain->menuAction());
+        menuMain->addAction(actionCommencerPartie);
+        menuMain->addAction(actionOptions);
+        menuMain->addAction(actionQuitter);
 
         retranslateUi(QTCyberSerpentClass);
 
@@ -75,10 +70,10 @@ public:
     void retranslateUi(QMainWindow *QTCyberSerpentClass)
     {
         QTCyberSerpentClass->setWindowTitle(QApplication::translate("QTCyberSerpentClass", "QTCyberSerpent", 0));
-        actionCECI_EST_UN_BOUTONN->setText(QApplication::translate("QTCyberSerpentClass", "Commencer la partie", 0));
+        actionCommencerPartie->setText(QApplication::translate("QTCyberSerpentClass", "Commencer la partie", 0));
         actionOptions->setText(QApplication::translate("QTCyberSerpentClass", "Options", 0));
         actionQuitter->setText(QApplication::translate("QTCyberSerpentClass", "Quitter", 0));
-        menuHERPDERP->setTitle(QApplication::translate("QTCyberSerpentClass", "Jeu", 0));
+        menuMain->setTitle(QApplication::translate("QTCyberSerpentClass", "Jeu", 0));
     } // retranslateUi
 
 };

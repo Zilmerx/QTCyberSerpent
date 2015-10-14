@@ -14,12 +14,15 @@ public:
 
    explicit GUIUpdater(const std::chrono::milliseconds refresh_rate, QObject *parent = 0);
    
-   void newImage(const QPixmap &image);
+   void newImage(const QImage &image);
 
    void newError(const std::string message);
 
+   void newMessageInList(const std::string message);
+
 private:
 signals:
-   void requestNewImage(const QPixmap &);
+   void requestNewImage(const QImage &);
    void requestError(const std::string &);
+   void requestListMessage(const std::string &);
 };

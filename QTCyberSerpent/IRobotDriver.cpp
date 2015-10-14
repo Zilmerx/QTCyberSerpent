@@ -541,9 +541,9 @@ void IRobot::ComTimeoutSetup( int IT, int RTTM, int RTTC, int WTTM, int WTTC) co
       Erreur(std::cout, "Erreur dans le setting du timeout de la communication.", true);
    }
 }
-void IRobot::Bonjour() const
+bool IRobot::Bonjour() const
 {
-   // Musique de salutation.
+   return (Sensor(CodeSensor::BATTERY_CHARGE) != 0);
 }
 void IRobot::SetMusique() const
 {
@@ -685,14 +685,13 @@ bool IRobot::Initialize(const char* port)
 		SetMusique();				// Met des musiques dans le robot.
 
 		Stop();
-		Bonjour();					// Fait jouer une musique de salutation au début du programme - Sers à vérifier que la communication est établie.
+		return Bonjour();					// Fait jouer une musique de salutation au début du programme - Sers à vérifier que la communication est établie.
 	}
 	catch (std::runtime_error e)
 	{
 		std::cout << e.what();
 		return false;
 	}
-	return true;
 }
 void IRobot::Deconnecter() const
 {

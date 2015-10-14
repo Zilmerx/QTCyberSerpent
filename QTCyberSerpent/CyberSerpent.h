@@ -8,6 +8,13 @@
 #include "qtcyberserpent.h"
 #include "Utility.h"
 
+enum CyberSerpentState
+{
+   Uninitialized,
+   Initialized,
+   Started
+};
+
 class CyberSerpent
 {
 	friend QTCyberSerpent;
@@ -22,7 +29,7 @@ class CyberSerpent
 	QTCyberSerpent m_QTCyberSerpent;
 	VideoAnalyzer m_VideoAnalyzer;
 
-	bool m_Initialized;
+   CyberSerpentState m_State;
 public:
 
 	CyberSerpent(int argc, char *argv[], const std::string imagepath);
@@ -34,7 +41,9 @@ public:
 
 private:
 
-	void TournerRobotGauche();
-	void TournerRobotDroite();
+	void OnLeftArrowKeyPress();
+   void OnRightArrowKeyPress();
+   void OnUpArrowKeyPress();
+   void OnDownArrowKeyPress();
 
 };

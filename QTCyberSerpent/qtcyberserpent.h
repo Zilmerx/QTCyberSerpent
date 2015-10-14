@@ -14,6 +14,7 @@
 #include <qlabel.h>
 #include "GUIUpdater.h"
 #include <memory>
+#include <qlistwidget.h>
 
 
 class CyberSerpent;
@@ -35,11 +36,13 @@ public:
 
    #pragma region Update de UI
 public:
-   void PutImage(QPixmap image);
+   void PutMessageInList(const std::string message);
+   void PutImage(QImage image);
    void PutError(const std::string message);
 
 private slots:
-   void UpdateImage(QPixmap image);
+   void AddMessageInList(const std::string message);
+   void UpdateImage(QImage image);
    void CreateError(const std::string message);
 
 private:
@@ -47,6 +50,7 @@ private:
    std::unique_ptr<GUIUpdater> updater;
 
    std::unique_ptr<QLabel> m_LabelImage;
+   std::unique_ptr<QListWidget> m_WidgetList;
    #pragma endregion
 
    #pragma region Detection clavier
