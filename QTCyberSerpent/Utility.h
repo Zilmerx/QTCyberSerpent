@@ -35,7 +35,7 @@ public:
       return Min(abs(abs(point1.x) - abs(point2.x)), abs(abs(point1.y) - abs(point2.y)));
    }
 
-   static QImage Mat2QImage(const cv::Mat &mat)
+   static QImage Mat2QImage(const cv::Mat& mat)
    {
       switch (mat.type())
       {
@@ -81,11 +81,6 @@ public:
       return QImage();
    }
 
-   static QPixmap Mat2QPixmap(const cv::Mat& mat)
-   {
-      return QPixmap::fromImage(Mat2QImage(mat));
-   }
-
    static bool CvRect1TouchesRect2(const cv::Rect R1, const cv::Rect R2)
    {
       return (R1.contains(cv::Point(R2.x, R2.y)) ||
@@ -102,8 +97,13 @@ public:
          && (R2.y + R2.height) < (R1.y + R1.height));
    }
 
-   static void DrawRectImageOnMat(RectImage& mat1, cv::Mat& mat2)
+   static cv::Mat DrawRectImageOnMat(RectImage mat1, cv::Mat mat2)
    {
-      mat1.m_Image.copyTo(mat2.colRange(mat1.x, mat1.x + mat1.width).rowRange(mat1.y, mat1.y + mat1.height));
+      cv::Mat matTemp(mat2);
+      if (matTemp.data)
+      {
+         mat1.m_Image.copyTo(matTemp(cv::Rect(mat1.x, mat1.y, mat1.width, mat1.height)));
+      }
+      return matTemp;
    }
 };

@@ -12,7 +12,8 @@ enum CyberSerpentState
 {
    Uninitialized,
    Initialized,
-   Started
+   Started,
+   Stopped
 };
 
 class CyberSerpent
@@ -21,7 +22,7 @@ class CyberSerpent
 	friend VideoAnalyzer;
 
 	const std::chrono::milliseconds REFRESH_RATE =
-		std::chrono::milliseconds(100);
+		std::chrono::milliseconds(10);
 
 	Gameplay m_Gameplay;
 	IRobot::IRobot m_IRobotDriver;
@@ -30,14 +31,21 @@ class CyberSerpent
 	VideoAnalyzer m_VideoAnalyzer;
 
    CyberSerpentState m_State;
+   bool m_IsExecuting;
 public:
 
-	CyberSerpent(int argc, char *argv[], const std::string imagepath);
+	CyberSerpent(int argc, char *argv[]);
 	~CyberSerpent();
 
 	bool Initialize();
 
 	void Start();
+
+   void Afficher();
+
+   void Stop();
+
+   void Delete();
 
 private:
 

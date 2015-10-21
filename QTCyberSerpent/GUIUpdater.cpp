@@ -27,3 +27,13 @@ void GUIUpdater::newMessageInList(const std::string message)
 {
    emit requestListMessage(message);
 }
+
+void GUIUpdater::afficherOptions()
+{
+   emit requestAfficherOptions();
+}
+
+void GUIUpdater::afficherGameplay()
+{
+   emit requestAfficherGameplay();
+}

@@ -13,10 +13,14 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
 
@@ -25,10 +29,22 @@ QT_BEGIN_NAMESPACE
 class Ui_QTCyberSerpentClass
 {
 public:
-    QAction *actionCommencerPartie;
+    QAction *actionNouvellePartie;
     QAction *actionOptions;
     QAction *actionQuitter;
     QWidget *centralWidget;
+    QWidget *gridLayoutWidget;
+    QGridLayout *LayoutOptions;
+    QLabel *label_CameraPath;
+    QLineEdit *lineEdit_CameraPath;
+    QLabel *label_MaxScore;
+    QLabel *label_NbObstacles;
+    QLabel *label_PortConnexion;
+    QLineEdit *lineEdit_NbObstacles;
+    QLineEdit *lineEdit_MaxScore;
+    QPushButton *pushButton_FileFinder;
+    QLineEdit *lineEdit_PortConnexion;
+    QPushButton *pushButton_ValiderInfos;
     QMenuBar *menuBar;
     QMenu *menuMain;
     QStatusBar *statusBar;
@@ -37,19 +53,78 @@ public:
     {
         if (QTCyberSerpentClass->objectName().isEmpty())
             QTCyberSerpentClass->setObjectName(QStringLiteral("QTCyberSerpentClass"));
-        QTCyberSerpentClass->resize(550, 500);
-        actionCommencerPartie = new QAction(QTCyberSerpentClass);
-        actionCommencerPartie->setObjectName(QStringLiteral("actionCommencerPartie"));
+        QTCyberSerpentClass->resize(784, 500);
+        actionNouvellePartie = new QAction(QTCyberSerpentClass);
+        actionNouvellePartie->setObjectName(QStringLiteral("actionNouvellePartie"));
         actionOptions = new QAction(QTCyberSerpentClass);
         actionOptions->setObjectName(QStringLiteral("actionOptions"));
         actionQuitter = new QAction(QTCyberSerpentClass);
         actionQuitter->setObjectName(QStringLiteral("actionQuitter"));
         centralWidget = new QWidget(QTCyberSerpentClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        gridLayoutWidget = new QWidget(centralWidget);
+        gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
+        gridLayoutWidget->setGeometry(QRect(9, 9, 451, 431));
+        LayoutOptions = new QGridLayout(gridLayoutWidget);
+        LayoutOptions->setSpacing(6);
+        LayoutOptions->setContentsMargins(11, 11, 11, 11);
+        LayoutOptions->setObjectName(QStringLiteral("LayoutOptions"));
+        LayoutOptions->setContentsMargins(0, 0, 0, 0);
+        label_CameraPath = new QLabel(gridLayoutWidget);
+        label_CameraPath->setObjectName(QStringLiteral("label_CameraPath"));
+
+        LayoutOptions->addWidget(label_CameraPath, 1, 0, 1, 1);
+
+        lineEdit_CameraPath = new QLineEdit(gridLayoutWidget);
+        lineEdit_CameraPath->setObjectName(QStringLiteral("lineEdit_CameraPath"));
+        lineEdit_CameraPath->setContextMenuPolicy(Qt::PreventContextMenu);
+
+        LayoutOptions->addWidget(lineEdit_CameraPath, 1, 1, 1, 1);
+
+        label_MaxScore = new QLabel(gridLayoutWidget);
+        label_MaxScore->setObjectName(QStringLiteral("label_MaxScore"));
+
+        LayoutOptions->addWidget(label_MaxScore, 2, 0, 1, 1);
+
+        label_NbObstacles = new QLabel(gridLayoutWidget);
+        label_NbObstacles->setObjectName(QStringLiteral("label_NbObstacles"));
+
+        LayoutOptions->addWidget(label_NbObstacles, 3, 0, 1, 1);
+
+        label_PortConnexion = new QLabel(gridLayoutWidget);
+        label_PortConnexion->setObjectName(QStringLiteral("label_PortConnexion"));
+
+        LayoutOptions->addWidget(label_PortConnexion, 0, 0, 1, 1);
+
+        lineEdit_NbObstacles = new QLineEdit(gridLayoutWidget);
+        lineEdit_NbObstacles->setObjectName(QStringLiteral("lineEdit_NbObstacles"));
+
+        LayoutOptions->addWidget(lineEdit_NbObstacles, 3, 1, 1, 2);
+
+        lineEdit_MaxScore = new QLineEdit(gridLayoutWidget);
+        lineEdit_MaxScore->setObjectName(QStringLiteral("lineEdit_MaxScore"));
+
+        LayoutOptions->addWidget(lineEdit_MaxScore, 2, 1, 1, 2);
+
+        pushButton_FileFinder = new QPushButton(gridLayoutWidget);
+        pushButton_FileFinder->setObjectName(QStringLiteral("pushButton_FileFinder"));
+
+        LayoutOptions->addWidget(pushButton_FileFinder, 1, 2, 1, 1);
+
+        lineEdit_PortConnexion = new QLineEdit(gridLayoutWidget);
+        lineEdit_PortConnexion->setObjectName(QStringLiteral("lineEdit_PortConnexion"));
+
+        LayoutOptions->addWidget(lineEdit_PortConnexion, 0, 1, 1, 2);
+
+        pushButton_ValiderInfos = new QPushButton(gridLayoutWidget);
+        pushButton_ValiderInfos->setObjectName(QStringLiteral("pushButton_ValiderInfos"));
+
+        LayoutOptions->addWidget(pushButton_ValiderInfos, 4, 1, 1, 1);
+
         QTCyberSerpentClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(QTCyberSerpentClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 550, 21));
+        menuBar->setGeometry(QRect(0, 0, 784, 21));
         menuMain = new QMenu(menuBar);
         menuMain->setObjectName(QStringLiteral("menuMain"));
         QTCyberSerpentClass->setMenuBar(menuBar);
@@ -58,8 +133,7 @@ public:
         QTCyberSerpentClass->setStatusBar(statusBar);
 
         menuBar->addAction(menuMain->menuAction());
-        menuMain->addAction(actionCommencerPartie);
-        menuMain->addAction(actionOptions);
+        menuMain->addAction(actionNouvellePartie);
         menuMain->addAction(actionQuitter);
 
         retranslateUi(QTCyberSerpentClass);
@@ -70,9 +144,15 @@ public:
     void retranslateUi(QMainWindow *QTCyberSerpentClass)
     {
         QTCyberSerpentClass->setWindowTitle(QApplication::translate("QTCyberSerpentClass", "QTCyberSerpent", 0));
-        actionCommencerPartie->setText(QApplication::translate("QTCyberSerpentClass", "Commencer la partie", 0));
+        actionNouvellePartie->setText(QApplication::translate("QTCyberSerpentClass", "Nouvelle partie", 0));
         actionOptions->setText(QApplication::translate("QTCyberSerpentClass", "Options", 0));
         actionQuitter->setText(QApplication::translate("QTCyberSerpentClass", "Quitter", 0));
+        label_CameraPath->setText(QApplication::translate("QTCyberSerpentClass", "Path de la cam\303\251ra", 0));
+        label_MaxScore->setText(QApplication::translate("QTCyberSerpentClass", "Score maximal", 0));
+        label_NbObstacles->setText(QApplication::translate("QTCyberSerpentClass", "Nombre d'obstacles", 0));
+        label_PortConnexion->setText(QApplication::translate("QTCyberSerpentClass", "Port Connexion IRobot", 0));
+        pushButton_FileFinder->setText(QApplication::translate("QTCyberSerpentClass", "Trouver le chemin...", 0));
+        pushButton_ValiderInfos->setText(QApplication::translate("QTCyberSerpentClass", "Valider et commencer partie", 0));
         menuMain->setTitle(QApplication::translate("QTCyberSerpentClass", "Jeu", 0));
     } // retranslateUi
 

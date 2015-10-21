@@ -217,7 +217,6 @@
     <ClInclude Include="DoubleBuffer.h" />
     <ClInclude Include="Gameplay.h" />
     <ClInclude Include="GeneratedFiles\ui_qtcyberserpent.h" />
-    <ClInclude Include="Incopiable.h" />
     <ClInclude Include="IRobotDriver.h" />
     <CustomBuild Include="GUIUpdater.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing GUIUpdater.h...</Message>

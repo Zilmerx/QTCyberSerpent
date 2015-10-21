@@ -6,20 +6,91 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
+    <width>784</width>
     <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>QTCyberSerpent</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>9</y>
+      <width>451</width>
+      <height>431</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="LayoutOptions">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_CameraPath">
+       <property name="text">
+        <string>Path de la caméra</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEdit_CameraPath">
+       <property name="contextMenuPolicy">
+        <enum>Qt::PreventContextMenu</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_MaxScore">
+       <property name="text">
+        <string>Score maximal</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_NbObstacles">
+       <property name="text">
+        <string>Nombre d'obstacles</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_PortConnexion">
+       <property name="text">
+        <string>Port Connexion IRobot</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="2">
+      <widget class="QLineEdit" name="lineEdit_NbObstacles"/>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QLineEdit" name="lineEdit_MaxScore"/>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="pushButton_FileFinder">
+       <property name="text">
+        <string>Trouver le chemin...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QLineEdit" name="lineEdit_PortConnexion"/>
+     </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="pushButton_ValiderInfos">
+       <property name="text">
+        <string>Valider et commencer partie</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>550</width>
+     <width>784</width>
      <height>21</height>
     </rect>
    </property>
@@ -27,16 +98,15 @@
     <property name="title">
      <string>Jeu</string>
     </property>
-    <addaction name="actionCommencerPartie"/>
-    <addaction name="actionOptions"/>
+    <addaction name="actionNouvellePartie"/>
     <addaction name="actionQuitter"/>
    </widget>
    <addaction name="menuMain"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionCommencerPartie">
+  <action name="actionNouvellePartie">
    <property name="text">
-    <string>Commencer la partie</string>
+    <string>Nouvelle partie</string>
    </property>
   </action>
   <action name="actionOptions">

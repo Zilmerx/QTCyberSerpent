@@ -674,40 +674,46 @@ char IRobot::ShortToChar(short Valeur, int PositionQuartet) const
 }
 
 
-bool IRobot::Initialize(const char* port)
+bool IRobot::Connecter(const char* port)
 {
-	try
-	{
+   try
+   {
       SetConnection(port);			// Met a jour le HANDLE "PortSerie", set les paramètres de communication.
 
-		Flush(1000);				// Vide le port série des messages reçus à l'initialisation.
+      Flush(1000);				// Vide le port série des messages reçus à l'initialisation.
 
-		SetMusique();				// Met des musiques dans le robot.
+      SetMusique();				// Met des musiques dans le robot.
 
-		Stop();
-		return Bonjour();					// Fait jouer une musique de salutation au début du programme - Sers à vérifier que la communication est établie.
-	}
+      Stop();
+      if (Bonjour())// Fait jouer une musique de salutation au début du programme - Sers à vérifier que la communication est établie.
+      {
+         return m_IsConnected = true;
+      }
+   }
 	catch (std::runtime_error e)
 	{
 		std::cout << e.what();
-		return false;
 	}
+   return false;
 }
 void IRobot::Deconnecter() const
 {
-	try
-	{
-		CloseHandle(PortSerie);
-	}
-	catch (...)
-	{
-	}
+   if (m_IsConnected)
+   {
+      try
+      {
+         CloseHandle(PortSerie);
+      }
+      catch (...)
+      {
+      }
+   }
 }
 
 //////////////////////////////////    CONSTRUCTEUR --- DESTRUCTEUR     ////////////////////////////////////////
 //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 IRobot::IRobot()
-	: m_Temps_Lecture{ 100 }, m_Temps_Ecriture{ 100 }, PortSerie{ nullptr }
+: m_Temps_Lecture{ 100 }, m_Temps_Ecriture{ 100 }, PortSerie{ nullptr }, m_IsConnected{ false }
 {
 }
 

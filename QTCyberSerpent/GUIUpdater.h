@@ -20,9 +20,15 @@ public:
 
    void newMessageInList(const std::string message);
 
+   void afficherOptions();
+
+   void afficherGameplay();
+
 private:
 signals:
    void requestNewImage(const QImage &);
    void requestError(const std::string &);
    void requestListMessage(const std::string &);
+   void requestAfficherOptions();
+   void requestAfficherGameplay();
 };

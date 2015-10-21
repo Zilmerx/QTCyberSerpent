@@ -86,7 +86,7 @@ namespace IRobot
 	   void Music(int Numero) const;
 
 	   // Permet de connecter déconnecter. True = Connection reussie.
-      bool Initialize(const char* port);
+      bool Connecter(const char* port);
 	   void Deconnecter() const;
 
 	   // Constructeur --- Destructeur.
@@ -95,6 +95,7 @@ namespace IRobot
 
 	private:
 
+      bool m_IsConnected;
 	   // Membres.
 	   HANDLE PortSerie;
 	   const int m_Temps_Ecriture;

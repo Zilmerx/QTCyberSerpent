@@ -2,9 +2,8 @@
 #include "CyberSerpent.h"
 #include "Utility.h"
 
-VideoAnalyzer::VideoAnalyzer(const std::string camImagePath) 
-	: m_CamImagePath{ camImagePath }, 
-	RunLecture{ false }, 
+VideoAnalyzer::VideoAnalyzer() 
+	:RunLecture{ false }, 
    RunTrouverRobot{ false },
    RunCreerImage{ false },
 	RunAffichage{ false }
@@ -19,11 +18,13 @@ void VideoAnalyzer::Initialize(CyberSerpent* linked)
 {
 	m_Game = linked;
 
-   cv::imread("templateIRobot.bmp", CV_LOAD_IMAGE_COLOR).copyTo(m_IRobotTemplate);
+   m_IRobotTemplate = cv::imread("templateIRobot.bmp", CV_LOAD_IMAGE_UNCHANGED);
 }
 
-void VideoAnalyzer::Start()
+void VideoAnalyzer::Start(std::string path)
 {
+   m_CamImagePath = path;
+
 	RunLecture = true;
 	ThreadLecture = std::thread(&VideoAnalyzer::LireFichier, this);
 
@@ -50,6 +51,9 @@ void VideoAnalyzer::Stop()
 
 	RunLecture = false;
 	ThreadLecture.join();
+
+   m_ImageLue.Clear();
+   m_ImageFinale.Clear();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -58,15 +62,14 @@ void VideoAnalyzer::Stop()
 
 void VideoAnalyzer::LireFichier()
 {
-	cv::Mat mat;
+   cv::Mat mat;
 	while (RunLecture)
 	{
-      cv::imread(m_CamImagePath, CV_LOAD_IMAGE_COLOR).copyTo(mat);
+      cv::imread(m_CamImagePath, CV_LOAD_IMAGE_UNCHANGED).copyTo(mat);
 
-		if (mat.data)
+		if (!mat.empty() && mat.data && mat.rows > 0 && mat.cols > 0)
 		{
 			m_ImageLue.Set(mat);
-			//m_ImageLue.Switch();
 		}
 	}
 }
@@ -83,16 +86,14 @@ void VideoAnalyzer::LireFichier()
 
 void VideoAnalyzer::TrouverRobot()
 {
-   cv::Mat Source;
-
    double MinVal, MaxVal;
    cv::Point MinLoc, MaxLoc;
 
    while (RunTrouverRobot)
 	{
-		try
-		{
-         m_ImageLue.Get().copyTo(Source); // Copie voulue : Il ne faut pas modifier l'image lue, et le templatematching modifie l'image.
+      try
+      {
+         cv::Mat Source = m_ImageLue.Get().clone();
 
          cv::matchTemplate(Source, m_IRobotTemplate, Source, CV_TM_CCORR);
          cv::minMaxLoc(Source, &MinVal, &MaxVal, &MinLoc, &MaxLoc,0);
@@ -111,18 +112,11 @@ void VideoAnalyzer::TrouverRobot()
 
 void VideoAnalyzer::CreerImage()
 {
-   cv::Mat* mat;
-
    while (RunCreerImage)
    {
       try
       {
-         mat = &m_ImageLue.Get();
-
-         // Modification de l'image.
-
-         m_ImageFinale.Set(*mat);
-         //m_ImageAnalysee.Switch();
+         m_ImageFinale.Set(m_Game->m_Gameplay.ModifierImage(m_ImageLue.Get()));
       }
       catch (...)
       {
@@ -136,8 +130,8 @@ void VideoAnalyzer::Afficher()
 	while (RunAffichage)
 	{
 		try
-		{
-         m_Game->m_QTCyberSerpent.PutImage(Utility::Mat2QImage(m_ImageFinale.Get()));
+      {
+         m_Game->m_QTCyberSerpent.UI_PutImage(Utility::Mat2QImage(m_ImageFinale.Get()));
 		}
 		catch (...)
 		{

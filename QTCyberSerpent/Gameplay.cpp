@@ -12,6 +12,7 @@ m_Obstacles{},
 m_Points{},
 m_QueueSerpent{},
 m_Score{ 0 },
+m_MaxScore{ 0 },
 RunMAJ{ false }
 {
 
@@ -30,9 +31,11 @@ void Gameplay::Initialize()
    m_ImageQueue = cv::imread("ImageQueue.bmp", CV_LOAD_IMAGE_UNCHANGED);
 }
 
-void Gameplay::Start()
+void Gameplay::Start(int MaxScore, int NbObstacles)
 {
+   m_MaxScore = MaxScore;
 
+   fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), NbObstacles);
 
    RunMAJ = true;
    ThreadMAJ = std::thread(&Gameplay::MettreAJourInfos, this);
@@ -40,7 +43,6 @@ void Gameplay::Start()
 
 void Gameplay::Stop()
 {
-
    RunMAJ = false;
    ThreadMAJ.join();
 }
@@ -80,19 +82,21 @@ void Gameplay::MettreAJourInfos()
    }
 }
 
-void Gameplay::ModifierImage(cv::Mat& mat)
+cv::Mat& Gameplay::ModifierImage(cv::Mat mat)
 {
-   auto func = [](std::vector<RectImage> vec, cv::Mat& mat) 
+   auto func = [](std::vector<RectImage> vec, cv::Mat& mat)
    {
       for (RectImage rect : vec)
       {
-         Utility::DrawRectImageOnMat(rect, mat);
+         mat = Utility::DrawRectImageOnMat(rect, mat);
       }
    };
 
    func(m_Obstacles, mat);
    func(m_Points, mat);
    func(m_QueueSerpent, mat);
+
+   return mat;
 }
 
 

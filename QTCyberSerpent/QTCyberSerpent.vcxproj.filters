@@ -102,9 +102,6 @@
     <ClInclude Include="IRobotDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Incopiable.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utility.h">
       <Filter>Resource Files</Filter>
     </ClInclude>

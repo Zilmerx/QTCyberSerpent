@@ -29,13 +29,13 @@ public:
 
    }
 
-   //void Switch()
-   //{
-   //   //std::lock_guard<std::mutex> lockGet(MutexGet);
-   //   //std::lock_guard<std::mutex> lockSet(MutexSet);
+   void Switch()
+   {
+      //std::lock_guard<std::mutex> lockGet(MutexGet);
+      //std::lock_guard<std::mutex> lockSet(MutexSet);
 
-   //   std::swap(PointeurGet, PointeurSet);
-   //}
+      std::swap(PointeurGet, PointeurSet);
+   }
 
    T& Get()
    {
@@ -51,11 +51,17 @@ public:
       }
    }
 
-   void Set(T &value)
+   void Set(T& value)
    {
       //std::lock_guard<std::mutex> lockSet(MutexSet);
       PointeurSet = &value;
 
 	  std::swap(PointeurGet, PointeurSet);
+   }
+
+   void Clear()
+   {
+      PointeurSet = nullptr;
+      PointeurGet = nullptr;
    }
 };

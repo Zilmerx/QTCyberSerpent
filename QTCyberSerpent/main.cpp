@@ -10,9 +10,9 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-   CyberSerpent jeu{ argc , argv, "image.bmp" };
+   CyberSerpent jeu{ argc , argv };
 
    jeu.Initialize();
 
-   jeu.Start();
+   jeu.Afficher();
 }

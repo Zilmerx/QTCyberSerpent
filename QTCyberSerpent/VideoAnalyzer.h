@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <mutex>
 
 #include "opencv2\core.hpp"
 #include "opencv2\highgui.hpp"
@@ -21,17 +22,17 @@ class VideoAnalyzer
    }
 
 	CyberSerpent* m_Game;
-	const std::string m_CamImagePath;
+	std::string m_CamImagePath;
    cv::Mat m_IRobotTemplate;
 
 public:
 
-	VideoAnalyzer(const std::string camImagePath);
+	VideoAnalyzer();
 	~VideoAnalyzer();
 
 	void Initialize(CyberSerpent* linked);
 
-	void Start();
+   void Start(std::string path);
 
 	void Stop();
 
@@ -42,6 +43,7 @@ private:
 	std::thread ThreadLecture;
 	void LireFichier();
 
+   std::mutex m_MutexImageLue;
 	DoubleBuffer<cv::Mat> m_ImageLue;
 
 	// Thread qui prend le Mat dans m_ImageLue, trouve la position du IRobot

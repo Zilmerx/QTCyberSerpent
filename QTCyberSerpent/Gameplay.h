@@ -10,12 +10,13 @@ class Gameplay
 {
 
 public:
-	const static int MAPSIZE_X = 500;
-	const static int MAPSIZE_Y = 500;
+	const static int MAPSIZE_X = 250;
+   const static int MAPSIZE_Y = 250;
 
    friend class VideoAnalyzer;
 
 private:
+   int m_MaxScore;
 
    cv::Mat m_ImageObstacle;
    cv::Mat m_ImagePoint;
@@ -36,12 +37,12 @@ public:
 
    void Initialize();
 
-	void Start();
+	void Start(int MaxScore, int NbObstacles);
 
 	void Stop();
 
    // Modifie l'image en se servant des informations stockées dans cette instance de Gameplay.
-   void ModifierImage(cv::Mat& mat);
+   cv::Mat& ModifierImage(cv::Mat mat);
 private:
 
    // Thread qui fais différentes analyses en se servant de la position du IRobot, puis détecte les collisions.
