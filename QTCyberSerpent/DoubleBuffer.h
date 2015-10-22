@@ -2,60 +2,104 @@
 
 //#include <mutex>
 #include <memory>
+#include <stdexcept>
 
 template <class T>
-class DoubleBuffer
+class DoubleBuffer_Ptr
 {
 private:
 
-   T* PointeurGet;
-   T* PointeurSet;
-
-   //std::mutex MutexGet;
-   //std::mutex MutexSet;
+	T* PointeurGet;
+	T* PointeurSet;
 
 public:
 
-   DoubleBuffer()
-   {
-      PointeurGet = nullptr;
-      PointeurSet = nullptr;
+	DoubleBuffer_Ptr()
+	{
+		PointeurGet = nullptr;
+		PointeurSet = nullptr;
+	}
+	~DoubleBuffer_Ptr()
+	{
 
-      //MutexGet;
-      //MutexSet;
-   }
-   ~DoubleBuffer()
-   {
+	}
 
-   }
+	void Switch()
+	{
+		std::swap(PointeurGet, PointeurSet);
+	}
 
-   //void Switch()
-   //{
-   //   //std::lock_guard<std::mutex> lockGet(MutexGet);
-   //   //std::lock_guard<std::mutex> lockSet(MutexSet);
+	T* Get()
+	{
+		if (PointeurGet == nullptr)
+		{
+			throw std::runtime_error("NULL_VALUE");
+		}
+		else
+		{
+			return PointeurGet;
+		}
+	}
 
-   //   std::swap(PointeurGet, PointeurSet);
-   //}
+	void Set(T* value)
+	{
+		PointeurSet = value;
 
-   T& Get()
-   {
-      //std::lock_guard<std::mutex> lockGet(MutexGet);
+		Switch();
+	}
+};
 
-      if (PointeurGet == nullptr)
-      {
-         throw std::runtime_error("NULL_VALUE");
-      }
-      else
-      {
-         return *PointeurGet;
-      }
-   }
+template <class T>
+class DoubleBuffer_Copie
+{
+private:
 
-   void Set(T &value)
-   {
-      //std::lock_guard<std::mutex> lockSet(MutexSet);
-      PointeurSet = &value;
+	T* PointeurGet;
+	T* PointeurSet;
 
-	  std::swap(PointeurGet, PointeurSet);
-   }
+	T Value1;
+	T Value2;
+
+public:
+
+	DoubleBuffer_Copie()
+	{
+		PointeurGet = &Value1;
+		PointeurSet = &Value2;
+	}
+	~DoubleBuffer_Copie()
+	{
+
+	}
+
+	void Switch()
+	{
+		std::swap(PointeurGet, PointeurSet);
+	}
+
+	T Get()
+	{
+		if (PointeurGet == nullptr)
+		{
+			throw std::runtime_error("NULL_VALUE");
+		}
+		else
+		{
+			return *PointeurGet;
+		}
+	}
+
+	void Set(const T& value)
+	{
+		*PointeurSet = value;
+
+		Switch();
+	}
+
+	void Set(T&& value)
+	{
+		*PointeurSet = std::move(value);
+
+		Switch();
+	}
 };
