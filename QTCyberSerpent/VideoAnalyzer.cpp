@@ -67,9 +67,9 @@ void VideoAnalyzer::LireFichier()
 	{
       cv::imread(m_CamImagePath, CV_LOAD_IMAGE_UNCHANGED).copyTo(mat);
 
-		if (!mat.empty() && mat.data && mat.rows > 0 && mat.cols > 0)
+      if (Utility::MatIsNull(mat))
 		{
-			m_ImageLue.Set(mat);
+			m_ImageLue.Set(std::move(mat));
 		}
 	}
 }
@@ -93,18 +93,21 @@ void VideoAnalyzer::TrouverRobot()
 	{
       try
       {
-         cv::Mat Source = m_ImageLue.Get().clone();
+         cv::Mat& Source = m_ImageUpdate.WaitGet(std::chrono::milliseconds(50));
 
-         cv::matchTemplate(Source, m_IRobotTemplate, Source, CV_TM_CCORR);
-         cv::minMaxLoc(Source, &MinVal, &MaxVal, &MinLoc, &MaxLoc,0);
-
-         if (MaxVal >= PRECISION_TEMPLATEMATCHING())
+         if (Utility::MatIsNull(m_IRobotTemplate))
          {
-            m_Game->m_Gameplay.m_IRobotPos.x = MaxLoc.x;
-            m_Game->m_Gameplay.m_IRobotPos.y = MaxLoc.y;
+            cv::matchTemplate(Source, m_IRobotTemplate, Source, CV_TM_CCORR);
+            cv::minMaxLoc(Source, &MinVal, &MaxVal, &MinLoc, &MaxLoc, 0);
+
+            if (MaxVal >= PRECISION_TEMPLATEMATCHING())
+            {
+               m_Game->m_Gameplay.m_IRobotPos.x = MaxLoc.x;
+               m_Game->m_Gameplay.m_IRobotPos.y = MaxLoc.y;
+            }
          }
 		}
-		catch (...)
+      catch (NullException)
 		{
 		}
 	}
@@ -116,9 +119,11 @@ void VideoAnalyzer::CreerImage()
    {
       try
       {
-         m_ImageFinale.Set(m_Game->m_Gameplay.ModifierImage(m_ImageLue.Get()));
+         cv::Mat&& temp = m_ImageLue.WaitGet(std::chrono::milliseconds(50));
+         m_ImageUpdate.Set(std::move(temp.clone()));
+         m_ImageFinale.Set(m_Game->m_Gameplay.ModifierImage(std::move(temp)));
       }
-      catch (...)
+      catch (NullException)
       {
       }
    }
@@ -126,14 +131,15 @@ void VideoAnalyzer::CreerImage()
 
 void VideoAnalyzer::Afficher()
 {
-   cv::Mat temp;
 	while (RunAffichage)
 	{
 		try
       {
-         m_Game->m_QTCyberSerpent.UI_PutImage(Utility::Mat2QImage(m_ImageFinale.Get()));
+         cv::Mat&& source = m_ImageFinale.WaitGet(std::chrono::milliseconds(50));
+
+         m_Game->m_QTCyberSerpent.UI_PutImage(Utility::Mat2QImage(std::move(source)));
 		}
-		catch (...)
+      catch (NullException)
 		{
 		}
 	}

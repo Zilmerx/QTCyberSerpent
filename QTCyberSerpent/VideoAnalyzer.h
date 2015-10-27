@@ -43,8 +43,7 @@ private:
 	std::thread ThreadLecture;
 	void LireFichier();
 
-   std::mutex m_MutexImageLue;
-	DoubleBuffer<cv::Mat> m_ImageLue;
+	DoubleBuffer_Copie<cv::Mat> m_ImageLue;
 
 	// Thread qui prend le Mat dans m_ImageLue, trouve la position du IRobot
    // puis la met dans m_Game->m_Gameplay.m_IRobotPos
@@ -52,13 +51,15 @@ private:
    std::thread ThreadTrouverRobot;
    void TrouverRobot();
 
+   DoubleBuffer_Copie<cv::Mat> m_ImageUpdate;
+
    // Créée une nouvelle image en se servant des informations stockées dans
    // la classe de Gameplay.
    bool RunCreerImage;
    std::thread ThreadCreationImage;
    void CreerImage();
 
-   DoubleBuffer<cv::Mat> m_ImageFinale;
+   DoubleBuffer_Copie<cv::Mat> m_ImageFinale;
 
 	// Thread qui prend le Mat dans m_ImageAnalysee, la convertis en 
 	// QPixmap puis demande à l'interface de l'afficher.

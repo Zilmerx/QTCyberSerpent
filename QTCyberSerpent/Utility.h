@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string>
 #include <qpixmap.h>
+#include <mutex>
 
 #include "RectImage.h"
 
@@ -35,16 +36,14 @@ public:
       return Min(abs(abs(point1.x) - abs(point2.x)), abs(abs(point1.y) - abs(point2.y)));
    }
 
-   static QImage Mat2QImage(const cv::Mat& mat)
+   static QImage Mat2QImage(const cv::Mat&& mat)
    {
       switch (mat.type())
       {
          // 8-bit, 4 channel
       case CV_8UC4:
       {
-         QImage image(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB32);
-
-         return image;
+         return QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB32);
       }
 
          // 8-bit, 3 channel
@@ -81,7 +80,7 @@ public:
       return QImage();
    }
 
-   static bool CvRect1TouchesRect2(const cv::Rect R1, const cv::Rect R2)
+   static bool CvRect1TouchesRect2(const cv::Rect& R1, const cv::Rect& R2)
    {
       return (R1.contains(cv::Point(R2.x, R2.y)) ||
          R1.contains(cv::Point(R2.x + R2.width, R2.y)) ||
@@ -89,7 +88,7 @@ public:
          R1.contains(cv::Point(R2.x + R2.width, R2.y + R2.height)));
    }
 
-   static bool CvRect1ContainsRect2(const cv::Rect R1, const cv::Rect R2)
+   static bool CvRect1ContainsRect2(const cv::Rect& R1, const cv::Rect& R2)
    {
       return ((R2.x + R2.width) < (R1.x + R1.width)
          && (R2.x) > (R1.x)
@@ -97,13 +96,42 @@ public:
          && (R2.y + R2.height) < (R1.y + R1.height));
    }
 
-   static cv::Mat DrawRectImageOnMat(RectImage mat1, cv::Mat mat2)
+   static cv::Mat DrawRectImageOnMat(RectImage& rect, cv::Mat&& mat)
    {
-      cv::Mat matTemp(mat2);
-      if (matTemp.data)
-      {
-         mat1.m_Image.copyTo(matTemp(cv::Rect(mat1.x, mat1.y, mat1.width, mat1.height)));
-      }
-      return matTemp;
+      cv::Mat temp = mat.clone();
+      rect.m_Image.copyTo(temp(cv::Rect(rect.x, rect.y, rect.width, rect.height)));
+      return temp;
    }
+
+   static cv::Mat DrawRectVectorOnMat(std::vector<RectImage>& vec, cv::Mat&& mat)
+   {
+      if (vec.size() > 0)
+      {
+         for (int i = 0; i < vec.size(); ++i)
+         {
+            mat = Utility::DrawRectImageOnMat(Utility::getValue_ThreadSafe(vec, i), std::move(mat));
+         }
+      }
+      return std::move(mat);
+   }
+
+   static bool MatIsNull(const cv::Mat& mat)
+   {
+      return (!mat.empty() && mat.data && mat.rows > 0 && mat.cols > 0);
+   }
+
+   static std::mutex mutexVecteur;
+   static RectImage getValue_ThreadSafe(std::vector<RectImage>& vec, int Index)
+   {
+      std::unique_lock<std::mutex> lock(mutexVecteur);
+
+      return vec[Index];
+   };
+
+   static void push_back_ThreadSafe(std::vector<RectImage>& vec, RectImage& NewValue)
+   {
+      std::unique_lock<std::mutex> lock(mutexVecteur);
+
+      vec.push_back(NewValue);
+   };
 };

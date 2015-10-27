@@ -5,6 +5,7 @@
 #include "Utility.h"
 #include <thread>
 #include "RectImage.h"
+#include <atomic>
 
 class Gameplay
 {
@@ -42,7 +43,7 @@ public:
 	void Stop();
 
    // Modifie l'image en se servant des informations stockées dans cette instance de Gameplay.
-   cv::Mat& ModifierImage(cv::Mat mat);
+   cv::Mat Gameplay::ModifierImage(cv::Mat&& mat);
 private:
 
    // Thread qui fais différentes analyses en se servant de la position du IRobot, puis détecte les collisions.

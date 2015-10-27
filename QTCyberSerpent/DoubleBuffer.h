@@ -3,6 +3,13 @@
 //#include <mutex>
 #include <memory>
 #include <stdexcept>
+#include <mutex>
+#include <chrono>
+
+struct NullException
+{
+   NullException() = default;
+};
 
 template <class T>
 class DoubleBuffer_Ptr
@@ -29,6 +36,12 @@ public:
 		std::swap(PointeurGet, PointeurSet);
 	}
 
+   void Clear()
+   {
+      PointeurSet = nullptr;
+      PointeurGet = nullptr;
+   }
+
 	T* Get()
 	{
 		if (PointeurGet == nullptr)
@@ -54,103 +67,70 @@ class DoubleBuffer_Copie
 {
 private:
 
-	T* PointeurGet;
-	T* PointeurSet;
+   bool HasValue;
+	T ValueGet;
+	T ValueSet;
 
-	T Value1;
-	T Value2;
+   std::mutex MutexGet;
 
 public:
 
-<<<<<<< HEAD
-   DoubleBuffer()
+   DoubleBuffer_Copie()
+      : HasValue{ false }
    {
-      PointeurGet = nullptr;
-      PointeurSet = nullptr;
-
-      //MutexGet;
-      //MutexSet;
    }
-   ~DoubleBuffer()
+   ~DoubleBuffer_Copie()
    {
-
    }
 
    void Switch()
    {
-      //std::lock_guard<std::mutex> lockGet(MutexGet);
-      //std::lock_guard<std::mutex> lockSet(MutexSet);
-
-      std::swap(PointeurGet, PointeurSet);
-   }
-
-   T& Get()
-   {
-      //std::lock_guard<std::mutex> lockGet(MutexGet);
-
-      if (PointeurGet == nullptr)
-      {
-         throw std::runtime_error("NULL_VALUE");
-      }
-      else
-      {
-         return *PointeurGet;
-      }
-   }
-
-   void Set(T& value)
-   {
-      //std::lock_guard<std::mutex> lockSet(MutexSet);
-      PointeurSet = &value;
-
-	  std::swap(PointeurGet, PointeurSet);
+      std::swap(std::move(ValueGet), std::move(ValueSet));
    }
 
    void Clear()
    {
-      PointeurSet = nullptr;
-      PointeurGet = nullptr;
+      HasValue = false;
    }
-=======
-	DoubleBuffer_Copie()
-	{
-		PointeurGet = &Value1;
-		PointeurSet = &Value2;
-	}
-	~DoubleBuffer_Copie()
-	{
 
-	}
+   T WaitGet(std::chrono::milliseconds DurationCheck)
+   {
+      while (!HasValue)
+      {
+         std::this_thread::sleep_for(DurationCheck);
+      }
 
-	void Switch()
-	{
-		std::swap(PointeurGet, PointeurSet);
-	}
+      return Get();
+   }
 
-	T Get()
-	{
-		if (PointeurGet == nullptr)
-		{
-			throw std::runtime_error("NULL_VALUE");
-		}
-		else
-		{
-			return *PointeurGet;
-		}
-	}
+   T Get()
+   {
+      std::unique_lock<std::mutex> lock(MutexGet);
+
+      if (!HasValue)
+      {
+         throw NullException();
+      }
+      else
+      {
+         HasValue = false;
+         return ValueGet;
+      }
+   }
 
 	void Set(const T& value)
 	{
-		*PointeurSet = value;
+      ValueSet = value;
 
 		Switch();
+      HasValue = true;
 	}
 
 	void Set(T&& value)
 	{
-		*PointeurSet = std::move(value);
+      ValueSet = std::move(value);
 
 		Switch();
+      HasValue = true;
 	}
->>>>>>> origin/master
 };

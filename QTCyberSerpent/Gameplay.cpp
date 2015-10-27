@@ -51,52 +51,53 @@ void Gameplay::MettreAJourInfos()
 {
    while (RunMAJ)
    {
+      fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), 1);
+
       if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, m_IRobotPos))
       {
 
       }
 
-      for (cv::Rect rect : m_Obstacles)
+      if (m_Obstacles.size()> 0)
       {
-         if (Utility::CvRect1TouchesRect2(m_IRobotPos, rect))
+         for (int i = 0; i < m_Obstacles.size(); ++i)
          {
+            if (Utility::CvRect1TouchesRect2(m_IRobotPos, Utility::getValue_ThreadSafe(m_Obstacles, i)))
+            {
 
+            }
          }
       }
 
-      for (cv::Rect rect : m_QueueSerpent)
+      if (m_QueueSerpent.size()> 0)
       {
-         if (Utility::CvRect1TouchesRect2(m_IRobotPos, rect))
+         for (int i = 0; i < m_QueueSerpent.size(); ++i)
          {
+            if (Utility::CvRect1TouchesRect2(m_IRobotPos, Utility::getValue_ThreadSafe(m_QueueSerpent, i)))
+            {
 
+            }
          }
       }
 
-      for (cv::Rect rect : m_Points)
+      if (m_Points.size()> 0)
       {
-         if (Utility::CvRect1TouchesRect2(m_IRobotPos, rect))
+         for (int i = 0; i < m_Points.size(); ++i)
          {
+            if (Utility::CvRect1TouchesRect2(m_IRobotPos, Utility::getValue_ThreadSafe(m_Points, i)))
+            {
 
+            }
          }
       }
    }
 }
 
-cv::Mat& Gameplay::ModifierImage(cv::Mat mat)
+cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
 {
-   auto func = [](std::vector<RectImage> vec, cv::Mat& mat)
-   {
-      for (RectImage rect : vec)
-      {
-         mat = Utility::DrawRectImageOnMat(rect, mat);
-      }
-   };
-
-   func(m_Obstacles, mat);
-   func(m_Points, mat);
-   func(m_QueueSerpent, mat);
-
-   return mat;
+   mat = Utility::DrawRectVectorOnMat(m_Obstacles, std::move(mat));
+   mat = Utility::DrawRectVectorOnMat(m_Points, std::move(mat));
+   return Utility::DrawRectVectorOnMat(m_QueueSerpent, std::move(mat));
 }
 
 
@@ -110,6 +111,6 @@ void Gameplay::fillWithRandRects(std::vector<RectImage>& vec, RectImage rectimag
       RectImage nouveau(rectimage);
       nouveau.x = Utility::RandMinMax(0, Gameplay::MAPSIZE_X - nouveau.width);
       nouveau.y = Utility::RandMinMax(0, Gameplay::MAPSIZE_Y - nouveau.height);
-      vec.push_back(nouveau);
+      Utility::push_back_ThreadSafe(vec, nouveau);
    }
 }
