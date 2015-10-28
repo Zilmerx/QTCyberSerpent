@@ -5,8 +5,10 @@
 #include <string>
 #include <qpixmap.h>
 #include <mutex>
+#include <atomic>
 
 #include "RectImage.h"
+#include "MutexedVector.h"
 
 #include "opencv2\imgproc.hpp"
 
@@ -103,35 +105,19 @@ public:
       return temp;
    }
 
-   static cv::Mat DrawRectVectorOnMat(std::vector<RectImage>& vec, cv::Mat&& mat)
+   static cv::Mat DrawRectVectorOnMat(MutexedVector<RectImage>& vec, cv::Mat&& mat)
    {
-      if (vec.size() > 0)
+      std::unique_lock<std::mutex> lock(vec.m_Mutex);
+      for (std::atomic<int> i = 0; i < vec.m_Vector.size(); ++i)
       {
-         for (int i = 0; i < vec.size(); ++i)
-         {
-            mat = Utility::DrawRectImageOnMat(Utility::getValue_ThreadSafe(vec, i), std::move(mat));
-         }
+         mat = Utility::DrawRectImageOnMat(vec.m_Vector[i], std::move(mat));
       }
+
       return std::move(mat);
    }
 
    static bool MatIsNull(const cv::Mat& mat)
    {
-      return (!mat.empty() && mat.data && mat.rows > 0 && mat.cols > 0);
+      return !(!mat.empty() && mat.data && mat.rows > 0 && mat.cols > 0);
    }
-
-   static std::mutex mutexVecteur;
-   static RectImage getValue_ThreadSafe(std::vector<RectImage>& vec, int Index)
-   {
-      std::unique_lock<std::mutex> lock(mutexVecteur);
-
-      return vec[Index];
-   };
-
-   static void push_back_ThreadSafe(std::vector<RectImage>& vec, RectImage& NewValue)
-   {
-      std::unique_lock<std::mutex> lock(mutexVecteur);
-
-      vec.push_back(NewValue);
-   };
 };

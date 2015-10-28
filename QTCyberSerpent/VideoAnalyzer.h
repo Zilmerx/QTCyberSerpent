@@ -10,6 +10,7 @@
 #include "opencv2\imgproc.hpp"
 
 #include "DoubleBuffer.h"
+#include "RectImage.h"
 
 
 class CyberSerpent;
@@ -24,6 +25,7 @@ class VideoAnalyzer
 	CyberSerpent* m_Game;
 	std::string m_CamImagePath;
    cv::Mat m_IRobotTemplate;
+   std::unique_ptr<RectImage> m_IRobotRect;
 
 public:
 

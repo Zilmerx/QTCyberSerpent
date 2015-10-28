@@ -20,9 +20,10 @@ class CyberSerpent
 {
 	friend QTCyberSerpent;
 	friend VideoAnalyzer;
+   friend Gameplay;
 
 	const std::chrono::milliseconds REFRESH_RATE =
-		std::chrono::milliseconds(10);
+		std::chrono::milliseconds(500);
 
 	Gameplay m_Gameplay;
 	IRobot::IRobot m_IRobotDriver;

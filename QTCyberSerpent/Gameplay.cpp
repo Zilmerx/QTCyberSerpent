@@ -1,6 +1,7 @@
 #include "Gameplay.h"
 #include "Utility.h"
 #include "opencv2\highgui.hpp"
+#include "CyberSerpent.h"
 
 // PUBLIC
 
@@ -24,9 +25,11 @@ Gameplay::~Gameplay()
 #pragma endregion
 
 
-void Gameplay::Initialize()
+void Gameplay::Initialize(CyberSerpent* link)
 {
-   m_ImageObstacle = cv::imread("ImageObstacle.bmp", CV_LOAD_IMAGE_UNCHANGED);
+   m_Game = link;
+
+   m_ImageObstacle = cv::imread("templateIRobot.bmp", CV_LOAD_IMAGE_UNCHANGED);
    m_ImagePoint = cv::imread("ImagePoint.bmp", CV_LOAD_IMAGE_UNCHANGED);
    m_ImageQueue = cv::imread("ImageQueue.bmp", CV_LOAD_IMAGE_UNCHANGED);
 }
@@ -53,38 +56,40 @@ void Gameplay::MettreAJourInfos()
    {
       fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), 1);
 
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
       if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, m_IRobotPos))
       {
 
       }
 
-      if (m_Obstacles.size()> 0)
       {
-         for (int i = 0; i < m_Obstacles.size(); ++i)
+         std::unique_lock<std::mutex> lock(m_Obstacles.m_Mutex);
+         for (int i = 0; i < m_Obstacles.m_Vector.size(); ++i)
          {
-            if (Utility::CvRect1TouchesRect2(m_IRobotPos, Utility::getValue_ThreadSafe(m_Obstacles, i)))
+            if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Obstacles.m_Vector[i]))
+            {
+               m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION");
+            }
+         }
+      }
+
+      {
+         std::unique_lock<std::mutex> lock(m_QueueSerpent.m_Mutex);
+         for (int i = 0; i < m_QueueSerpent.m_Vector.size(); ++i)
+         {
+            if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_QueueSerpent.m_Vector[i]))
             {
 
             }
          }
       }
 
-      if (m_QueueSerpent.size()> 0)
       {
-         for (int i = 0; i < m_QueueSerpent.size(); ++i)
+         std::unique_lock<std::mutex> lock(m_QueueSerpent.m_Mutex);
+         for (int i = 0; i < m_Points.m_Vector.size(); ++i)
          {
-            if (Utility::CvRect1TouchesRect2(m_IRobotPos, Utility::getValue_ThreadSafe(m_QueueSerpent, i)))
-            {
-
-            }
-         }
-      }
-
-      if (m_Points.size()> 0)
-      {
-         for (int i = 0; i < m_Points.size(); ++i)
-         {
-            if (Utility::CvRect1TouchesRect2(m_IRobotPos, Utility::getValue_ThreadSafe(m_Points, i)))
+            if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Points.m_Vector[i]))
             {
 
             }
@@ -103,14 +108,15 @@ cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
 
 // PRIVATE
 
-void Gameplay::fillWithRandRects(std::vector<RectImage>& vec, RectImage rectimage, int amount)
+void Gameplay::fillWithRandRects(MutexedVector<RectImage>& vec, RectImage rectimage, int amount)
 {
-   vec.clear();
+   std::unique_lock<std::mutex> lock(vec.m_Mutex);
+   vec.m_Vector.clear();
    for (int i = 0; i < amount; ++i)
    {
       RectImage nouveau(rectimage);
       nouveau.x = Utility::RandMinMax(0, Gameplay::MAPSIZE_X - nouveau.width);
       nouveau.y = Utility::RandMinMax(0, Gameplay::MAPSIZE_Y - nouveau.height);
-      Utility::push_back_ThreadSafe(vec, nouveau);
+      vec.m_Vector.push_back(nouveau);
    }
 }

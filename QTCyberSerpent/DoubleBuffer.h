@@ -5,11 +5,7 @@
 #include <stdexcept>
 #include <mutex>
 #include <chrono>
-
-struct NullException
-{
-   NullException() = default;
-};
+#include "NullException.h"
 
 template <class T>
 class DoubleBuffer_Ptr

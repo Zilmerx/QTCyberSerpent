@@ -15,6 +15,8 @@ QTCyberSerpent::QTCyberSerpent(QWidget *parent)
 
     m_FuncList = std::map<int, std::function<void()>>();
 
+    qRegisterMetaType<std::string>("std::string");
+
     this->setFixedSize(700, 522);
 
     ui.gridLayoutWidget->setGeometry(QRect(50, 62, 400, 400));
@@ -49,8 +51,8 @@ void QTCyberSerpent::Initialize(CyberSerpent* linked)
    updater = std::make_unique<GUIUpdater>(m_Game->REFRESH_RATE);
    updater->moveToThread(qthread.get());
    connect(updater.get(), SIGNAL(requestNewImage(QImage)), this, SLOT(UI_CB_UpdateImage(QImage)));
-   connect(updater.get(), SIGNAL(requestError(std::string)), this, SLOT(UI_CB_CreateError(std::string)));
-   connect(updater.get(), SIGNAL(requestListMessage(std::string)), this, SLOT(UI_CB_AddMessageInList(std::string)));
+   connect(updater.get(), SIGNAL(requestError(QString)), this, SLOT(UI_CB_CreateError(QString)));
+   connect(updater.get(), SIGNAL(requestListMessage(QString)), this, SLOT(UI_CB_AddMessageInList(QString)));
    connect(updater.get(), SIGNAL(requestAfficherOptions()), this, SLOT(UI_CB_UpdateAfficherOptions()));
    connect(updater.get(), SIGNAL(requestAfficherGameplay()), this, SLOT(UI_CB_UpdateAfficherGameplay()));
 
@@ -65,8 +67,8 @@ void QTCyberSerpent::Initialize(CyberSerpent* linked)
 void QTCyberSerpent::Delete()
 {
    disconnect(updater.get(), SIGNAL(requestNewImage(QImage)), this, SLOT(UI_CB_UpdateImage(QImage)));
-   disconnect(updater.get(), SIGNAL(requestError(std::string)), this, SLOT(UI_CB_CreateError(std::string)));
-   disconnect(updater.get(), SIGNAL(requestListMessage(std::string)), this, SLOT(UI_CB_AddMessageInList(std::string)));
+   disconnect(updater.get(), SIGNAL(requestError(QString)), this, SLOT(UI_CB_CreateError(QString)));
+   disconnect(updater.get(), SIGNAL(requestListMessage(QString)), this, SLOT(UI_CB_AddMessageInList(QString)));
    disconnect(updater.get(), SIGNAL(requestAfficherOptions()), this, SLOT(UI_CB_UpdateAfficherOptions()));
    disconnect(updater.get(), SIGNAL(requestAfficherGameplay()), this, SLOT(UI_CB_UpdateAfficherGameplay()));
 
@@ -111,14 +113,14 @@ void QTCyberSerpent::UI_PutImage(QImage image)
    updater->newImage(image);
 }
 
-void QTCyberSerpent::UI_PutError(const std::string message)
+void QTCyberSerpent::UI_PutError(std::string message)
 {
-   updater->newError(message);
+   updater->newError(QString::fromStdString(message));
 }
 
-void QTCyberSerpent::UI_PutMessageInList(const std::string message)
+void QTCyberSerpent::UI_PutMessageInList(std::string message)
 {
-   updater->newMessageInList(message);
+   updater->newMessageInList(QString::fromStdString(message));
 }
 
 void QTCyberSerpent::UI_AfficherOptions()
@@ -137,10 +139,10 @@ void QTCyberSerpent::UI_CB_UpdateImage(QImage image)
    m_LabelGameplay->setPixmap(QPixmap::fromImage(image));
 }
 
-void QTCyberSerpent::UI_CB_CreateError(const std::string message)
+void QTCyberSerpent::UI_CB_CreateError(QString message)
 {
    QMessageBox b;
-   b.setText(QString::fromStdString(message));
+   b.setText(message);
    b.exec();
 }
 
@@ -159,9 +161,9 @@ void QTCyberSerpent::UI_CB_UpdateAfficherGameplay()
    m_WidgetList->setFocus();
 }
 
-void QTCyberSerpent::UI_CB_AddMessageInList(const std::string message)
+void QTCyberSerpent::UI_CB_AddMessageInList(QString message)
 {
-   QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(message));
+   QListWidgetItem *item = new QListWidgetItem(message);
    item->setFlags(Qt::ItemIsEnabled);
    m_WidgetList->addItem(item);
    m_WidgetList->scrollToBottom();

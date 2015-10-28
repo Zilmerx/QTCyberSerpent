@@ -18,12 +18,12 @@ void GUIUpdater::newImage(const QImage &image)
    }
 }
 
-void GUIUpdater::newError(const std::string message)
+void GUIUpdater::newError(const QString message)
 {
    emit requestError(message);
 }
 
-void GUIUpdater::newMessageInList(const std::string message)
+void GUIUpdater::newMessageInList(const QString message)
 {
    emit requestListMessage(message);
 }

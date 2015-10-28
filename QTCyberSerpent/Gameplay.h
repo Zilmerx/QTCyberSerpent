@@ -6,6 +6,9 @@
 #include <thread>
 #include "RectImage.h"
 #include <atomic>
+#include "MutexedVector.h"
+
+class CyberSerpent;
 
 class Gameplay
 {
@@ -17,6 +20,8 @@ public:
    friend class VideoAnalyzer;
 
 private:
+   CyberSerpent* m_Game;
+
    int m_MaxScore;
 
    cv::Mat m_ImageObstacle;
@@ -27,16 +32,16 @@ private:
 
    cv::Rect m_IRobotPos;                     // Zone occupée par le robot présentement.
 
-   std::vector<RectImage> m_Obstacles;   // Contient des obstacles.
-   std::vector<RectImage> m_Points;      // Contient les trucs à manger.
-   std::vector<RectImage> m_QueueSerpent;// Contient la queue du serpent.
+   MutexedVector<RectImage> m_Obstacles;   // Contient des obstacles.
+   MutexedVector<RectImage> m_Points;      // Contient les trucs à manger.
+   MutexedVector<RectImage> m_QueueSerpent;// Contient la queue du serpent.
 	int m_Score;
 
 public:
 	Gameplay();
 	~Gameplay();
 
-   void Initialize();
+   void Initialize(CyberSerpent* link);
 
 	void Start(int MaxScore, int NbObstacles);
 
@@ -53,6 +58,6 @@ private:
    void MettreAJourInfos();
 
 	// Mets "amount" cv::Rect dans le tableau, qui ont un x,y entre "0" et "MAPSIZE_X"/"MAPSIZE_Y".
-   void fillWithRandRects(std::vector<RectImage>& vec, RectImage rectimage, int amount);
+   void fillWithRandRects(MutexedVector<RectImage>& vec, RectImage rectimage, int amount);
 
 };

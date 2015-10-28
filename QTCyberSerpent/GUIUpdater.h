@@ -1,5 +1,8 @@
 #include <chrono>
 #include <qobject.h>
+#include <string>
+
+typedef std::string Array;
 
 // Classe qui s'occupe d'actualiser différentes parties de l'interface
 // usager QT en se servant de signaux.
@@ -16,9 +19,9 @@ public:
    
    void newImage(const QImage &image);
 
-   void newError(const std::string message);
+   void newError(const QString message);
 
-   void newMessageInList(const std::string message);
+   void newMessageInList(const QString message);
 
    void afficherOptions();
 
@@ -27,8 +30,8 @@ public:
 private:
 signals:
    void requestNewImage(const QImage &);
-   void requestError(const std::string &);
-   void requestListMessage(const std::string &);
+   void requestError(const QString &);
+   void requestListMessage(const QString &);
    void requestAfficherOptions();
    void requestAfficherGameplay();
 };

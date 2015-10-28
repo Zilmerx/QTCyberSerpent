@@ -19,6 +19,8 @@
 
 class CyberSerpent;
 
+typedef std::string Array;
+
 class QTCyberSerpent : public QMainWindow
 {
    Q_OBJECT
@@ -38,16 +40,16 @@ public:
 
    #pragma region Update de UI
 public:
-   void UI_PutMessageInList(const std::string message);
+   void UI_PutMessageInList(std::string message);
    void UI_PutImage(QImage image);
-   void UI_PutError(const std::string message);
+   void UI_PutError(std::string message);
    void UI_AfficherOptions();
    void UI_AfficherGameplay();
 
 private slots:
-   void UI_CB_AddMessageInList(const std::string message);
+void UI_CB_AddMessageInList(QString message);
    void UI_CB_UpdateImage(QImage image);
-   void UI_CB_CreateError(const std::string message);
+   void UI_CB_CreateError(QString message);
    void UI_CB_UpdateAfficherOptions();
    void UI_CB_UpdateAfficherGameplay();
 

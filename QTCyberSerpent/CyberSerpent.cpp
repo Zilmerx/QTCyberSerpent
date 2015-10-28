@@ -25,7 +25,7 @@ CyberSerpent::~CyberSerpent()
 bool CyberSerpent::Initialize()
 {
 	m_VideoAnalyzer.Initialize(this);
-   m_Gameplay.Initialize();
+   m_Gameplay.Initialize(this);
    m_QTCyberSerpent.Initialize(this);
 
    m_State = CyberSerpentState::Initialized;

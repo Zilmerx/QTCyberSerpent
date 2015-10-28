@@ -8,15 +8,15 @@
 class RectImage : public cv::Rect
 {
 public:
-   const cv::Mat& m_Image;
+   cv::Mat& m_Image;
 
-   RectImage(const cv::Mat& image)
+   RectImage(cv::Mat& image)
       : m_Image{ image }
    {
       x = 0;
       y = 0;
-      width = m_Image.cols;
-      height = m_Image.rows;
+      width = image.cols;
+      height = image.rows;
    }
 
    RectImage(const RectImage& copyfrom)

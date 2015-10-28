@@ -18,7 +18,16 @@ void VideoAnalyzer::Initialize(CyberSerpent* linked)
 {
 	m_Game = linked;
 
-   m_IRobotTemplate = cv::imread("templateIRobot.bmp", CV_LOAD_IMAGE_UNCHANGED);
+   while (Utility::MatIsNull(m_IRobotTemplate))
+   {
+      m_IRobotTemplate = cv::imread("ImageObstacle.bmp", CV_LOAD_IMAGE_UNCHANGED);
+   }
+
+   m_IRobotRect = std::make_unique<RectImage>(m_IRobotTemplate);
+   m_Game->m_Gameplay.m_IRobotPos.x = m_IRobotRect->x = 150;
+   m_Game->m_Gameplay.m_IRobotPos.y = m_IRobotRect->y = 150;
+   m_Game->m_Gameplay.m_IRobotPos.width = m_IRobotTemplate.cols;
+   m_Game->m_Gameplay.m_IRobotPos.height = m_IRobotTemplate.rows;
 }
 
 void VideoAnalyzer::Start(std::string path)
@@ -67,7 +76,7 @@ void VideoAnalyzer::LireFichier()
 	{
       cv::imread(m_CamImagePath, CV_LOAD_IMAGE_UNCHANGED).copyTo(mat);
 
-      if (Utility::MatIsNull(mat))
+      if (!Utility::MatIsNull(mat))
 		{
 			m_ImageLue.Set(std::move(mat));
 		}
@@ -121,7 +130,8 @@ void VideoAnalyzer::CreerImage()
       {
          cv::Mat&& temp = m_ImageLue.WaitGet(std::chrono::milliseconds(50));
          m_ImageUpdate.Set(std::move(temp.clone()));
-         m_ImageFinale.Set(m_Game->m_Gameplay.ModifierImage(std::move(temp)));
+
+         m_ImageFinale.Set(m_Game->m_Gameplay.ModifierImage(Utility::DrawRectImageOnMat(*m_IRobotRect.get(), std::move(temp))));
       }
       catch (NullException)
       {

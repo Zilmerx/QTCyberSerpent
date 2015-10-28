@@ -170,7 +170,6 @@
     <ClCompile Include="IRobotDriver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="qtcyberserpent.cpp" />
-    <ClCompile Include="Utility.cpp" />
     <ClCompile Include="VideoAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +236,8 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
+    <ClInclude Include="MutexedVector.h" />
+    <ClInclude Include="NullException.h" />
     <ClInclude Include="RectImage.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="VideoAnalyzer.h" />
