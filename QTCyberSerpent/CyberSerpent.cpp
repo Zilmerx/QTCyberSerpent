@@ -117,4 +117,5 @@ void CyberSerpent::OnUpArrowKeyPress()
 void CyberSerpent::OnDownArrowKeyPress()
 {
    m_QTCyberSerpent.UI_PutMessageInList("BAS ENREGISTRE");
+   m_IRobotDriver.Stop();
 }

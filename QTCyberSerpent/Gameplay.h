@@ -23,6 +23,7 @@ private:
    CyberSerpent* m_Game;
 
    int m_MaxScore;
+   int m_NbObstacle;
 
    cv::Mat m_ImageObstacle;
    cv::Mat m_ImagePoint;

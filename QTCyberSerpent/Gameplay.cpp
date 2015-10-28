@@ -38,7 +38,8 @@ void Gameplay::Start(int MaxScore, int NbObstacles)
 {
    m_MaxScore = MaxScore;
 
-   fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), NbObstacles);
+   m_NbObstacle = NbObstacles;
+   fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), m_NbObstacle);
 
    RunMAJ = true;
    ThreadMAJ = std::thread(&Gameplay::MettreAJourInfos, this);
@@ -54,9 +55,9 @@ void Gameplay::MettreAJourInfos()
 {
    while (RunMAJ)
    {
-      fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), 1);
+      fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), m_NbObstacle);
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+      std::this_thread::sleep_for(std::chrono::milliseconds(0));
 
       if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, m_IRobotPos))
       {
@@ -64,14 +65,16 @@ void Gameplay::MettreAJourInfos()
       }
 
       {
+         int cpt = 0;
          std::unique_lock<std::mutex> lock(m_Obstacles.m_Mutex);
          for (int i = 0; i < m_Obstacles.m_Vector.size(); ++i)
          {
             if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Obstacles.m_Vector[i]))
             {
-               m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION");
+               ++cpt;
             }
          }
+         //m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION " + std::to_string(cpt));
       }
 
       {
@@ -86,7 +89,7 @@ void Gameplay::MettreAJourInfos()
       }
 
       {
-         std::unique_lock<std::mutex> lock(m_QueueSerpent.m_Mutex);
+         std::unique_lock<std::mutex> lock(m_Points.m_Mutex);
          for (int i = 0; i < m_Points.m_Vector.size(); ++i)
          {
             if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Points.m_Vector[i]))

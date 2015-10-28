@@ -23,7 +23,7 @@ class CyberSerpent
    friend Gameplay;
 
 	const std::chrono::milliseconds REFRESH_RATE =
-		std::chrono::milliseconds(500);
+		std::chrono::milliseconds(0);
 
 	Gameplay m_Gameplay;
 	IRobot::IRobot m_IRobotDriver;
