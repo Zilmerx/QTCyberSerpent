@@ -60,14 +60,14 @@ static const uint qt_meta_data_GUIUpdater[] = {
  // signals: name, argc, parameters, tag, flags
        1,    1,   39,    2, 0x06 /* Public */,
        3,    1,   42,    2, 0x06 /* Public */,
-       4,    1,   45,    2, 0x06 /* Public */,
-       5,    0,   48,    2, 0x06 /* Public */,
-       6,    0,   49,    2, 0x06 /* Public */,
+       4,    0,   45,    2, 0x06 /* Public */,
+       5,    0,   46,    2, 0x06 /* Public */,
+       6,    0,   47,    2, 0x06 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QImage,    2,
     QMetaType::Void, QMetaType::QString,    2,
-    QMetaType::Void, QMetaType::QString,    2,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -82,7 +82,7 @@ void GUIUpdater::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         switch (_id) {
         case 0: _t->requestNewImage((*reinterpret_cast< const QImage(*)>(_a[1]))); break;
         case 1: _t->requestError((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 2: _t->requestListMessage((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 2: _t->requestListMessage(); break;
         case 3: _t->requestAfficherOptions(); break;
         case 4: _t->requestAfficherGameplay(); break;
         default: ;
@@ -103,7 +103,7 @@ void GUIUpdater::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             }
         }
         {
-            typedef void (GUIUpdater::*_t)(const QString & );
+            typedef void (GUIUpdater::*_t)();
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GUIUpdater::requestListMessage)) {
                 *result = 2;
             }
@@ -174,10 +174,9 @@ void GUIUpdater::requestError(const QString & _t1)
 }
 
 // SIGNAL 2
-void GUIUpdater::requestListMessage(const QString & _t1)
+void GUIUpdater::requestListMessage()
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
-    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+    QMetaObject::activate(this, &staticMetaObject, 2, Q_NULLPTR);
 }
 
 // SIGNAL 3

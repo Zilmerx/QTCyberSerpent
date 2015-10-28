@@ -1,6 +1,7 @@
 #include <chrono>
 #include <qobject.h>
 #include <string>
+#include "MutexedVector.h"
 
 typedef std::string Array;
 
@@ -8,7 +9,7 @@ typedef std::string Array;
 // usager QT en se servant de signaux.
 class GUIUpdater : public QObject 
 {
-   const std::chrono::milliseconds REFRESH_INTERVAL;
+   const std::chrono::milliseconds REFRESH_INTERVAL_IMAGE;
 
    Q_OBJECT
 
@@ -21,6 +22,9 @@ public:
 
    void newError(const QString message);
 
+   const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(30);
+   std::chrono::steady_clock::time_point lastRequestMessage;
+   MutexedVector<QString> m_Vector;
    void newMessageInList(const QString message);
 
    void afficherOptions();
@@ -31,7 +35,7 @@ private:
 signals:
    void requestNewImage(const QImage &);
    void requestError(const QString &);
-   void requestListMessage(const QString &);
+   void requestListMessage();
    void requestAfficherOptions();
    void requestAfficherGameplay();
 };

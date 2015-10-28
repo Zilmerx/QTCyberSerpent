@@ -57,7 +57,7 @@ void Gameplay::MettreAJourInfos()
    {
       fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), m_NbObstacle);
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(0));
+      std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
       if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, m_IRobotPos))
       {
@@ -74,7 +74,7 @@ void Gameplay::MettreAJourInfos()
                ++cpt;
             }
          }
-         //m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION " + std::to_string(cpt));
+         m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION " + std::to_string(cpt));
       }
 
       {

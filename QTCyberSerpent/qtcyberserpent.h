@@ -47,7 +47,7 @@ public:
    void UI_AfficherGameplay();
 
 private slots:
-void UI_CB_AddMessageInList(QString message);
+   void UI_CB_AddMessageInList();
    void UI_CB_UpdateImage(QImage image);
    void UI_CB_CreateError(QString message);
    void UI_CB_UpdateAfficherOptions();

@@ -52,7 +52,7 @@ void QTCyberSerpent::Initialize(CyberSerpent* linked)
    updater->moveToThread(qthread.get());
    connect(updater.get(), SIGNAL(requestNewImage(QImage)), this, SLOT(UI_CB_UpdateImage(QImage)));
    connect(updater.get(), SIGNAL(requestError(QString)), this, SLOT(UI_CB_CreateError(QString)));
-   connect(updater.get(), SIGNAL(requestListMessage(QString)), this, SLOT(UI_CB_AddMessageInList(QString)));
+   connect(updater.get(), SIGNAL(requestListMessage()), this, SLOT(UI_CB_AddMessageInList()));
    connect(updater.get(), SIGNAL(requestAfficherOptions()), this, SLOT(UI_CB_UpdateAfficherOptions()));
    connect(updater.get(), SIGNAL(requestAfficherGameplay()), this, SLOT(UI_CB_UpdateAfficherGameplay()));
 
@@ -68,7 +68,7 @@ void QTCyberSerpent::Delete()
 {
    disconnect(updater.get(), SIGNAL(requestNewImage(QImage)), this, SLOT(UI_CB_UpdateImage(QImage)));
    disconnect(updater.get(), SIGNAL(requestError(QString)), this, SLOT(UI_CB_CreateError(QString)));
-   disconnect(updater.get(), SIGNAL(requestListMessage(QString)), this, SLOT(UI_CB_AddMessageInList(QString)));
+   disconnect(updater.get(), SIGNAL(requestListMessage()), this, SLOT(UI_CB_AddMessageInList()));
    disconnect(updater.get(), SIGNAL(requestAfficherOptions()), this, SLOT(UI_CB_UpdateAfficherOptions()));
    disconnect(updater.get(), SIGNAL(requestAfficherGameplay()), this, SLOT(UI_CB_UpdateAfficherGameplay()));
 
@@ -161,11 +161,20 @@ void QTCyberSerpent::UI_CB_UpdateAfficherGameplay()
    m_WidgetList->setFocus();
 }
 
-void QTCyberSerpent::UI_CB_AddMessageInList(QString message)
+void QTCyberSerpent::UI_CB_AddMessageInList()
 {
-   QListWidgetItem *item = new QListWidgetItem(message);
-   item->setFlags(Qt::ItemIsEnabled);
-   m_WidgetList->addItem(item);
+   for (int i = 0; i < updater->m_Vector.m_Vector.size(); ++i)
+   {
+      QListWidgetItem *item = new QListWidgetItem(updater->m_Vector.m_Vector[i]);
+      item->setFlags(Qt::ItemIsEnabled);
+      m_WidgetList->addItem(item);
+   }
+   updater->m_Vector.m_Vector.clear();
+
+   while (m_WidgetList->count() > 30)
+   {
+      m_WidgetList->takeItem(m_WidgetList->row(m_WidgetList->item(0)));
+   }
    m_WidgetList->scrollToBottom();
    this->setFocus(); // Empêche le bug ou le focus se met sur la liste, et bloque Up et Down arrow.
 }
