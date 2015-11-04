@@ -3,10 +3,7 @@
 #include "Utility.h"
 
 VideoAnalyzer::VideoAnalyzer() 
-	:RunLecture{ false }, 
-   RunTrouverRobot{ false },
-   RunCreerImage{ false },
-	RunAffichage{ false }
+   :RunDo{ false }
 {
 }
 
@@ -18,10 +15,7 @@ void VideoAnalyzer::Initialize(CyberSerpent* linked)
 {
 	m_Game = linked;
 
-   while (Utility::MatIsNull(m_IRobotTemplate))
-   {
-      m_IRobotTemplate = cv::imread("ImageObstacle.bmp", CV_LOAD_IMAGE_UNCHANGED);
-   }
+   m_IRobotTemplate = cv::imread("templateIRobot.bmp", CV_LOAD_IMAGE_UNCHANGED);
 
    m_IRobotRect = std::make_unique<RectImage>(m_IRobotTemplate);
    m_Game->m_Gameplay.m_IRobotPos.x = m_IRobotRect->x = 150;
@@ -34,78 +28,48 @@ void VideoAnalyzer::Start(std::string path)
 {
    m_CamImagePath = path;
 
-	RunLecture = true;
-	ThreadLecture = std::thread(&VideoAnalyzer::LireFichier, this);
-
-   RunTrouverRobot = true;
-   ThreadTrouverRobot = std::thread(&VideoAnalyzer::TrouverRobot, this);
-
-   RunCreerImage = true;
-   ThreadCreationImage = std::thread(&VideoAnalyzer::CreerImage, this);
-
-	RunAffichage = true;
-	ThreadAffichage = std::thread(&VideoAnalyzer::Afficher, this);
+   RunDo = true;
+   ThreadDo = std::thread(&VideoAnalyzer::Do, this);
 }
 
 void VideoAnalyzer::Stop()
 {
-	RunAffichage = false;
-	ThreadAffichage.join();
-
-   RunCreerImage = false;
-   ThreadCreationImage.join();
-
-   RunTrouverRobot = false;
-   ThreadTrouverRobot.join();
-
-	RunLecture = false;
-	ThreadLecture.join();
-
-   m_ImageLue.Clear();
-   m_ImageFinale.Clear();
+   RunDo = false;
+   ThreadDo.join();
 }
 
 //////////////////////////////////////////////////////////////////
 // Threads
 //////////////////////////////////////////////////////////////////
 
-void VideoAnalyzer::LireFichier()
+
+void VideoAnalyzer::Do()
 {
    cv::Mat mat;
-	while (RunLecture)
-	{
-      cv::imread(m_CamImagePath, CV_LOAD_IMAGE_UNCHANGED).copyTo(mat);
+   cv::VideoCapture cap(0);
+   while (RunDo)
+   {
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      // Lecture d'une nouvelle image.
+      if (cap.isOpened())
+      {
+         cap >> mat;
+      }
+      else
+      {
+         cv::imread(m_CamImagePath, CV_LOAD_IMAGE_UNCHANGED).copyTo(mat);
+      }
 
       if (!Utility::MatIsNull(mat))
-		{
-			m_ImageLue.Set(std::move(mat));
-		}
-	}
-}
-
-//void VideoAnalyzer::LireFichier()
-//{
-//   // Risque plutôt d'être ça.
-//   cv::VideoCapture video = cv::VideoCapture();
-//   cv::Mat mat;
-//   while (RunLecture)
-//   {
-//   }
-//}
-
-void VideoAnalyzer::TrouverRobot()
-{
-   double MinVal, MaxVal;
-   cv::Point MinLoc, MaxLoc;
-
-   while (RunTrouverRobot)
-	{
-      try
       {
-         cv::Mat& Source = m_ImageUpdate.WaitGet(std::chrono::milliseconds(50));
-
+         // Analyse de la position du IRobot dans l'image.
          if (Utility::MatIsNull(m_IRobotTemplate))
          {
+            double MinVal, MaxVal;
+            cv::Point MinLoc, MaxLoc;
+
+            cv::Mat& Source = mat.clone();
+
             cv::matchTemplate(Source, m_IRobotTemplate, Source, CV_TM_CCORR);
             cv::minMaxLoc(Source, &MinVal, &MaxVal, &MinLoc, &MaxLoc, 0);
 
@@ -115,42 +79,16 @@ void VideoAnalyzer::TrouverRobot()
                m_Game->m_Gameplay.m_IRobotPos.y = MaxLoc.y;
             }
          }
-		}
-      catch (NullException)
-		{
-		}
-	}
-}
 
-void VideoAnalyzer::CreerImage()
-{
-   while (RunCreerImage)
-   {
-      try
-      {
-         cv::Mat&& temp = m_ImageLue.WaitGet(std::chrono::milliseconds(50));
-         m_ImageUpdate.Set(std::move(temp.clone()));
+         // Update des informations en se servant de la nouvelle position du IRobot detectée.
+         m_Game->m_Gameplay.MettreAJourInfos();
 
-         m_ImageFinale.Set(m_Game->m_Gameplay.ModifierImage(Utility::DrawRectImageOnMat(*m_IRobotRect.get(), std::move(temp))));
-      }
-      catch (NullException)
-      {
+         // Modification de l'image en se servant des nouvelles informations acquises.
+         mat = Utility::DrawRectImageOnMat(*m_IRobotRect.get(), std::move(mat));
+         mat = m_Game->m_Gameplay.ModifierImage(std::move(mat));
+
+         // Affichage de l'image.
+         m_Game->m_QTCyberSerpent.UI_PutImage(Utility::Mat2QImage(std::move(mat)));
       }
    }
-}
-
-void VideoAnalyzer::Afficher()
-{
-	while (RunAffichage)
-	{
-		try
-      {
-         cv::Mat&& source = m_ImageFinale.WaitGet(std::chrono::milliseconds(50));
-
-         m_Game->m_QTCyberSerpent.UI_PutImage(Utility::Mat2QImage(std::move(source)));
-		}
-      catch (NullException)
-		{
-		}
-	}
 }

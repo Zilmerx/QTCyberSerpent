@@ -22,7 +22,7 @@ public:
 
    void newError(const QString message);
 
-   const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(30);
+   const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(100);
    std::chrono::steady_clock::time_point lastRequestMessage;
    MutexedVector<QString> m_Vector;
    void newMessageInList(const QString message);

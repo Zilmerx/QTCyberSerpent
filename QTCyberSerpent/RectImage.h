@@ -25,4 +25,19 @@ public:
       x = copyfrom.x;
       y = copyfrom.y;
    }
+
+   bool operator==(const RectImage& img1)
+   {
+      return (m_Image.data == img1.m_Image.data);
+   }
+
+   RectImage& operator=(RectImage other)
+   {
+      m_Image = other.m_Image;
+      x = other.x;
+      y = other.y;
+      width = other.width;
+      height = other.height;
+      return *this;
+   }
 };

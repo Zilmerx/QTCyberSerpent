@@ -26,6 +26,7 @@ class QTCyberSerpent : public QMainWindow
    Q_OBJECT
 
    friend class CyberSerpent;
+   friend class Gameplay;
 
    Ui::QTCyberSerpentClass ui;
    CyberSerpent* m_Game;

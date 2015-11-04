@@ -7,16 +7,10 @@
 
 #pragma region Constructeur / Destructeur
 Gameplay::Gameplay()
-: m_ZoneJeu{ 0, 0, MAPSIZE_X, MAPSIZE_Y },
-m_IRobotPos{ 0, 0, 0, 0 },
-m_Obstacles{},
-m_Points{},
-m_QueueSerpent{},
-m_Score{ 0 },
-m_MaxScore{ 0 },
-RunMAJ{ false }
+:m_Score{ 0 },
+m_MaxScore{ 0 }
 {
-
+   m_IRobotPos = cv::Rect( 0, 0, 0, 0 );
 }
 
 Gameplay::~Gameplay()
@@ -29,75 +23,70 @@ void Gameplay::Initialize(CyberSerpent* link)
 {
    m_Game = link;
 
-   m_ImageObstacle = cv::imread("templateIRobot.bmp", CV_LOAD_IMAGE_UNCHANGED);
+   QRect rect = m_Game->m_QTCyberSerpent.m_LabelGameplay->geometry();
+   m_ZoneJeu = cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+
+   m_ImageObstacle = cv::imread("ImageObstacle.bmp", CV_LOAD_IMAGE_UNCHANGED);
    m_ImagePoint = cv::imread("ImagePoint.bmp", CV_LOAD_IMAGE_UNCHANGED);
    m_ImageQueue = cv::imread("ImageQueue.bmp", CV_LOAD_IMAGE_UNCHANGED);
 }
 
 void Gameplay::Start(int MaxScore, int NbObstacles)
 {
+   m_Score = 0;
    m_MaxScore = MaxScore;
 
-   m_NbObstacle = NbObstacles;
-   fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), m_NbObstacle);
-
-   RunMAJ = true;
-   ThreadMAJ = std::thread(&Gameplay::MettreAJourInfos, this);
+   fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), NbObstacles);
+   fillWithRandRects(m_Points, RectImage(m_ImagePoint), 5);
 }
 
 void Gameplay::Stop()
 {
-   RunMAJ = false;
-   ThreadMAJ.join();
 }
 
 void Gameplay::MettreAJourInfos()
 {
-   while (RunMAJ)
+   m_IRobotPos.x = Utility::RandMinMax(0, m_ZoneJeu.width - m_IRobotPos.width);
+   m_IRobotPos.y = Utility::RandMinMax(0, m_ZoneJeu.height - m_IRobotPos.height);
+
+   if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, m_IRobotPos))
    {
-      fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), m_NbObstacle);
+      // Perdu.
+   }
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(20));
-
-      if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, m_IRobotPos))
+   for (int i = 0; i < m_Obstacles.size(); ++i)
+   {
+      if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Obstacles[i]))
       {
-
+         // Perdu.
       }
+   }
 
+
+   for (int i = 0; i < m_QueueSerpent.size(); ++i)
+   {
+      if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_QueueSerpent[i]))
       {
-         int cpt = 0;
-         std::unique_lock<std::mutex> lock(m_Obstacles.m_Mutex);
-         for (int i = 0; i < m_Obstacles.m_Vector.size(); ++i)
-         {
-            if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Obstacles.m_Vector[i]))
-            {
-               ++cpt;
-            }
-         }
-         m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION " + std::to_string(cpt));
+         // Perdu.
       }
+   }
 
+   std::vector<int> toRemove;
+   for (int i = 0; i < m_Points.size(); ++i)
+   {
+      if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Points[i]))
       {
-         std::unique_lock<std::mutex> lock(m_QueueSerpent.m_Mutex);
-         for (int i = 0; i < m_QueueSerpent.m_Vector.size(); ++i)
-         {
-            if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_QueueSerpent.m_Vector[i]))
-            {
+         toRemove.push_back(i);
 
-            }
-         }
+         m_Score++;
+
+         VerifyScore(); // Check si gagné.
       }
-
-      {
-         std::unique_lock<std::mutex> lock(m_Points.m_Mutex);
-         for (int i = 0; i < m_Points.m_Vector.size(); ++i)
-         {
-            if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Points.m_Vector[i]))
-            {
-
-            }
-         }
-      }
+   }
+   for (int i = 0; i < toRemove.size(); ++i)
+   {
+      m_Points.erase(m_Points.begin() + toRemove[i] - i);
+      m_Points.push_back(RandRect(m_ImagePoint));
    }
 }
 
@@ -105,21 +94,34 @@ cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
 {
    mat = Utility::DrawRectVectorOnMat(m_Obstacles, std::move(mat));
    mat = Utility::DrawRectVectorOnMat(m_Points, std::move(mat));
-   return Utility::DrawRectVectorOnMat(m_QueueSerpent, std::move(mat));
+   mat = Utility::DrawRectVectorOnMat(m_QueueSerpent, std::move(mat));
+   cv::rectangle(mat, cv::Point(m_IRobotPos.x, m_IRobotPos.y), cv::Point(m_IRobotPos.x + m_IRobotPos.width, m_IRobotPos.y + m_IRobotPos.height), cv::Scalar(0, 0, 200), 2);
+
+   return mat;
 }
 
 
 // PRIVATE
 
-void Gameplay::fillWithRandRects(MutexedVector<RectImage>& vec, RectImage rectimage, int amount)
+void Gameplay::fillWithRandRects(std::vector<RectImage>& vec, RectImage rectimage, int amount)
 {
-   std::unique_lock<std::mutex> lock(vec.m_Mutex);
-   vec.m_Vector.clear();
+
+   vec.clear();
    for (int i = 0; i < amount; ++i)
    {
-      RectImage nouveau(rectimage);
-      nouveau.x = Utility::RandMinMax(0, Gameplay::MAPSIZE_X - nouveau.width);
-      nouveau.y = Utility::RandMinMax(0, Gameplay::MAPSIZE_Y - nouveau.height);
-      vec.m_Vector.push_back(nouveau);
+      vec.push_back(RandRect(rectimage));
    }
+}
+
+RectImage Gameplay::RandRect(RectImage rectImage)
+{
+   RectImage nouveau(rectImage);
+   nouveau.x = Utility::RandMinMax(0, m_ZoneJeu.width - nouveau.width);
+   nouveau.y = Utility::RandMinMax(0, m_ZoneJeu.height - nouveau.height);
+   return nouveau;
+}
+
+void Gameplay::VerifyScore()
+{
+
 }

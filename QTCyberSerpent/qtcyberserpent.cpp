@@ -163,7 +163,7 @@ void QTCyberSerpent::UI_CB_UpdateAfficherGameplay()
 
 void QTCyberSerpent::UI_CB_AddMessageInList()
 {
-   for (int i = 0; i < updater->m_Vector.m_Vector.size(); ++i)
+   for (int i = 0; i < updater->m_Vector.m_Vector.size() && i < 30; ++i)
    {
       QListWidgetItem *item = new QListWidgetItem(updater->m_Vector.m_Vector[i]);
       item->setFlags(Qt::ItemIsEnabled);

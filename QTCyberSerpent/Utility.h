@@ -100,17 +100,15 @@ public:
 
    static cv::Mat DrawRectImageOnMat(RectImage& rect, cv::Mat&& mat)
    {
-      cv::Mat temp = mat.clone();
-      rect.m_Image.copyTo(temp(cv::Rect(rect.x, rect.y, rect.width, rect.height)));
-      return temp;
+      rect.m_Image.copyTo(mat(cv::Rect(rect.x, rect.y, rect.width, rect.height)));
+      return mat;
    }
 
-   static cv::Mat DrawRectVectorOnMat(MutexedVector<RectImage>& vec, cv::Mat&& mat)
+   static cv::Mat DrawRectVectorOnMat(std::vector<RectImage>& vec, cv::Mat&& mat)
    {
-      std::unique_lock<std::mutex> lock(vec.m_Mutex);
-      for (std::atomic<int> i = 0; i < vec.m_Vector.size(); ++i)
+      for (std::atomic<int> i = 0; i < vec.size(); ++i)
       {
-         mat = Utility::DrawRectImageOnMat(vec.m_Vector[i], std::move(mat));
+         mat = Utility::DrawRectImageOnMat(vec[i], std::move(mat));
       }
 
       return std::move(mat);

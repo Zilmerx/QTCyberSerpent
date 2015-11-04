@@ -26,7 +26,7 @@ void GUIUpdater::newError(const QString message)
 void GUIUpdater::newMessageInList(const QString message)
 {
    {
-      std::unique_lock<std::mutex> lock(m_Vector.m_Mutex);
+      std::lock_guard<std::mutex> lock(m_Vector.m_Mutex);
       m_Vector.m_Vector.push_back(message);
       if ((std::chrono::steady_clock::now() - lastRequestMessage) >= REFRESH_INTERVAL_MESSAGE)
       {

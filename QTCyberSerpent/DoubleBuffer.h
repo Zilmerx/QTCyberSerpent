@@ -89,20 +89,9 @@ public:
       HasValue = false;
    }
 
-   T WaitGet(std::chrono::milliseconds DurationCheck)
-   {
-      while (!HasValue)
-      {
-         std::this_thread::sleep_for(DurationCheck);
-      }
-
-      return Get();
-   }
-
    T Get()
    {
-      std::unique_lock<std::mutex> lock(MutexGet);
-
+      std::lock_guard<std::mutex> lock(MutexGet);
       if (!HasValue)
       {
          throw NullException();
