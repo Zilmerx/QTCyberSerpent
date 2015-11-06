@@ -25,10 +25,10 @@ class VideoAnalyzer
 	CyberSerpent* m_Game;
 	std::string m_CamImagePath;
    cv::Mat m_IRobotTemplate;
-   std::unique_ptr<RectImage> m_IRobotRect;
+   //std::unique_ptr<RectImage> m_IRobotRect;
 
 public:
-
+   RectImage m_IRobotRect;
 	VideoAnalyzer();
 	~VideoAnalyzer();
 

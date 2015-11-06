@@ -7,6 +7,7 @@
 #include "RectImage.h"
 #include <atomic>
 #include "MutexedVector.h"
+#include "VideoAnalyzer.h"
 
 class CyberSerpent;
 
@@ -27,8 +28,6 @@ private:
 
    cv::Rect m_ZoneJeu;                   // Définis la zone de jeu.
 
-   cv::Rect m_IRobotPos;                 // Zone occupée par le robot présentement.
-
    std::vector<RectImage> m_Obstacles;   // Contient des obstacles.
    std::vector<RectImage> m_Points;      // Contient les trucs à manger.
    std::vector<RectImage> m_QueueSerpent;// Contient la queue du serpent.
@@ -43,13 +42,18 @@ public:
 
 	void Stop();
 
+   void UP();
+   void RIGHT();
+   void LEFT();
+   void DOWN();
+
    // Modifie l'image en se servant des informations stockées dans cette instance de Gameplay.
-   cv::Mat Gameplay::ModifierImage(cv::Mat&& mat);
+   cv::Mat ModifierImage(cv::Mat&& mat);
 private:
 
    // Thread qui fais différentes analyses en se servant de la position du IRobot, puis détecte les collisions.
    // S'occupe aussi d'appeller les fonctions liées, en cas de collision.
-   void MettreAJourInfos();
+   void MettreAJourInfos(cv::Rect PositionIRobot);
 
 	// Mets "amount" cv::Rect dans le tableau, qui ont un x,y entre "0" et "MAPSIZE_X"/"MAPSIZE_Y".
    void fillWithRandRects(std::vector<RectImage>& vec, RectImage rectimage, int amount);

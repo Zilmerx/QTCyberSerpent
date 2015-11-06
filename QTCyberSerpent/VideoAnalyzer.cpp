@@ -15,13 +15,9 @@ void VideoAnalyzer::Initialize(CyberSerpent* linked)
 {
 	m_Game = linked;
 
-   m_IRobotTemplate = cv::imread("templateIRobot.bmp", CV_LOAD_IMAGE_UNCHANGED);
+   m_IRobotTemplate = cv::imread("templateIRobot.bmp", CV_32FC1);
 
-   m_IRobotRect = std::make_unique<RectImage>(m_IRobotTemplate);
-   m_Game->m_Gameplay.m_IRobotPos.x = m_IRobotRect->x = 150;
-   m_Game->m_Gameplay.m_IRobotPos.y = m_IRobotRect->y = 150;
-   m_Game->m_Gameplay.m_IRobotPos.width = m_IRobotTemplate.cols;
-   m_Game->m_Gameplay.m_IRobotPos.height = m_IRobotTemplate.rows;
+   m_IRobotRect = RectImage(std::move(cv::imread("templateIRobot.bmp", CV_32FC1)));
 }
 
 void VideoAnalyzer::Start(std::string path)
@@ -49,7 +45,6 @@ void VideoAnalyzer::Do()
    cv::VideoCapture cap(0);
    while (RunDo)
    {
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
       // Lecture d'une nouvelle image.
       if (cap.isOpened())
       {
@@ -57,34 +52,38 @@ void VideoAnalyzer::Do()
       }
       else
       {
-         cv::imread(m_CamImagePath, CV_LOAD_IMAGE_UNCHANGED).copyTo(mat);
+         cv::imread(m_CamImagePath, CV_32FC1).copyTo(mat);
       }
 
       if (!Utility::MatIsNull(mat))
       {
+         // Debug
+         mat = Utility::DrawRectImageOnMat(m_IRobotRect, std::move(mat));
+
          // Analyse de la position du IRobot dans l'image.
-         if (Utility::MatIsNull(m_IRobotTemplate))
+         if (!Utility::MatIsNull(m_IRobotTemplate))
          {
-            double MinVal, MaxVal;
+            int NbColTemplate = mat.cols - m_IRobotTemplate.cols + 1;
+            int NbRangTemplate = mat.rows - m_IRobotTemplate.rows + 1;
+            cv::Mat ImageResultat(NbRangTemplate, NbRangTemplate, CV_32FC1);
+
+            double MinVal = 0, MaxVal = 0;
             cv::Point MinLoc, MaxLoc;
 
-            cv::Mat& Source = mat.clone();
+            cv::matchTemplate(mat, m_IRobotRect.m_Image, ImageResultat, CV_TM_CCOEFF);
 
-            cv::matchTemplate(Source, m_IRobotTemplate, Source, CV_TM_CCORR);
-            cv::minMaxLoc(Source, &MinVal, &MaxVal, &MinLoc, &MaxLoc, 0);
+            cv::minMaxLoc(ImageResultat, &MinVal, &MaxVal, &MinLoc, &MaxLoc);
 
-            if (MaxVal >= PRECISION_TEMPLATEMATCHING())
-            {
-               m_Game->m_Gameplay.m_IRobotPos.x = MaxLoc.x;
-               m_Game->m_Gameplay.m_IRobotPos.y = MaxLoc.y;
-            }
+            cv::rectangle(mat, MaxLoc, cv::Point(MaxLoc.x + m_IRobotTemplate.cols, MaxLoc.y + m_IRobotTemplate.rows), cv::Scalar(0, 0, 200), 2);
+            // Debug
+            //m_IRobotRect.x = MaxLoc.x;
+            //m_IRobotRect.y = MaxLoc.y;
          }
 
          // Update des informations en se servant de la nouvelle position du IRobot detectée.
-         m_Game->m_Gameplay.MettreAJourInfos();
+         m_Game->m_Gameplay.MettreAJourInfos(m_IRobotRect);
 
          // Modification de l'image en se servant des nouvelles informations acquises.
-         mat = Utility::DrawRectImageOnMat(*m_IRobotRect.get(), std::move(mat));
          mat = m_Game->m_Gameplay.ModifierImage(std::move(mat));
 
          // Affichage de l'image.

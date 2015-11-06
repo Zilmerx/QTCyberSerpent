@@ -8,9 +8,17 @@
 class RectImage : public cv::Rect
 {
 public:
-   cv::Mat& m_Image;
+   cv::Mat m_Image;
 
-   RectImage(cv::Mat& image)
+   RectImage()
+   {
+      x = 0;
+      y = 0;
+      width = 0;
+      height = 0;
+   }
+
+   RectImage(cv::Mat image)
       : m_Image{ image }
    {
       x = 0;

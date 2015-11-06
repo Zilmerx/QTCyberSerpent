@@ -99,23 +99,27 @@ void CyberSerpent::Delete()
 
 void CyberSerpent::OnLeftArrowKeyPress()
 {
-   m_IRobotDriver.Gauche(100, 50);
+   //m_IRobotDriver.Gauche(100, 50);
+   m_Gameplay.LEFT(); // debug
    m_QTCyberSerpent.UI_PutMessageInList("GAUCHE ENREGISTRE");
 }
 
 void CyberSerpent::OnRightArrowKeyPress()
 {
-	m_IRobotDriver.Droite(100, 50);
+	//m_IRobotDriver.Droite(100, 50);
+   m_Gameplay.RIGHT(); // debug
    m_QTCyberSerpent.UI_PutMessageInList("DROITE ENREGISTRE");
 }
 
 void CyberSerpent::OnUpArrowKeyPress()
 {
+   m_Gameplay.UP(); // debug
    m_QTCyberSerpent.UI_PutMessageInList("HAUT ENREGISTRE");
 }
 
 void CyberSerpent::OnDownArrowKeyPress()
 {
+   m_Gameplay.DOWN(); // debug
    m_QTCyberSerpent.UI_PutMessageInList("BAS ENREGISTRE");
-   m_IRobotDriver.Stop();
+   //m_IRobotDriver.Stop();
 }

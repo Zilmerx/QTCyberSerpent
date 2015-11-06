@@ -6,15 +6,6 @@ Le 15 Septembre 2015.
 
 #include "CyberSerpent.h"
 
-using namespace std;
-
-#include <iostream>
-
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-
 int main(int argc, char *argv[])
 {
    CyberSerpent jeu{ argc, argv };

@@ -10,7 +10,6 @@ Gameplay::Gameplay()
 :m_Score{ 0 },
 m_MaxScore{ 0 }
 {
-   m_IRobotPos = cv::Rect( 0, 0, 0, 0 );
 }
 
 Gameplay::~Gameplay()
@@ -18,6 +17,23 @@ Gameplay::~Gameplay()
 }
 #pragma endregion
 
+// Debug
+void Gameplay::UP()
+{
+   m_Game->m_VideoAnalyzer.m_IRobotRect.y -= 5;
+}
+void Gameplay::RIGHT()
+{
+   m_Game->m_VideoAnalyzer.m_IRobotRect.x += 5;
+}
+void Gameplay::LEFT()
+{
+   m_Game->m_VideoAnalyzer.m_IRobotRect.x -= 5;
+}
+void Gameplay::DOWN()
+{
+   m_Game->m_VideoAnalyzer.m_IRobotRect.y += 5;
+}
 
 void Gameplay::Initialize(CyberSerpent* link)
 {
@@ -26,9 +42,9 @@ void Gameplay::Initialize(CyberSerpent* link)
    QRect rect = m_Game->m_QTCyberSerpent.m_LabelGameplay->geometry();
    m_ZoneJeu = cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
 
-   m_ImageObstacle = cv::imread("ImageObstacle.bmp", CV_LOAD_IMAGE_UNCHANGED);
-   m_ImagePoint = cv::imread("ImagePoint.bmp", CV_LOAD_IMAGE_UNCHANGED);
-   m_ImageQueue = cv::imread("ImageQueue.bmp", CV_LOAD_IMAGE_UNCHANGED);
+   m_ImageObstacle = cv::imread("ImageObstacle.bmp", CV_32FC1);
+   m_ImagePoint = cv::imread("ImagePoint.bmp", CV_32FC1);
+   m_ImageQueue = cv::imread("ImageQueue.bmp", CV_32FC1);
 }
 
 void Gameplay::Start(int MaxScore, int NbObstacles)
@@ -44,28 +60,26 @@ void Gameplay::Stop()
 {
 }
 
-void Gameplay::MettreAJourInfos()
+void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
 {
-   m_IRobotPos.x = Utility::RandMinMax(0, m_ZoneJeu.width - m_IRobotPos.width);
-   m_IRobotPos.y = Utility::RandMinMax(0, m_ZoneJeu.height - m_IRobotPos.height);
-
-   if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, m_IRobotPos))
+   if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, PositionIRobot))
    {
       // Perdu.
    }
 
    for (int i = 0; i < m_Obstacles.size(); ++i)
    {
-      if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Obstacles[i]))
+      if (Utility::CvRect1TouchesRect2(PositionIRobot, m_Obstacles[i]))
       {
          // Perdu.
+         m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION");
       }
    }
 
 
    for (int i = 0; i < m_QueueSerpent.size(); ++i)
    {
-      if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_QueueSerpent[i]))
+      if (Utility::CvRect1TouchesRect2(PositionIRobot, m_QueueSerpent[i]))
       {
          // Perdu.
       }
@@ -74,12 +88,16 @@ void Gameplay::MettreAJourInfos()
    std::vector<int> toRemove;
    for (int i = 0; i < m_Points.size(); ++i)
    {
-      if (Utility::CvRect1TouchesRect2(m_IRobotPos, m_Points[i]))
+      if (Utility::CvRect1TouchesRect2(PositionIRobot, m_Points[i]))
       {
          toRemove.push_back(i);
 
          m_Score++;
 
+         std::stringstream convert;
+         convert << m_Score;
+         std::string s = "SCORE" + convert.str();
+         m_Game->m_QTCyberSerpent.UI_PutMessageInList(s);
          VerifyScore(); // Check si gagné.
       }
    }
@@ -95,7 +113,6 @@ cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
    mat = Utility::DrawRectVectorOnMat(m_Obstacles, std::move(mat));
    mat = Utility::DrawRectVectorOnMat(m_Points, std::move(mat));
    mat = Utility::DrawRectVectorOnMat(m_QueueSerpent, std::move(mat));
-   cv::rectangle(mat, cv::Point(m_IRobotPos.x, m_IRobotPos.y), cv::Point(m_IRobotPos.x + m_IRobotPos.width, m_IRobotPos.y + m_IRobotPos.height), cv::Scalar(0, 0, 200), 2);
 
    return mat;
 }
