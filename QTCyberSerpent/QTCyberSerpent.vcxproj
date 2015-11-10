@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ControleIRobot.cpp" />
     <ClCompile Include="CyberSerpent.cpp" />
     <ClCompile Include="Gameplay.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_GUIUpdater.cpp">
@@ -213,6 +214,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ControleIRobot.h" />
     <ClInclude Include="CyberSerpent.h" />
     <ClInclude Include="DoubleBuffer.h" />
     <ClInclude Include="Gameplay.h" />
