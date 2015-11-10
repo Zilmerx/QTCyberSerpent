@@ -22,22 +22,32 @@ void ControleIRobot::Stop()
 
 void ControleIRobot::OnLeftArrowKeyPress()
 {
-	if (DegreeTournure - 15 >= -45)
+	if ((std::chrono::steady_clock::now() - lastIRobotCommand) >= INTERVAL_IROBOT)
 	{
-		DegreeTournure -= 15;
-	}
+		lastIRobotCommand = std::chrono::steady_clock::now();
 
-	ComputeNewSpeed();
+		if (DegreeTournure - 15 >= -45)
+		{
+			DegreeTournure -= 15;
+		}
+
+		ComputeNewSpeed();
+	}
 }
 
 void ControleIRobot::OnRightArrowKeyPress()
 {
-	if (DegreeTournure + 15 <= 45)
+	if ((std::chrono::steady_clock::now() - lastIRobotCommand) >= INTERVAL_IROBOT)
 	{
-		DegreeTournure += 15;
-	}
+		lastIRobotCommand = std::chrono::steady_clock::now();
 
-	ComputeNewSpeed();
+		if (DegreeTournure + 15 <= 45)
+		{
+			DegreeTournure += 15;
+		}
+
+		ComputeNewSpeed();
+	}
 }
 
 

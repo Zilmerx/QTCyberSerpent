@@ -1,6 +1,6 @@
 #pragma once
 #include "IRobotDriver.h"
-
+#include <chrono>
 
 
 class ControleIRobot
@@ -12,6 +12,8 @@ class ControleIRobot
 	int DegreeTournure; // Peut être entre -45 et 45. 
 						// +45 == DROITE, -45 == GAUCHE.
 
+	const std::chrono::milliseconds INTERVAL_IROBOT = std::chrono::milliseconds(1000);
+	std::chrono::steady_clock::time_point lastIRobotCommand;
 public:
 
 	ControleIRobot(short vitesse);
