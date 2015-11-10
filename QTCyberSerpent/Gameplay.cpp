@@ -62,6 +62,8 @@ void Gameplay::Stop()
 
 void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
 {
+	AddQueue(PositionIRobot);
+
    if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, PositionIRobot))
    {
       // Perdu.
@@ -141,4 +143,24 @@ RectImage Gameplay::RandRect(RectImage rectImage)
 void Gameplay::VerifyScore()
 {
 
+}
+
+void Gameplay::AddQueue(cv::Rect PositionIRobot)
+{
+	if ((std::chrono::steady_clock::now() - lastQueueUpdate) >= INTERVAL_QUEUE)
+	{
+		lastQueueUpdate = std::chrono::steady_clock::now();
+
+
+		RectImage img = RectImage(m_ImageQueue);
+		img.x = PositionIRobot.x;
+		img.y = PositionIRobot.y;
+
+		m_QueueSerpent.push_back(img);
+
+		if (m_QueueSerpent.size() > 10)
+		{
+			m_QueueSerpent.erase(m_QueueSerpent.begin());
+		}
+	}
 }

@@ -30,6 +30,9 @@ private:
 
    std::vector<RectImage> m_Obstacles;   // Contient des obstacles.
    std::vector<RectImage> m_Points;      // Contient les trucs à manger.
+
+   const std::chrono::milliseconds INTERVAL_QUEUE = std::chrono::milliseconds(1000);
+   std::chrono::steady_clock::time_point lastQueueUpdate;
    std::vector<RectImage> m_QueueSerpent;// Contient la queue du serpent.
 
 public:
@@ -61,5 +64,7 @@ private:
    RectImage RandRect(RectImage rectImage);
 
    void VerifyScore();
+
+   void AddQueue(cv::Rect PositionIRobot);
 
 };
