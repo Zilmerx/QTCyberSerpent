@@ -9,14 +9,10 @@ typedef std::string Array;
 // usager QT en se servant de signaux.
 class GUIUpdater : public QObject 
 {
-   const std::chrono::milliseconds REFRESH_INTERVAL_IMAGE;
-
    Q_OBJECT
 
 public:
-   std::chrono::steady_clock::time_point lastRequest;
-
-   explicit GUIUpdater(const std::chrono::milliseconds refresh_rate, QObject *parent = 0);
+   explicit GUIUpdater(QObject *parent = 0);
    
    void newImage(const QImage &image);
 

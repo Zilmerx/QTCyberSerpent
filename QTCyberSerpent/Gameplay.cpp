@@ -62,7 +62,7 @@ void Gameplay::Stop()
 
 void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
 {
-	AddQueue(PositionIRobot);
+   AddQueueInvis(PositionIRobot);
 
    if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, PositionIRobot))
    {
@@ -74,16 +74,16 @@ void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
       if (Utility::CvRect1TouchesRect2(PositionIRobot, m_Obstacles[i]))
       {
          // Perdu.
-         m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION");
+         m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION OBS");
       }
    }
 
 
-   for (int i = 0; i < m_QueueSerpent.size(); ++i)
+   for (int i = 4; i < m_QueueToPrint.size(); ++i)
    {
-      if (Utility::CvRect1TouchesRect2(PositionIRobot, m_QueueSerpent[i]))
+      if (Utility::CvRect1TouchesRect2(PositionIRobot, m_QueueToPrint[i]))
       {
-         // Perdu.
+         m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION SER");
       }
    }
 
@@ -114,7 +114,17 @@ cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
 {
    mat = Utility::DrawRectVectorOnMat(m_Obstacles, std::move(mat));
    mat = Utility::DrawRectVectorOnMat(m_Points, std::move(mat));
-   mat = Utility::DrawRectVectorOnMat(m_QueueSerpent, std::move(mat));
+
+   m_QueueToPrint.clear();
+   for (int i = 0; i < m_Score; ++i)
+   {
+      int pos = m_QueueSerpent.size() - (i*5) - 1;
+
+      if (pos >= 0)
+         m_QueueToPrint.push_back(m_QueueSerpent[pos]);
+   }
+
+   mat = Utility::DrawRectVectorOnMat(m_QueueToPrint, std::move(mat));
 
    return mat;
 }
@@ -145,22 +155,16 @@ void Gameplay::VerifyScore()
 
 }
 
-void Gameplay::AddQueue(cv::Rect PositionIRobot)
+void Gameplay::AddQueueInvis(cv::Rect PositionIRobot)
 {
-	if ((std::chrono::steady_clock::now() - lastQueueUpdate) >= INTERVAL_QUEUE)
-	{
-		lastQueueUpdate = std::chrono::steady_clock::now();
+	RectImage img = RectImage(m_ImageQueue);
+	img.x = PositionIRobot.x;
+	img.y = PositionIRobot.y;
 
+	m_QueueSerpent.push_back(img);
 
-		RectImage img = RectImage(m_ImageQueue);
-		img.x = PositionIRobot.x;
-		img.y = PositionIRobot.y;
-
-		m_QueueSerpent.push_back(img);
-
-		if (m_QueueSerpent.size() > 10)
-		{
-			m_QueueSerpent.erase(m_QueueSerpent.begin());
-		}
-	}
+   if (m_QueueSerpent.size() > 500) // Pour prévenir un éventuel overflow...
+   {
+      m_QueueSerpent.erase(m_QueueSerpent.begin());
+   }
 }

@@ -9,10 +9,8 @@ class ControleIRobot
 	IRobot::IRobot m_IRobotDriver;
 
 	const short VITESSE;
-	int DegreeTournure; // Peut être entre -45 et 45. 
-						// +45 == DROITE, -45 == GAUCHE.
+	int DegreeTournure;
 
-	const std::chrono::milliseconds INTERVAL_IROBOT = std::chrono::milliseconds(1000);
 	std::chrono::steady_clock::time_point lastIRobotCommand;
 public:
 

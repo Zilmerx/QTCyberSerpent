@@ -5,6 +5,7 @@
 #include <qlist.h>
 #include <qfiledialog.h>
 #include <qgridlayout.h>
+#include "Settings.h"
 
 QTCyberSerpent::QTCyberSerpent(QWidget *parent)
    : QMainWindow(parent)
@@ -22,12 +23,12 @@ QTCyberSerpent::QTCyberSerpent(QWidget *parent)
     ui.gridLayoutWidget->setGeometry(QRect(50, 62, 400, 400));
     ui.lineEdit_MaxScore->setValidator(new QIntValidator(0, 1000, this));
     ui.lineEdit_NbObstacles->setValidator(new QIntValidator(0, 3, this));
-    ui.lineEdit_CameraPath->setReadOnly(true);
+    ui.lineEdit_CameraNum->setValidator(new QIntValidator(0, 3, this));
 
-    ui.lineEdit_PortConnexion->setText(QString::fromStdString("COM1"));
-    ui.lineEdit_NbObstacles->setText(QString::fromStdString("1"));
-    ui.lineEdit_MaxScore->setText(QString::fromStdString("1000"));
-    ui.lineEdit_CameraPath->setText(QString::fromStdString("image.bmp"));
+    ui.lineEdit_PortConnexion->setText(QT_DEFAULT_PORTIROBOT);
+    ui.lineEdit_MaxScore->setText(QT_DEFAULT_MAXSCORE);
+    ui.lineEdit_NbObstacles->setText(QT_DEFAULT_NBOBSTACLE);
+    ui.lineEdit_CameraNum->setText(QT_DEFAULT_CAMERANUM);
 
     m_LabelGameplay = std::make_unique<QLabel>(this);
     m_LabelGameplay->setGeometry(QRect(0, 22, 500, 500));
@@ -48,7 +49,7 @@ void QTCyberSerpent::Initialize(CyberSerpent* linked)
    m_Game = linked;
 
    qthread = std::make_unique<QThread>(this);
-   updater = std::make_unique<GUIUpdater>(m_Game->REFRESH_RATE);
+   updater = std::make_unique<GUIUpdater>();
    updater->moveToThread(qthread.get());
    connect(updater.get(), SIGNAL(requestNewImage(QImage)), this, SLOT(UI_CB_UpdateImage(QImage)));
    connect(updater.get(), SIGNAL(requestError(QString)), this, SLOT(UI_CB_CreateError(QString)));
@@ -58,7 +59,6 @@ void QTCyberSerpent::Initialize(CyberSerpent* linked)
 
    connect(ui.actionNouvellePartie, SIGNAL(triggered()), this, SLOT(bttn_CommencerPartie()));
    connect(ui.actionQuitter, SIGNAL(triggered()), this, SLOT(bttn_Quitter()));
-   connect(ui.pushButton_FileFinder, SIGNAL(released()), this, SLOT(bttn_FileFinder()));
    connect(ui.pushButton_ValiderInfos, SIGNAL(released()), this, SLOT(bttn_Valider()));
 
    connect(qthread.get(), SIGNAL(destroyed()), updater.get(), SLOT(deleteLater()));
@@ -74,7 +74,6 @@ void QTCyberSerpent::Delete()
 
    disconnect(ui.actionNouvellePartie, SIGNAL(triggered()), this, SLOT(bttn_CommencerPartie()));
    disconnect(ui.actionQuitter, SIGNAL(triggered()), this, SLOT(bttn_Quitter()));
-   disconnect(ui.pushButton_FileFinder, SIGNAL(triggered()), this, SLOT(bttn_FileFinder()));
    disconnect(ui.pushButton_ValiderInfos, SIGNAL(triggered()), this, SLOT(bttn_Valider()));
 
    m_Game->m_QTApplication.processEvents();
@@ -93,11 +92,6 @@ void QTCyberSerpent::bttn_CommencerPartie()
 void QTCyberSerpent::bttn_Quitter()
 {
    m_Game->m_QTApplication.quit();
-}
-
-void QTCyberSerpent::bttn_FileFinder()
-{
-   ui.lineEdit_CameraPath->setText(QFileDialog::getOpenFileName(this, tr("Trouver le chemin"), "./", "All files (*.*);;"));
 }
 
 void QTCyberSerpent::bttn_Valider()

@@ -2,20 +2,14 @@
 
 
 
-GUIUpdater::GUIUpdater(const std::chrono::milliseconds refresh_rate, QObject *parent) 
-: QObject(parent), 
-  REFRESH_INTERVAL_IMAGE{ refresh_rate }
+GUIUpdater::GUIUpdater(QObject *parent) 
+: QObject(parent)
 {
-   lastRequest = std::chrono::steady_clock::now();
 }
 
 void GUIUpdater::newImage(const QImage &image)
 {
-   if ((std::chrono::steady_clock::now() - lastRequest) >= REFRESH_INTERVAL_IMAGE)
-   {
-      lastRequest = std::chrono::steady_clock::now();
-      emit requestNewImage(image);
-   }
+   emit requestNewImage(image);
 }
 
 void GUIUpdater::newError(const QString message)

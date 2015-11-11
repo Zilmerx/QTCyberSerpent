@@ -26,14 +26,13 @@ private:
    cv::Mat m_ImagePoint;
    cv::Mat m_ImageQueue;
 
-   cv::Rect m_ZoneJeu;                   // Définis la zone de jeu.
+   cv::Rect m_ZoneJeu;                    // Définis la zone de jeu.
 
-   std::vector<RectImage> m_Obstacles;   // Contient des obstacles.
-   std::vector<RectImage> m_Points;      // Contient les trucs à manger.
+   std::vector<RectImage> m_Obstacles;    // Contient des obstacles.
+   std::vector<RectImage> m_Points;       // Contient les trucs à manger.
 
-   const std::chrono::milliseconds INTERVAL_QUEUE = std::chrono::milliseconds(1000);
-   std::chrono::steady_clock::time_point lastQueueUpdate;
-   std::vector<RectImage> m_QueueSerpent;// Contient la queue du serpent.
+   std::vector<RectImage> m_QueueSerpent; // Contient la queue du serpent invisible.
+   std::vector<RectImage> m_QueueToPrint; // Contient la queue qui est affichée à l'utilisateur.
 
 public:
 	Gameplay();
@@ -45,6 +44,7 @@ public:
 
 	void Stop();
 
+   // Debug
    void UP();
    void RIGHT();
    void LEFT();
@@ -65,6 +65,5 @@ private:
 
    void VerifyScore();
 
-   void AddQueue(cv::Rect PositionIRobot);
-
+   void AddQueueInvis(cv::Rect PositionIRobot);
 };

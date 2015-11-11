@@ -17,13 +17,8 @@ class CyberSerpent;
 
 class VideoAnalyzer
 {
-   static double PRECISION_TEMPLATEMATCHING()
-   {
-      return 0.8;
-   }
-
 	CyberSerpent* m_Game;
-	std::string m_CamImagePath;
+	std::string m_CamNumber;
    cv::Mat m_IRobotTemplate;
    //std::unique_ptr<RectImage> m_IRobotRect;
 
@@ -34,7 +29,7 @@ public:
 
 	void Initialize(CyberSerpent* linked);
 
-   void Start(std::string path);
+   void Start(int camNum);
 
 	void Stop();
 

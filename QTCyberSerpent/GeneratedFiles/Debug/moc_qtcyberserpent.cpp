@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_QTCyberSerpent_t {
-    QByteArrayData data[13];
-    char stringdata0[209];
+    QByteArrayData data[12];
+    char stringdata0[193];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,8 +40,7 @@ QT_MOC_LITERAL(7, 89, 27), // "UI_CB_UpdateAfficherOptions"
 QT_MOC_LITERAL(8, 117, 28), // "UI_CB_UpdateAfficherGameplay"
 QT_MOC_LITERAL(9, 146, 20), // "bttn_CommencerPartie"
 QT_MOC_LITERAL(10, 167, 12), // "bttn_Quitter"
-QT_MOC_LITERAL(11, 180, 15), // "bttn_FileFinder"
-QT_MOC_LITERAL(12, 196, 12) // "bttn_Valider"
+QT_MOC_LITERAL(11, 180, 12) // "bttn_Valider"
 
     },
     "QTCyberSerpent\0UI_CB_AddMessageInList\0"
@@ -49,7 +48,7 @@ QT_MOC_LITERAL(12, 196, 12) // "bttn_Valider"
     "message\0UI_CB_UpdateAfficherOptions\0"
     "UI_CB_UpdateAfficherGameplay\0"
     "bttn_CommencerPartie\0bttn_Quitter\0"
-    "bttn_FileFinder\0bttn_Valider"
+    "bttn_Valider"
 };
 #undef QT_MOC_LITERAL
 
@@ -59,7 +58,7 @@ static const uint qt_meta_data_QTCyberSerpent[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -67,21 +66,19 @@ static const uint qt_meta_data_QTCyberSerpent[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   59,    2, 0x08 /* Private */,
-       3,    1,   60,    2, 0x08 /* Private */,
-       5,    1,   63,    2, 0x08 /* Private */,
-       7,    0,   66,    2, 0x08 /* Private */,
-       8,    0,   67,    2, 0x08 /* Private */,
-       9,    0,   68,    2, 0x08 /* Private */,
-      10,    0,   69,    2, 0x08 /* Private */,
-      11,    0,   70,    2, 0x08 /* Private */,
-      12,    0,   71,    2, 0x08 /* Private */,
+       1,    0,   54,    2, 0x08 /* Private */,
+       3,    1,   55,    2, 0x08 /* Private */,
+       5,    1,   58,    2, 0x08 /* Private */,
+       7,    0,   61,    2, 0x08 /* Private */,
+       8,    0,   62,    2, 0x08 /* Private */,
+       9,    0,   63,    2, 0x08 /* Private */,
+      10,    0,   64,    2, 0x08 /* Private */,
+      11,    0,   65,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void, QMetaType::QImage,    4,
     QMetaType::Void, QMetaType::QString,    6,
-    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -104,8 +101,7 @@ void QTCyberSerpent::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 4: _t->UI_CB_UpdateAfficherGameplay(); break;
         case 5: _t->bttn_CommencerPartie(); break;
         case 6: _t->bttn_Quitter(); break;
-        case 7: _t->bttn_FileFinder(); break;
-        case 8: _t->bttn_Valider(); break;
+        case 7: _t->bttn_Valider(); break;
         default: ;
         }
     }
@@ -136,13 +132,13 @@ int QTCyberSerpent::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 8;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 8)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 9;
+        _id -= 8;
     }
     return _id;
 }

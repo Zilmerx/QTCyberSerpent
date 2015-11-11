@@ -56,7 +56,6 @@ private slots:
 
    void bttn_CommencerPartie();
    void bttn_Quitter();
-   void bttn_FileFinder();
    void bttn_Valider();
 
 private:

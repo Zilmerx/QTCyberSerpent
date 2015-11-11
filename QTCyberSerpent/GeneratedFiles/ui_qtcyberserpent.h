@@ -36,13 +36,12 @@ public:
     QWidget *gridLayoutWidget;
     QGridLayout *LayoutOptions;
     QLabel *label_CameraPath;
-    QLineEdit *lineEdit_CameraPath;
+    QLineEdit *lineEdit_CameraNum;
     QLabel *label_MaxScore;
     QLabel *label_NbObstacles;
     QLabel *label_PortConnexion;
     QLineEdit *lineEdit_NbObstacles;
     QLineEdit *lineEdit_MaxScore;
-    QPushButton *pushButton_FileFinder;
     QLineEdit *lineEdit_PortConnexion;
     QPushButton *pushButton_ValiderInfos;
     QMenuBar *menuBar;
@@ -75,11 +74,11 @@ public:
 
         LayoutOptions->addWidget(label_CameraPath, 1, 0, 1, 1);
 
-        lineEdit_CameraPath = new QLineEdit(gridLayoutWidget);
-        lineEdit_CameraPath->setObjectName(QStringLiteral("lineEdit_CameraPath"));
-        lineEdit_CameraPath->setContextMenuPolicy(Qt::PreventContextMenu);
+        lineEdit_CameraNum = new QLineEdit(gridLayoutWidget);
+        lineEdit_CameraNum->setObjectName(QStringLiteral("lineEdit_CameraNum"));
+        lineEdit_CameraNum->setContextMenuPolicy(Qt::PreventContextMenu);
 
-        LayoutOptions->addWidget(lineEdit_CameraPath, 1, 1, 1, 1);
+        LayoutOptions->addWidget(lineEdit_CameraNum, 1, 1, 1, 1);
 
         label_MaxScore = new QLabel(gridLayoutWidget);
         label_MaxScore->setObjectName(QStringLiteral("label_MaxScore"));
@@ -105,11 +104,6 @@ public:
         lineEdit_MaxScore->setObjectName(QStringLiteral("lineEdit_MaxScore"));
 
         LayoutOptions->addWidget(lineEdit_MaxScore, 2, 1, 1, 2);
-
-        pushButton_FileFinder = new QPushButton(gridLayoutWidget);
-        pushButton_FileFinder->setObjectName(QStringLiteral("pushButton_FileFinder"));
-
-        LayoutOptions->addWidget(pushButton_FileFinder, 1, 2, 1, 1);
 
         lineEdit_PortConnexion = new QLineEdit(gridLayoutWidget);
         lineEdit_PortConnexion->setObjectName(QStringLiteral("lineEdit_PortConnexion"));
@@ -147,11 +141,10 @@ public:
         actionNouvellePartie->setText(QApplication::translate("QTCyberSerpentClass", "Nouvelle partie", 0));
         actionOptions->setText(QApplication::translate("QTCyberSerpentClass", "Options", 0));
         actionQuitter->setText(QApplication::translate("QTCyberSerpentClass", "Quitter", 0));
-        label_CameraPath->setText(QApplication::translate("QTCyberSerpentClass", "Path de la cam\303\251ra", 0));
+        label_CameraPath->setText(QApplication::translate("QTCyberSerpentClass", "Numero de la cam\303\251ra", 0));
         label_MaxScore->setText(QApplication::translate("QTCyberSerpentClass", "Score maximal", 0));
         label_NbObstacles->setText(QApplication::translate("QTCyberSerpentClass", "Nombre d'obstacles", 0));
         label_PortConnexion->setText(QApplication::translate("QTCyberSerpentClass", "Port Connexion IRobot", 0));
-        pushButton_FileFinder->setText(QApplication::translate("QTCyberSerpentClass", "Trouver le chemin...", 0));
         pushButton_ValiderInfos->setText(QApplication::translate("QTCyberSerpentClass", "Valider et commencer partie", 0));
         menuMain->setTitle(QApplication::translate("QTCyberSerpentClass", "Jeu", 0));
     } // retranslateUi

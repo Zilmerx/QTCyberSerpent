@@ -1,3 +1,4 @@
+#include "Settings.h"
 #include "ControleIRobot.h"
 
 ControleIRobot::ControleIRobot(short vitesse)
@@ -26,9 +27,9 @@ void ControleIRobot::OnLeftArrowKeyPress()
 	{
 		lastIRobotCommand = std::chrono::steady_clock::now();
 
-		if (DegreeTournure - 15 >= -45)
+      if (DegreeTournure - IROBOT_DEGREE_INCREMENTATION >= IROBOT_DEGREE_TOURNURE)
 		{
-			DegreeTournure -= 15;
+         DegreeTournure -= IROBOT_DEGREE_INCREMENTATION;
 		}
 
 		ComputeNewSpeed();
@@ -41,9 +42,9 @@ void ControleIRobot::OnRightArrowKeyPress()
 	{
 		lastIRobotCommand = std::chrono::steady_clock::now();
 
-		if (DegreeTournure + 15 <= 45)
+      if (DegreeTournure + IROBOT_DEGREE_INCREMENTATION <= IROBOT_DEGREE_TOURNURE)
 		{
-			DegreeTournure += 15;
+         DegreeTournure += IROBOT_DEGREE_INCREMENTATION;
 		}
 
 		ComputeNewSpeed();

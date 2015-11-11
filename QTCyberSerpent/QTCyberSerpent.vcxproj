@@ -241,6 +241,7 @@
     <ClInclude Include="MutexedVector.h" />
     <ClInclude Include="NullException.h" />
     <ClInclude Include="RectImage.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="VideoAnalyzer.h" />
   </ItemGroup>

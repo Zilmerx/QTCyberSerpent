@@ -27,12 +27,12 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_CameraPath">
        <property name="text">
-        <string>Path de la caméra</string>
+        <string>Numero de la caméra</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit_CameraPath">
+      <widget class="QLineEdit" name="lineEdit_CameraNum">
        <property name="contextMenuPolicy">
         <enum>Qt::PreventContextMenu</enum>
        </property>
@@ -64,13 +64,6 @@
      </item>
      <item row="2" column="1" colspan="2">
       <widget class="QLineEdit" name="lineEdit_MaxScore"/>
-     </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="pushButton_FileFinder">
-       <property name="text">
-        <string>Trouver le chemin...</string>
-       </property>
-      </widget>
      </item>
      <item row="0" column="1" colspan="2">
       <widget class="QLineEdit" name="lineEdit_PortConnexion"/>

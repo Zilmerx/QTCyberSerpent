@@ -1,6 +1,7 @@
 #include "VideoAnalyzer.h"
 #include "CyberSerpent.h"
 #include "Utility.h"
+#include "Settings.h"
 
 VideoAnalyzer::VideoAnalyzer() 
    :RunDo{ false }
@@ -20,9 +21,9 @@ void VideoAnalyzer::Initialize(CyberSerpent* linked)
    m_IRobotRect = RectImage(std::move(cv::imread("templateIRobot.bmp", CV_32FC1)));
 }
 
-void VideoAnalyzer::Start(std::string path)
+void VideoAnalyzer::Start(int camNum)
 {
-   m_CamImagePath = path;
+   m_CamNumber = camNum;
 
    RunDo = true;
    ThreadDo = std::thread(&VideoAnalyzer::Do, this);
@@ -42,7 +43,7 @@ void VideoAnalyzer::Stop()
 void VideoAnalyzer::Do()
 {
    cv::Mat mat;
-   cv::VideoCapture cap(0);
+   cv::VideoCapture cap(m_CamNumber);
    while (RunDo)
    {
       // Lecture d'une nouvelle image.
@@ -52,7 +53,7 @@ void VideoAnalyzer::Do()
       }
       else
       {
-         cv::imread(m_CamImagePath, CV_32FC1).copyTo(mat);
+         cv::imread("image.bmp", CV_32FC1).copyTo(mat);
       }
 
       if (!Utility::MatIsNull(mat))
