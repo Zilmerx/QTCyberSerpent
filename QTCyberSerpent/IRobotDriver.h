@@ -87,7 +87,7 @@ namespace IRobot
 
 	   // Permet de connecter déconnecter. True = Connection reussie.
       bool Connecter(const char* port);
-	   void Deconnecter() const;
+      void Deconnecter();
 
 	   // Constructeur --- Destructeur.
 	   IRobot();

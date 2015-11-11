@@ -692,11 +692,10 @@ bool IRobot::Connecter(const char* port)
    }
 	catch (std::runtime_error e)
 	{
-		std::cout << e.what();
 	}
    return false;
 }
-void IRobot::Deconnecter() const
+void IRobot::Deconnecter()
 {
    if (m_IsConnected)
    {
@@ -707,6 +706,7 @@ void IRobot::Deconnecter() const
       catch (...)
       {
       }
+      m_IsConnected = false;
    }
 }
 

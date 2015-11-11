@@ -2,6 +2,8 @@
 #include "Utility.h"
 #include "opencv2\highgui.hpp"
 #include "CyberSerpent.h"
+#include "Settings.h"
+#include <thread>
 
 // PUBLIC
 
@@ -40,7 +42,7 @@ void Gameplay::Initialize(CyberSerpent* link)
    m_Game = link;
 
    QRect rect = m_Game->m_QTCyberSerpent.m_LabelGameplay->geometry();
-   m_ZoneJeu = cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+   m_ZoneJeu = cv::Rect(0, 0, rect.width(), rect.height());
 
    m_ImageObstacle = cv::imread("ImageObstacle.bmp", CV_32FC1);
    m_ImagePoint = cv::imread("ImagePoint.bmp", CV_32FC1);
@@ -53,11 +55,13 @@ void Gameplay::Start(int MaxScore, int NbObstacles)
    m_MaxScore = MaxScore;
 
    fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), NbObstacles);
-   fillWithRandRects(m_Points, RectImage(m_ImagePoint), 5);
+   fillWithRandRects(m_Points, RectImage(m_ImagePoint), NB_POINTS_SIMULTANEE);
 }
 
 void Gameplay::Stop()
 {
+   m_QueueSerpent.clear();
+   m_QueueToPrint.clear();
 }
 
 void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
@@ -66,24 +70,25 @@ void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
 
    if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, PositionIRobot))
    {
-      // Perdu.
+      m_Game->m_QTCyberSerpent.UI_AfficherLose();
    }
 
    for (int i = 0; i < m_Obstacles.size(); ++i)
    {
       if (Utility::CvRect1TouchesRect2(PositionIRobot, m_Obstacles[i]))
       {
-         // Perdu.
-         m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION OBS");
+         m_Game->m_QTCyberSerpent.UI_AfficherLose();
+         break;
       }
    }
 
 
-   for (int i = 4; i < m_QueueToPrint.size(); ++i)
+   for (int i = NB_QUEUE_NOCOLLISION; i < m_QueueToPrint.size(); ++i)
    {
       if (Utility::CvRect1TouchesRect2(PositionIRobot, m_QueueToPrint[i]))
       {
-         m_Game->m_QTCyberSerpent.UI_PutMessageInList("COLLISION SER");
+         m_Game->m_QTCyberSerpent.UI_AfficherLose();
+         break;
       }
    }
 
@@ -94,13 +99,7 @@ void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
       {
          toRemove.push_back(i);
 
-         m_Score++;
-
-         std::stringstream convert;
-         convert << m_Score;
-         std::string s = "SCORE" + convert.str();
-         m_Game->m_QTCyberSerpent.UI_PutMessageInList(s);
-         VerifyScore(); // Check si gagné.
+         IncrementScore(); // Check si gagné.
       }
    }
    for (int i = 0; i < toRemove.size(); ++i)
@@ -118,9 +117,9 @@ cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
    m_QueueToPrint.clear();
    for (int i = 0; i < m_Score; ++i)
    {
-      int pos = m_QueueSerpent.size() - (i*5) - 1;
+      int pos = m_QueueSerpent.size() - ((i+NB_QUEUEIMPRIM_SAUTE)*NB_QUEUE_SAUTE) - 1;
 
-      if (pos >= 0)
+      if (pos >= 0 && pos < m_QueueSerpent.size())
          m_QueueToPrint.push_back(m_QueueSerpent[pos]);
    }
 
@@ -150,9 +149,19 @@ RectImage Gameplay::RandRect(RectImage rectImage)
    return nouveau;
 }
 
-void Gameplay::VerifyScore()
+void Gameplay::IncrementScore()
 {
+   m_Score++;
 
+   std::stringstream convert;
+   convert << m_Score;
+   std::string s = "SCORE" + convert.str();
+   m_Game->m_QTCyberSerpent.UI_PutMessageInList(s);
+
+   if (m_Score >= m_MaxScore)
+   {
+      m_Game->m_QTCyberSerpent.UI_AfficherWin();
+   }
 }
 
 void Gameplay::AddQueueInvis(cv::Rect PositionIRobot)
@@ -163,7 +172,7 @@ void Gameplay::AddQueueInvis(cv::Rect PositionIRobot)
 
 	m_QueueSerpent.push_back(img);
 
-   if (m_QueueSerpent.size() > 500) // Pour prévenir un éventuel overflow...
+   if (m_QueueSerpent.size() > NB_QUEUE_INVIS_MAX) // Pour prévenir un éventuel overflow...
    {
       m_QueueSerpent.erase(m_QueueSerpent.begin());
    }

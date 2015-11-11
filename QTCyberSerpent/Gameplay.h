@@ -63,7 +63,7 @@ private:
 
    RectImage RandRect(RectImage rectImage);
 
-   void VerifyScore();
+   void IncrementScore();
 
    void AddQueueInvis(cv::Rect PositionIRobot);
 };

@@ -46,6 +46,8 @@ public:
    void UI_PutError(std::string message);
    void UI_AfficherOptions();
    void UI_AfficherGameplay();
+   void UI_AfficherWin();
+   void UI_AfficherLose();
 
 private slots:
    void UI_CB_AddMessageInList();
@@ -53,6 +55,8 @@ private slots:
    void UI_CB_CreateError(QString message);
    void UI_CB_UpdateAfficherOptions();
    void UI_CB_UpdateAfficherGameplay();
+   void UI_CB_UpdateAfficherWin();
+   void UI_CB_UpdateAfficherLose();
 
    void bttn_CommencerPartie();
    void bttn_Quitter();

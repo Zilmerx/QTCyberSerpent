@@ -1,5 +1,6 @@
 #include "Settings.h"
 #include "ControleIRobot.h"
+#include "Utility.h"
 
 ControleIRobot::ControleIRobot(short vitesse)
 	: m_IRobotDriver{},
@@ -15,6 +16,7 @@ bool ControleIRobot::Start(const char* port)
 
 void ControleIRobot::Stop()
 {
+   m_IRobotDriver.Stop();
 	m_IRobotDriver.Deconnecter();
 }
 
@@ -27,7 +29,7 @@ void ControleIRobot::OnLeftArrowKeyPress()
 	{
 		lastIRobotCommand = std::chrono::steady_clock::now();
 
-      if (DegreeTournure - IROBOT_DEGREE_INCREMENTATION >= IROBOT_DEGREE_TOURNURE)
+      if (DegreeTournure - IROBOT_DEGREE_INCREMENTATION >= -IROBOT_DEGREE_TOURNURE)
 		{
          DegreeTournure -= IROBOT_DEGREE_INCREMENTATION;
 		}
@@ -56,10 +58,10 @@ void ControleIRobot::ComputeNewSpeed()
 {
 	if (DegreeTournure >= 0)
 	{
-		m_IRobotDriver.Droite(VITESSE, DegreeTournure);
+      m_IRobotDriver.Droite(VITESSE, 100-abs(DegreeTournure));
 	}
 	else
 	{
-		m_IRobotDriver.Gauche(VITESSE, DegreeTournure);
+      m_IRobotDriver.Gauche(VITESSE, 100-abs(DegreeTournure));
 	}
 }

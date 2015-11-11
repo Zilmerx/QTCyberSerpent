@@ -27,12 +27,12 @@ public:
       height = image.rows;
    }
 
-   RectImage(const RectImage& copyfrom)
+  /* RectImage(const RectImage& copyfrom)
       : RectImage(copyfrom.m_Image)
    {
       x = copyfrom.x;
       y = copyfrom.y;
-   }
+   }*/
 
    bool operator==(const RectImage& img1)
    {

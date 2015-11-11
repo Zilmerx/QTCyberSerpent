@@ -4,8 +4,6 @@
 #include <cstdlib>
 #include <string>
 #include <qpixmap.h>
-#include <mutex>
-#include <atomic>
 
 #include "RectImage.h"
 #include "MutexedVector.h"
@@ -84,18 +82,18 @@ public:
 
    static bool CvRect1TouchesRect2(const cv::Rect& R1, const cv::Rect& R2)
    {
-      return (R1.contains(cv::Point(R2.x, R2.y)) ||
-         R1.contains(cv::Point(R2.x + R2.width, R2.y)) ||
-         R1.contains(cv::Point(R2.x, R2.y + R2.height)) ||
-         R1.contains(cv::Point(R2.x + R2.width, R2.y + R2.height)));
+      return (R1.x < R2.x + R2.width 
+           && R1.x + R1.width > R2.x 
+           && R1.y < R2.y + R2.width 
+           && R1.y + R1.width > R2.y);
    }
 
    static bool CvRect1ContainsRect2(const cv::Rect& R1, const cv::Rect& R2)
    {
-      return ((R2.x + R2.width) < (R1.x + R1.width)
-         && (R2.x) > (R1.x)
-         && (R2.y) > (R1.y)
-         && (R2.y + R2.height) < (R1.y + R1.height));
+      return ((R2.x + R2.width) <= (R1.x + R1.width)
+         && (R2.x) >= (R1.x)
+         && (R2.y) >= (R1.y)
+         && (R2.y + R2.height) <= (R1.y + R1.height));
    }
 
    static cv::Mat DrawRectImageOnMat(RectImage& rect, cv::Mat&& mat)
@@ -106,7 +104,7 @@ public:
 
    static cv::Mat DrawRectVectorOnMat(std::vector<RectImage>& vec, cv::Mat&& mat)
    {
-      for (std::atomic<int> i = 0; i < vec.size(); ++i)
+      for (int i = 0; i < vec.size(); ++i)
       {
          mat = Utility::DrawRectImageOnMat(vec[i], std::move(mat));
       }

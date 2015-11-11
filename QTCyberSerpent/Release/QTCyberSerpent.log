@@ -1,24 +1,15 @@
-﻿La génération a démarré 2015-10-27 11:50:45.
-     1>Projet "C:\Users\Administrateur\documents\visual studio 2013\Projects\QTCyberSerpent\QTCyberSerpent\QTCyberSerpent.vcxproj" sur le nœud 2 (Rebuild cible(s)).
-     1>CustomBuild:
-         Moc'ing qtcyberserpent.h...
-         Uic'ing qtcyberserpent.ui...
-         Moc'ing GUIUpdater.h...
-         Rcc'ing qtcyberserpent.qrc...
-     1>RCC : warning : No resources in 'C:\Users\Administrateur\documents\visual studio 2013\Projects\QTCyberSerpent\QTCyberSerpent\qtcyberserpent.qrc'.
-         
+﻿La génération a démarré 2015-11-11 13:37:16.
+     1>Projet "C:\Users\Administrateur\documents\visual studio 2013\Projects\QTCyberSerpent\QTCyberSerpent\QTCyberSerpent.vcxproj" sur le nœud 2 (Build cible(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(935,5): warning MSB8027: Two or more files with the name of moc_GUIUpdater.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are GeneratedFiles\Debug\moc_GUIUpdater.cpp, GeneratedFiles\Release\moc_GUIUpdater.cpp.
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(935,5): warning MSB8027: Two or more files with the name of moc_qtcyberserpent.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are GeneratedFiles\Debug\moc_qtcyberserpent.cpp, GeneratedFiles\Release\moc_qtcyberserpent.cpp.
-       ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\Qt5.5.0\5.5\msvc2013_64\include /I.\GeneratedFiles\Release /IC:\Qt\Qt5.5.0\5.5\msvc2013_64\include\QtCore /IC:\Qt\Qt5.5.0\5.5\msvc2013_64\include\QtGui /IC:\Qt\Qt5.5.0\5.5\msvc2013_64\include\QtWidgets /nologo /W1 /WX- /O2 /Oy- /D UNICODE /D WIN32 /D WIN64 /D QT_DLL /D QT_NO_DEBUG /D NDEBUG /D QT_CORE_LIB /D QT_GUI_LIB /D QT_WIDGETS_LIB /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt CyberSerpent.cpp Gameplay.cpp GeneratedFiles\Release\moc_GUIUpdater.cpp GeneratedFiles\Release\moc_qtcyberserpent.cpp GUIUpdater.cpp IRobotDriver.cpp main.cpp qtcyberserpent.cpp VideoAnalyzer.cpp
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\Qt5.5.0\5.5\msvc2013_64\include /I.\GeneratedFiles\Release /IC:\Qt\Qt5.5.0\5.5\msvc2013_64\include\QtCore /IC:\Qt\Qt5.5.0\5.5\msvc2013_64\include\QtGui /IC:\Qt\Qt5.5.0\5.5\msvc2013_64\include\QtWidgets /nologo /W1 /WX- /O2 /Oy- /D UNICODE /D WIN32 /D WIN64 /D QT_DLL /D QT_NO_DEBUG /D NDEBUG /D QT_CORE_LIB /D QT_GUI_LIB /D QT_WIDGETS_LIB /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ControleIRobot.cpp CyberSerpent.cpp Gameplay.cpp main.cpp qtcyberserpent.cpp VideoAnalyzer.cpp
+         ControleIRobot.cpp
+     1>c:\users\administrateur\documents\visual studio 2013\projects\qtcyberserpent\qtcyberserpent\RectImage.h(3): fatal error C1083: Impossible d'ouvrir le fichier include : 'opencv2\core.hpp' : No such file or directory
          CyberSerpent.cpp
      1>c:\users\administrateur\documents\visual studio 2013\projects\qtcyberserpent\qtcyberserpent\Gameplay.h(4): fatal error C1083: Impossible d'ouvrir le fichier include : 'opencv2\core.hpp' : No such file or directory
          Gameplay.cpp
      1>c:\users\administrateur\documents\visual studio 2013\projects\qtcyberserpent\qtcyberserpent\Gameplay.h(4): fatal error C1083: Impossible d'ouvrir le fichier include : 'opencv2\core.hpp' : No such file or directory
-         moc_GUIUpdater.cpp
-         moc_qtcyberserpent.cpp
-         GUIUpdater.cpp
-         IRobotDriver.cpp
          main.cpp
      1>c:\users\administrateur\documents\visual studio 2013\projects\qtcyberserpent\qtcyberserpent\Gameplay.h(4): fatal error C1083: Impossible d'ouvrir le fichier include : 'opencv2\core.hpp' : No such file or directory
          qtcyberserpent.cpp
@@ -26,8 +17,8 @@
          VideoAnalyzer.cpp
      1>c:\users\administrateur\documents\visual studio 2013\projects\qtcyberserpent\qtcyberserpent\VideoAnalyzer.h(8): fatal error C1083: Impossible d'ouvrir le fichier include : 'opencv2\core.hpp' : No such file or directory
          Génération de code en cours...
-     1>Génération du projet "C:\Users\Administrateur\documents\visual studio 2013\Projects\QTCyberSerpent\QTCyberSerpent\QTCyberSerpent.vcxproj" terminée (Rebuild cible(s)) -- ÉCHEC.
+     1>Génération du projet "C:\Users\Administrateur\documents\visual studio 2013\Projects\QTCyberSerpent\QTCyberSerpent\QTCyberSerpent.vcxproj" terminée (Build cible(s)) -- ÉCHEC.
 
 ÉCHEC de la build.
 
-Temps écoulé 00:00:05.24
+Temps écoulé 00:00:02.70

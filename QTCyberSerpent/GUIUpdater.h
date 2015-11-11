@@ -27,6 +27,10 @@ public:
 
    void afficherGameplay();
 
+   void afficherWin();
+
+   void afficherLose();
+
 private:
 signals:
    void requestNewImage(const QImage &);
@@ -34,4 +38,6 @@ signals:
    void requestListMessage();
    void requestAfficherOptions();
    void requestAfficherGameplay();
+   void requestAfficherWin();
+   void requestAfficherLose();
 };

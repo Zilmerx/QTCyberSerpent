@@ -39,3 +39,13 @@ void GUIUpdater::afficherGameplay()
 {
    emit requestAfficherGameplay();
 }
+
+void GUIUpdater::afficherWin()
+{
+   emit requestAfficherWin();
+}
+
+void GUIUpdater::afficherLose()
+{
+   emit requestAfficherLose();
+}

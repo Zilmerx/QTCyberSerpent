@@ -1,11 +1,12 @@
 
 #include "CyberSerpent.h"
 #include <qtimer.h>
+#include "Settings.h"
 
 
 CyberSerpent::CyberSerpent(int argc, char *argv[])
 	: m_Gameplay{},
-	m_IRobot{ 200 },
+	m_IRobot{ VITESSE_IROBOT },
 	m_QTApplication{ argc, argv },
 	m_QTCyberSerpent{},
 	m_VideoAnalyzer{},
@@ -50,14 +51,18 @@ void CyberSerpent::Start()
       m_QTCyberSerpent.UI_PutMessageInList("NON REUSSIE");
    }
 
-   //m_QTCyberSerpent.SetFunc(Qt::Key_Left, std::bind(&ControleIRobot::OnLeftArrowKeyPress, m_IRobot));
-   //m_QTCyberSerpent.SetFunc(Qt::Key_Right, std::bind(&ControleIRobot::OnRightArrowKeyPress, m_IRobot));
-
-   m_QTCyberSerpent.SetFunc(Qt::Key_Right, std::bind(&Gameplay::RIGHT, m_Gameplay));
-   m_QTCyberSerpent.SetFunc(Qt::Key_Left, std::bind(&Gameplay::LEFT, m_Gameplay));
-   m_QTCyberSerpent.SetFunc(Qt::Key_Up, std::bind(&Gameplay::UP, m_Gameplay));
-   m_QTCyberSerpent.SetFunc(Qt::Key_Down, std::bind(&Gameplay::DOWN, m_Gameplay));
-
+   if (IS_DEBUG)
+   {
+      m_QTCyberSerpent.SetFunc(Qt::Key_Right, std::bind(&Gameplay::RIGHT, m_Gameplay));
+      m_QTCyberSerpent.SetFunc(Qt::Key_Left, std::bind(&Gameplay::LEFT, m_Gameplay));
+      m_QTCyberSerpent.SetFunc(Qt::Key_Up, std::bind(&Gameplay::UP, m_Gameplay));
+      m_QTCyberSerpent.SetFunc(Qt::Key_Down, std::bind(&Gameplay::DOWN, m_Gameplay));
+   }
+   else
+   {
+      m_QTCyberSerpent.SetFunc(Qt::Key_Left, std::bind(&ControleIRobot::OnLeftArrowKeyPress, &m_IRobot));
+      m_QTCyberSerpent.SetFunc(Qt::Key_Right, std::bind(&ControleIRobot::OnRightArrowKeyPress, &m_IRobot));
+   }
 
    m_VideoAnalyzer.Start(m_QTCyberSerpent.ui.lineEdit_CameraNum->text().toInt());
    m_Gameplay.Start(m_QTCyberSerpent.ui.lineEdit_MaxScore->text().toInt(), m_QTCyberSerpent.ui.lineEdit_NbObstacles->text().toInt());
@@ -85,7 +90,7 @@ void CyberSerpent::Stop()
       m_Gameplay.Stop();
 
       m_QTCyberSerpent.ClearFunc();
-	  m_IRobot.Stop();
+	   m_IRobot.Stop();
       m_State = CyberSerpentState::Stopped;
    }
 }

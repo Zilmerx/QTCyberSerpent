@@ -56,6 +56,8 @@ void QTCyberSerpent::Initialize(CyberSerpent* linked)
    connect(updater.get(), SIGNAL(requestListMessage()), this, SLOT(UI_CB_AddMessageInList()));
    connect(updater.get(), SIGNAL(requestAfficherOptions()), this, SLOT(UI_CB_UpdateAfficherOptions()));
    connect(updater.get(), SIGNAL(requestAfficherGameplay()), this, SLOT(UI_CB_UpdateAfficherGameplay()));
+   connect(updater.get(), SIGNAL(requestAfficherWin()), this, SLOT(UI_CB_UpdateAfficherWin()));
+   connect(updater.get(), SIGNAL(requestAfficherLose()), this, SLOT(UI_CB_UpdateAfficherLose()));
 
    connect(ui.actionNouvellePartie, SIGNAL(triggered()), this, SLOT(bttn_CommencerPartie()));
    connect(ui.actionQuitter, SIGNAL(triggered()), this, SLOT(bttn_Quitter()));
@@ -71,6 +73,8 @@ void QTCyberSerpent::Delete()
    disconnect(updater.get(), SIGNAL(requestListMessage()), this, SLOT(UI_CB_AddMessageInList()));
    disconnect(updater.get(), SIGNAL(requestAfficherOptions()), this, SLOT(UI_CB_UpdateAfficherOptions()));
    disconnect(updater.get(), SIGNAL(requestAfficherGameplay()), this, SLOT(UI_CB_UpdateAfficherGameplay()));
+   disconnect(updater.get(), SIGNAL(requestAfficherWin()), this, SLOT(UI_CB_UpdateAfficherWin()));
+   disconnect(updater.get(), SIGNAL(requestAfficherLose()), this, SLOT(UI_CB_UpdateAfficherLose()));
 
    disconnect(ui.actionNouvellePartie, SIGNAL(triggered()), this, SLOT(bttn_CommencerPartie()));
    disconnect(ui.actionQuitter, SIGNAL(triggered()), this, SLOT(bttn_Quitter()));
@@ -125,6 +129,28 @@ void QTCyberSerpent::UI_AfficherGameplay()
 {
    updater->afficherGameplay();
 }
+void QTCyberSerpent::UI_AfficherWin()
+{
+   if (IS_DEBUG)
+   {
+      UI_PutMessageInList("GAGNE");
+   }
+   else
+   {
+      updater->afficherWin();
+   }
+}
+void QTCyberSerpent::UI_AfficherLose()
+{
+   if (IS_DEBUG)
+   {
+      UI_PutMessageInList("PERDU");
+   }
+   else
+   {
+      updater->afficherLose();
+   }
+}
 #pragma endregion
 
 #pragma region UI_CallBack
@@ -153,6 +179,20 @@ void QTCyberSerpent::UI_CB_UpdateAfficherGameplay()
    m_LabelGameplay->setPixmap(QPixmap::QPixmap());
    m_LabelGameplay->show();
    m_WidgetList->setFocus();
+}
+void QTCyberSerpent::UI_CB_UpdateAfficherWin()
+{
+   m_Game->Stop();
+   UI_CB_UpdateAfficherOptions();
+   UI_PutMessageInList("Vous avez gagne !");
+   UI_CB_AddMessageInList(); // flush
+}
+void QTCyberSerpent::UI_CB_UpdateAfficherLose()
+{
+   m_Game->Stop();
+   UI_CB_UpdateAfficherOptions();
+   UI_PutMessageInList("Vous avez perdu :(");
+   UI_CB_AddMessageInList(); // flush
 }
 
 void QTCyberSerpent::UI_CB_AddMessageInList()
