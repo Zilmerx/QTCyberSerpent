@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <windows.h>
+#include <mutex>
 
 namespace IRobot
 {
@@ -97,6 +98,7 @@ namespace IRobot
 
       bool m_IsConnected;
 	   // Membres.
+      mutable std::recursive_mutex m_MutexPortSerie;
 	   HANDLE PortSerie;
 	   const int m_Temps_Ecriture;
 	   const int m_Temps_Lecture;

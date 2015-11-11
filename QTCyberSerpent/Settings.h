@@ -8,7 +8,7 @@ const bool IS_DEBUG = true;
 
 ///////////////// IROBOT ///////////////// 
 // Délai entre chaque envoi de commande.
-const std::chrono::milliseconds INTERVAL_IROBOT = std::chrono::milliseconds(200);
+const std::chrono::milliseconds INTERVAL_IROBOT = std::chrono::milliseconds(100);
 // Pourcentage de tournure du robot, pendant la conduite. Va de -DEGREE_TOURNURE à DEGREE_TOURNURE.
 const int IROBOT_DEGREE_TOURNURE = 75;
 // Incrémentation de la tournure du robot à chaque pesée de touche au clavier.
@@ -30,13 +30,14 @@ const QString QT_DEFAULT_CAMERANUM = "0";
 
 
 //////////////// GAMEPLAY ///////////////
+// Le nombre de points qui sont sur le terrain et peuvent être mangés par le robot.
 const int NB_POINTS_SIMULTANEE = 5;
 // Le nombre de blocs de la queue que l'on doit sauter, lors du calcul de collision.
 const int NB_QUEUE_NOCOLLISION = 4;
 // Le nombre de blocs de la queue que l'on doit sauter avant d'imprimer le prochain.
 // Si NB_QUEUE_SAUTE = 5, cela veut dire qu'une image sur 5 sera affichée.
 const int NB_QUEUE_SAUTE = 5;
-// Le nombre de blocs de la queue que l'on doit sauter lors de l'impression.
-const int NB_QUEUEIMPRIM_SAUTE = 3;
+// Le nombre de blocs de la queue que l'on doit sauter lors de l'impression (espace entre le bot et la queue).
+const int NB_QUEUEIMPRIM_SAUTE = 2;
 // Le nombre de points de la queue retenus en mémoire, au maximum.
 const int NB_QUEUE_INVIS_MAX = 500;

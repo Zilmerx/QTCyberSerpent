@@ -73,16 +73,21 @@ void VideoAnalyzer::Do()
 
             cv::matchTemplate(mat, m_IRobotRect.m_Image, ImageResultat, CV_TM_CCOEFF);
 
+            cv::normalize(ImageResultat, ImageResultat, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
+
             cv::minMaxLoc(ImageResultat, &MinVal, &MaxVal, &MinLoc, &MaxLoc);
                
-            if (m_Game->m_Gameplay.m_ZoneJeu.contains(MaxLoc))
+            if (PRECISION_TEMPLATEMATCHING <= MaxVal)
             {
-               cv::rectangle(mat, MaxLoc, cv::Point(MaxLoc.x + m_IRobotTemplate.cols, MaxLoc.y + m_IRobotTemplate.rows), cv::Scalar(0, 0, 200), 2);
-
-               if (!IS_DEBUG)
+               if (m_Game->m_Gameplay.m_ZoneJeu.contains(MaxLoc))
                {
-                  m_IRobotRect.x = MaxLoc.x;
-                  m_IRobotRect.y = MaxLoc.y;
+                  cv::rectangle(mat, MaxLoc, cv::Point(MaxLoc.x + m_IRobotTemplate.cols, MaxLoc.y + m_IRobotTemplate.rows), cv::Scalar(0, 0, 200), 2);
+
+                  if (!IS_DEBUG)
+                  {
+                     m_IRobotRect.x = MaxLoc.x;
+                     m_IRobotRect.y = MaxLoc.y;
+                  }
                }
             }
          }

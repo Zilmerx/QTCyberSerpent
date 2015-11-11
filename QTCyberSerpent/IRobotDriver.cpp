@@ -586,6 +586,7 @@ void IRobot::Send() const
 template <typename ...Tail>
 void IRobot::Send(unsigned char head, Tail&&... tail) const
 {
+   std::lock_guard<std::recursive_mutex> lock(m_MutexPortSerie);
    DWORD NbEcrits = 0;
    if (!WriteFile(PortSerie, &head, 1, &NbEcrits, 0))
    {
