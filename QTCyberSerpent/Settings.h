@@ -39,5 +39,5 @@ const int NB_QUEUE_NOCOLLISION = 4;
 const int NB_QUEUE_SAUTE = 5;
 // Le nombre de blocs de la queue que l'on doit sauter lors de l'impression (espace entre le bot et la queue).
 const int NB_QUEUEIMPRIM_SAUTE = 2;
-// Le nombre de points de la queue retenus en mémoire, au maximum.
-const int NB_QUEUE_INVIS_MAX = 500;
+// Le nombre de detections hors zone qui doivent être fait avant de déclarer le joueur perdant.
+const int NB_HORSZONE_MAX = 5;

@@ -53,6 +53,8 @@ void Gameplay::Start(int MaxScore, int NbObstacles)
 {
    m_Score = 0;
    m_MaxScore = MaxScore;
+   m_QueueSerpent.reserve(GetQueuePosFromScore(m_MaxScore));
+   m_QueueToPrint.reserve(GetQueuePosFromScore(m_MaxScore));
 
    fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), NbObstacles);
    fillWithRandRects(m_Points, RectImage(m_ImagePoint), NB_POINTS_SIMULTANEE);
@@ -68,17 +70,12 @@ void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
 {
    AddQueueInvis(PositionIRobot);
 
-   if (!Utility::CvRect1ContainsRect2(m_ZoneJeu, PositionIRobot))
-   {
-      m_Game->m_QTCyberSerpent.UI_AfficherLose();
-   }
-
    for (int i = 0; i < m_Obstacles.size(); ++i)
    {
       if (Utility::CvRect1TouchesRect2(PositionIRobot, m_Obstacles[i]))
       {
          m_Game->m_QTCyberSerpent.UI_AfficherLose();
-         break;
+         return;
       }
    }
 
@@ -88,7 +85,7 @@ void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
       if (Utility::CvRect1TouchesRect2(PositionIRobot, m_QueueToPrint[i]))
       {
          m_Game->m_QTCyberSerpent.UI_AfficherLose();
-         break;
+         return;
       }
    }
 
@@ -109,6 +106,16 @@ void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
    }
 }
 
+void Gameplay::HorsZone()
+{
+   m_CompteurHorsZone++;
+   m_Game->m_QTCyberSerpent.UI_PutMessageInList("HORS ZONE");
+   if (m_CompteurHorsZone >= NB_HORSZONE_MAX)
+   {
+      m_Game->m_QTCyberSerpent.UI_AfficherLose();
+   }
+}
+
 cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
 {
    mat = Utility::DrawRectVectorOnMat(m_Obstacles, std::move(mat));
@@ -117,7 +124,7 @@ cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
    m_QueueToPrint.clear();
    for (int i = 0; i < m_Score; ++i)
    {
-      int pos = m_QueueSerpent.size() - ((i+NB_QUEUEIMPRIM_SAUTE)*NB_QUEUE_SAUTE) - 1;
+      int pos = m_QueueSerpent.size() - GetQueuePosFromScore(i) - 1;
 
       if (pos >= 0 && pos < m_QueueSerpent.size())
          m_QueueToPrint.push_back(m_QueueSerpent[pos]);
@@ -167,13 +174,17 @@ void Gameplay::IncrementScore()
 void Gameplay::AddQueueInvis(cv::Rect PositionIRobot)
 {
 	RectImage img = RectImage(m_ImageQueue);
-	img.x = PositionIRobot.x;
-	img.y = PositionIRobot.y;
+   Utility::PutRect1InCenterOfRect2(img, PositionIRobot);
 
 	m_QueueSerpent.push_back(img);
 
-   if (m_QueueSerpent.size() > NB_QUEUE_INVIS_MAX) // Pour prévenir un éventuel overflow...
+   if (m_QueueSerpent.size() > GetQueuePosFromScore(m_MaxScore)) // Pour prévenir un éventuel overflow...
    {
       m_QueueSerpent.erase(m_QueueSerpent.begin());
    }
+}
+
+int Gameplay::GetQueuePosFromScore(int score)
+{
+   return ((score + NB_QUEUEIMPRIM_SAUTE)*NB_QUEUE_SAUTE);
 }

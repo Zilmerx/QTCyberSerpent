@@ -22,6 +22,8 @@ private:
    int m_Score;
    int m_MaxScore;
 
+   int m_CompteurHorsZone;
+
    cv::Mat m_ImageObstacle;
    cv::Mat m_ImagePoint;
    cv::Mat m_ImageQueue;
@@ -54,6 +56,8 @@ public:
    cv::Mat ModifierImage(cv::Mat&& mat);
 private:
 
+   void HorsZone();
+
    // Thread qui fais différentes analyses en se servant de la position du IRobot, puis détecte les collisions.
    // S'occupe aussi d'appeller les fonctions liées, en cas de collision.
    void MettreAJourInfos(cv::Rect PositionIRobot);
@@ -66,4 +70,6 @@ private:
    void IncrementScore();
 
    void AddQueueInvis(cv::Rect PositionIRobot);
+
+   int GetQueuePosFromScore(int score);
 };

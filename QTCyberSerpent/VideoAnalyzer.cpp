@@ -4,7 +4,7 @@
 #include "Settings.h"
 
 VideoAnalyzer::VideoAnalyzer() 
-   :RunDo{ false }
+:RunDo{ false }
 {
 }
 
@@ -76,30 +76,26 @@ void VideoAnalyzer::Do()
             cv::normalize(ImageResultat, ImageResultat, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
 
             cv::minMaxLoc(ImageResultat, &MinVal, &MaxVal, &MinLoc, &MaxLoc);
-               
+
             if (PRECISION_TEMPLATEMATCHING <= MaxVal)
             {
-               if (m_Game->m_Gameplay.m_ZoneJeu.contains(MaxLoc))
-               {
-                  cv::rectangle(mat, MaxLoc, cv::Point(MaxLoc.x + m_IRobotTemplate.cols, MaxLoc.y + m_IRobotTemplate.rows), cv::Scalar(0, 0, 200), 2);
+               // Update des informations en se servant de la nouvelle position du IRobot detectée.
+               m_Game->m_Gameplay.MettreAJourInfos(m_IRobotRect);
+               m_Game->m_Gameplay.m_CompteurHorsZone = 0;
 
-                  if (!IS_DEBUG)
-                  {
-                     m_IRobotRect.x = MaxLoc.x;
-                     m_IRobotRect.y = MaxLoc.y;
-                  }
-               }
+               cv::rectangle(mat, MaxLoc, cv::Point(MaxLoc.x + m_IRobotTemplate.cols, MaxLoc.y + m_IRobotTemplate.rows), cv::Scalar(0, 0, 200), 2);
+
+               // Modification de l'image en se servant des nouvelles informations acquises.
+               mat = m_Game->m_Gameplay.ModifierImage(std::move(mat));
+
+               // Affichage de l'image.
+               m_Game->m_QTCyberSerpent.UI_PutImage(Utility::Mat2QImage(std::move(mat)));
+            }
+            else
+            {
+               m_Game->m_Gameplay.HorsZone();
             }
          }
-
-         // Update des informations en se servant de la nouvelle position du IRobot detectée.
-         m_Game->m_Gameplay.MettreAJourInfos(m_IRobotRect);
-
-         // Modification de l'image en se servant des nouvelles informations acquises.
-         mat = m_Game->m_Gameplay.ModifierImage(std::move(mat));
-
-         // Affichage de l'image.
-         m_Game->m_QTCyberSerpent.UI_PutImage(Utility::Mat2QImage(std::move(mat)));
       }
    }
 }
