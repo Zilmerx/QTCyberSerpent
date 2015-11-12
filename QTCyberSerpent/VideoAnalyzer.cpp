@@ -4,62 +4,81 @@
 #include "Settings.h"
 
 VideoAnalyzer::VideoAnalyzer() 
-:RunDo{ false }
+   :RunAnalyse{ false },
+   RunCaptureImage{ false }
 {
 }
 
-VideoAnalyzer::~VideoAnalyzer()
-{
-}
 
 void VideoAnalyzer::Initialize(CyberSerpent* linked)
 {
 	m_Game = linked;
-
    m_IRobotTemplate = cv::imread("templateIRobot.bmp", CV_32FC1);
-
-   m_IRobotRect = RectImage(std::move(cv::imread("templateIRobot.bmp", CV_32FC1)));
+   m_IRobotRect = RectCollision(m_IRobotTemplate);
 }
 
 void VideoAnalyzer::Start(int camNum)
 {
    m_CamNumber = camNum;
 
-   RunDo = true;
-   ThreadDo = std::thread(&VideoAnalyzer::Do, this);
+   RunAnalyse = true;
+   ThreadAnalyse = std::thread(&VideoAnalyzer::Analyse, this);
+
+   RunCaptureImage = true;
+   ThreadCaptureImage = std::thread(&VideoAnalyzer::CaptureImage, this);
 }
 
 void VideoAnalyzer::Stop()
 {
-   RunDo = false;
-   ThreadDo.join();
+   RunAnalyse = false;
+   ThreadAnalyse.join();
+
+   RunCaptureImage = false;
+   ThreadCaptureImage.join();
 }
 
 //////////////////////////////////////////////////////////////////
 // Threads
 //////////////////////////////////////////////////////////////////
 
-
-void VideoAnalyzer::Do()
+void VideoAnalyzer::CaptureImage()
 {
-   cv::Mat mat;
-   cv::VideoCapture cap(std::atoi(m_CamNumber.c_str()));
-   while (RunDo)
+   cv::VideoCapture cap;
+
+   if (!IS_DEBUG)
+      cap.open(std::atoi(m_CamNumber.c_str()));
+
+   while (RunCaptureImage)
    {
       // Lecture d'une nouvelle image.
-      if (cap.isOpened())
+      if (!IS_DEBUG)
       {
-         cap >> mat;
+         if (cap.isOpened())
+         {
+            cv::Mat mat;
+            cap >> mat;
+            m_ImageLue.Set(mat);
+         }
       }
       else
       {
-         cv::imread("image.bmp", CV_32FC1).copyTo(mat);
+         m_ImageLue.Set(std::move(cv::imread("image.bmp", CV_32FC1)));
       }
+   }
+}
+
+void VideoAnalyzer::Analyse()
+{
+   cv::Mat mat;
+
+   while (RunAnalyse)
+   {
+      mat = m_ImageLue.Get();
 
       if (!Utility::MatIsNull(mat))
       {
          if (IS_DEBUG)
-            mat = Utility::DrawRectImageOnMat(m_IRobotRect, std::move(mat));
+            mat = m_IRobotRect.Draw(std::move(mat));
 
          // Analyse de la position du IRobot dans l'image.
          if (!Utility::MatIsNull(m_IRobotTemplate))
@@ -79,11 +98,21 @@ void VideoAnalyzer::Do()
 
             if (PRECISION_TEMPLATEMATCHING <= MaxVal)
             {
-               // Update des informations en se servant de la nouvelle position du IRobot detectée.
-               m_Game->m_Gameplay.MettreAJourInfos(m_IRobotRect);
+               if (!IS_DEBUG)
+               {
+                  m_IRobotRect.x = MaxLoc.x;
+                  m_IRobotRect.y = MaxLoc.y;
+               }
+
                m_Game->m_Gameplay.m_CompteurHorsZone = 0;
 
-               cv::rectangle(mat, MaxLoc, cv::Point(MaxLoc.x + m_IRobotTemplate.cols, MaxLoc.y + m_IRobotTemplate.rows), cv::Scalar(0, 0, 200), 2);
+               // Update des informations en se servant de la nouvelle position du IRobot detectée.
+               m_Game->m_Gameplay.MettreAJourInfos(m_IRobotRect);
+
+               if (IS_DEBUG)
+               {
+                  cv::rectangle(mat, MaxLoc, cv::Point(MaxLoc.x + m_IRobotTemplate.cols, MaxLoc.y + m_IRobotTemplate.rows), cv::Scalar(0, 0, 200), 2);
+               }
 
                // Modification de l'image en se servant des nouvelles informations acquises.
                mat = m_Game->m_Gameplay.ModifierImage(std::move(mat));

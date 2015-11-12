@@ -19,14 +19,12 @@ void GUIUpdater::newError(const QString message)
 
 void GUIUpdater::newMessageInList(const QString message)
 {
+   std::lock_guard<std::recursive_mutex> lock(m_MutexMessage);
+   m_Vector.push_back(message);
+   if ((std::chrono::steady_clock::now() - lastRequestMessage) >= REFRESH_INTERVAL_MESSAGE)
    {
-      std::lock_guard<std::mutex> lock(m_Vector.m_Mutex);
-      m_Vector.m_Vector.push_back(message);
-      if ((std::chrono::steady_clock::now() - lastRequestMessage) >= REFRESH_INTERVAL_MESSAGE)
-      {
-         lastRequestMessage = std::chrono::steady_clock::now();
-         emit requestListMessage();
-      }
+      lastRequestMessage = std::chrono::steady_clock::now();
+      emit requestListMessage();
    }
 }
 

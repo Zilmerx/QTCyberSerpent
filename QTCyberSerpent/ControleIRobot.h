@@ -24,5 +24,5 @@ public:
 
 private:
 
-	void ComputeNewSpeed();
+	void ComputeNewSpeed() const;
 };

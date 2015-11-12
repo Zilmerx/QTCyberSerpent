@@ -77,6 +77,9 @@
     <ClCompile Include="ControleIRobot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="qtcyberserpent.ui">
@@ -114,12 +117,6 @@
     <ClInclude Include="DoubleBuffer.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="RectImage.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MutexedVector.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
     <ClInclude Include="NullException.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
@@ -128,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -42,7 +42,7 @@ public:
 	{
 		if (PointeurGet == nullptr)
 		{
-			throw std::runtime_error("NULL_VALUE");
+         throw NullException();
 		}
 		else
 		{
@@ -86,21 +86,15 @@ public:
 
    void Clear()
    {
-      HasValue = false;
+      ValueSet = T;
+      ValueGet = T;
    }
 
    T Get()
    {
       std::lock_guard<std::mutex> lock(MutexGet);
-      if (!HasValue)
-      {
-         throw NullException();
-      }
-      else
-      {
-         HasValue = false;
-         return ValueGet;
-      }
+
+      return ValueGet;
    }
 
 	void Set(const T& value)
@@ -108,7 +102,6 @@ public:
       ValueSet = value;
 
 		Switch();
-      HasValue = true;
 	}
 
 	void Set(T&& value)
@@ -116,6 +109,5 @@ public:
       ValueSet = std::move(value);
 
 		Switch();
-      HasValue = true;
 	}
 };

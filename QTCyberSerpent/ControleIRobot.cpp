@@ -54,7 +54,7 @@ void ControleIRobot::OnRightArrowKeyPress()
 }
 
 
-void ControleIRobot::ComputeNewSpeed()
+void ControleIRobot::ComputeNewSpeed() const
 {
 	if (DegreeTournure >= 0)
 	{

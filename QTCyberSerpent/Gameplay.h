@@ -4,9 +4,8 @@
 #include "opencv2\core.hpp"
 #include "Utility.h"
 #include <thread>
-#include "RectImage.h"
+#include "Collision.h"
 #include <atomic>
-#include "MutexedVector.h"
 #include "VideoAnalyzer.h"
 
 class CyberSerpent;
@@ -24,21 +23,20 @@ private:
 
    int m_CompteurHorsZone;
 
-   cv::Mat m_ImageObstacle;
-   cv::Mat m_ImagePoint;
-   cv::Mat m_ImageQueue;
+   const cv::Mat m_ImageObstacle;
+   const cv::Mat m_ImagePoint;
+   const cv::Mat m_ImageQueue;
 
    cv::Rect m_ZoneJeu;                    // Définis la zone de jeu.
 
-   std::vector<RectImage> m_Obstacles;    // Contient des obstacles.
-   std::vector<RectImage> m_Points;       // Contient les trucs à manger.
+   std::vector<RectCollision> m_Obstacles;    // Contient des obstacles.
+   std::vector<CircleCollision> m_Points;     // Contient les trucs à manger.
 
-   std::vector<RectImage> m_QueueSerpent; // Contient la queue du serpent invisible.
-   std::vector<RectImage> m_QueueToPrint; // Contient la queue qui est affichée à l'utilisateur.
+   std::vector<RectCollision> m_QueueSerpent; // Contient la queue du serpent invisible.
+   std::vector<RectCollision> m_QueueToPrint; // Contient la queue qui est affichée à l'utilisateur.
 
 public:
 	Gameplay();
-	~Gameplay();
 
    void Initialize(CyberSerpent* link);
 
@@ -62,14 +60,17 @@ private:
    // S'occupe aussi d'appeller les fonctions liées, en cas de collision.
    void MettreAJourInfos(cv::Rect PositionIRobot);
 
-	// Mets "amount" cv::Rect dans le tableau, qui ont un x,y entre "0" et "MAPSIZE_X"/"MAPSIZE_Y".
-   void fillWithRandRects(std::vector<RectImage>& vec, RectImage rectimage, int amount);
+   // Mets "amount" cv::Rect dans le tableau, qui ont un x,y entre "0" et "MAPSIZE_X"/"MAPSIZE_Y".
+   template<class T>
+   void fillWithRand(std::vector<T>& vec, const T& col, int amount) const;
 
-   RectImage RandRect(RectImage rectImage);
+   RectCollision RandCollision(RectCollision RectCollision) const;
+
+   CircleCollision RandCollision(CircleCollision circ) const;
 
    void IncrementScore();
 
    void AddQueueInvis(cv::Rect PositionIRobot);
 
-   int GetQueuePosFromScore(int score);
+   int GetQueuePosFromScore(int score) const;
 };

@@ -10,7 +10,7 @@
 #include "opencv2\imgproc.hpp"
 
 #include "DoubleBuffer.h"
-#include "RectImage.h"
+#include "Collision.h"
 
 
 class CyberSerpent;
@@ -20,12 +20,10 @@ class VideoAnalyzer
 	CyberSerpent* m_Game;
 	std::string m_CamNumber;
    cv::Mat m_IRobotTemplate;
-   //std::unique_ptr<RectImage> m_IRobotRect;
 
 public:
-   RectImage m_IRobotRect;
+   RectCollision m_IRobotRect;
 	VideoAnalyzer();
-	~VideoAnalyzer();
 
 	void Initialize(CyberSerpent* linked);
 
@@ -35,7 +33,13 @@ public:
 
 private:
 
-   bool RunDo;
-   std::thread ThreadDo;
-   void Do();
+   bool RunCaptureImage;
+   std::thread ThreadCaptureImage;
+   void CaptureImage();
+
+   DoubleBuffer_Copie<cv::Mat> m_ImageLue;
+
+   bool RunAnalyse;
+   std::thread ThreadAnalyse;
+   void Analyse();
 };

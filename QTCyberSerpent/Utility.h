@@ -4,9 +4,9 @@
 #include <cstdlib>
 #include <string>
 #include <qpixmap.h>
+#include <iostream>
 
-#include "RectImage.h"
-#include "MutexedVector.h"
+#include "Collision.h"
 
 #include "opencv2\imgproc.hpp"
 
@@ -80,39 +80,7 @@ public:
       return QImage();
    }
 
-   static bool CvRect1TouchesRect2(const cv::Rect& R1, const cv::Rect& R2)
-   {
-      return (R1.x < R2.x + R2.width 
-           && R1.x + R1.width > R2.x 
-           && R1.y < R2.y + R2.width 
-           && R1.y + R1.width > R2.y);
-   }
-
-   static bool CvRect1ContainsRect2(const cv::Rect& R1, const cv::Rect& R2)
-   {
-      return ((R2.x + R2.width) <= (R1.x + R1.width)
-         && (R2.x) >= (R1.x)
-         && (R2.y) >= (R1.y)
-         && (R2.y + R2.height) <= (R1.y + R1.height));
-   }
-
-   static cv::Mat DrawRectImageOnMat(RectImage& rect, cv::Mat&& mat)
-   {
-      rect.m_Image.copyTo(mat(cv::Rect(rect.x, rect.y, rect.width, rect.height)));
-      return mat;
-   }
-
-   static cv::Mat DrawRectVectorOnMat(std::vector<RectImage>& vec, cv::Mat&& mat)
-   {
-      for (int i = 0; i < vec.size(); ++i)
-      {
-         mat = Utility::DrawRectImageOnMat(vec[i], std::move(mat));
-      }
-
-      return std::move(mat);
-   }
-
-   static void PutRect1InCenterOfRect2(cv::Rect& rect1, cv::Rect& rect2)
+   static void PutRect1InCenterOfRect2(RectCollision& rect1, cv::Rect& rect2)
    {
       rect1.x = ((rect2.width - rect1.width) / 2) + rect2.x;
       rect1.y = ((rect2.height - rect1.height) / 2) + rect2.y;

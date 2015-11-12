@@ -1,7 +1,7 @@
 #include <chrono>
 #include <qobject.h>
 #include <string>
-#include "MutexedVector.h"
+#include <mutex>
 
 typedef std::string Array;
 
@@ -20,7 +20,8 @@ public:
 
    const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(30);
    std::chrono::steady_clock::time_point lastRequestMessage;
-   MutexedVector<QString> m_Vector;
+   std::recursive_mutex m_MutexMessage;
+   std::vector<QString> m_Vector;
    void newMessageInList(const QString message);
 
    void afficherOptions();

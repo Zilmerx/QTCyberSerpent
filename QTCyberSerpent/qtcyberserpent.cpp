@@ -197,13 +197,14 @@ void QTCyberSerpent::UI_CB_UpdateAfficherLose()
 
 void QTCyberSerpent::UI_CB_AddMessageInList()
 {
-   for (int i = 0; i < updater->m_Vector.m_Vector.size() && i < 30; ++i)
+   std::lock_guard<std::recursive_mutex> lock(updater->m_MutexMessage);
+   for (int i = 0; i < updater->m_Vector.size() && i < 30; ++i)
    {
-      QListWidgetItem *item = new QListWidgetItem(updater->m_Vector.m_Vector[i]);
+      QListWidgetItem *item = new QListWidgetItem(updater->m_Vector[i]);
       item->setFlags(Qt::ItemIsEnabled);
       m_WidgetList->addItem(item);
    }
-   updater->m_Vector.m_Vector.clear();
+   updater->m_Vector.clear();
 
    while (m_WidgetList->count() > 30)
    {

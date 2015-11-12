@@ -2,6 +2,8 @@
 #include <string>
 #include <qstring.h>
 
+#include "opencv2\core.hpp"
+
 
 ////////////////// CORE ////////////////// 
 const bool IS_DEBUG = true;
@@ -36,8 +38,16 @@ const int NB_POINTS_SIMULTANEE = 5;
 const int NB_QUEUE_NOCOLLISION = 4;
 // Le nombre de blocs de la queue que l'on doit sauter avant d'imprimer le prochain.
 // Si NB_QUEUE_SAUTE = 5, cela veut dire qu'une image sur 5 sera affichée.
-const int NB_QUEUE_SAUTE = 5;
+const int NB_QUEUE_SAUTE = 3;
 // Le nombre de blocs de la queue que l'on doit sauter lors de l'impression (espace entre le bot et la queue).
 const int NB_QUEUEIMPRIM_SAUTE = 2;
 // Le nombre de detections hors zone qui doivent être fait avant de déclarer le joueur perdant.
 const int NB_HORSZONE_MAX = 5;
+
+
+
+//////////////// COLLISION ///////////////
+const cv::Vec3b COULEUR_NONPRINT = cv::Vec3b{ 0, 255, 0 };
+
+
+

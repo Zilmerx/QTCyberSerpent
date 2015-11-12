@@ -9,14 +9,15 @@
 
 #pragma region Constructeur / Destructeur
 Gameplay::Gameplay()
-:m_Score{ 0 },
-m_MaxScore{ 0 }
+   :m_Score{ 0 },
+   m_MaxScore{ 0 },
+   m_Game{ nullptr },
+   m_ImageObstacle{ cv::imread("ImageObstacle.bmp", CV_32FC1) },
+   m_ImagePoint{ cv::imread("ImagePoint.bmp", CV_32FC1) },
+   m_ImageQueue{ cv::imread("ImageQueue.bmp", CV_32FC1) }
 {
 }
 
-Gameplay::~Gameplay()
-{
-}
 #pragma endregion
 
 // Debug
@@ -43,10 +44,6 @@ void Gameplay::Initialize(CyberSerpent* link)
 
    QRect rect = m_Game->m_QTCyberSerpent.m_LabelGameplay->geometry();
    m_ZoneJeu = cv::Rect(0, 0, rect.width(), rect.height());
-
-   m_ImageObstacle = cv::imread("ImageObstacle.bmp", CV_32FC1);
-   m_ImagePoint = cv::imread("ImagePoint.bmp", CV_32FC1);
-   m_ImageQueue = cv::imread("ImageQueue.bmp", CV_32FC1);
 }
 
 void Gameplay::Start(int MaxScore, int NbObstacles)
@@ -56,12 +53,16 @@ void Gameplay::Start(int MaxScore, int NbObstacles)
    m_QueueSerpent.reserve(GetQueuePosFromScore(m_MaxScore));
    m_QueueToPrint.reserve(GetQueuePosFromScore(m_MaxScore));
 
-   fillWithRandRects(m_Obstacles, RectImage(m_ImageObstacle), NbObstacles);
-   fillWithRandRects(m_Points, RectImage(m_ImagePoint), NB_POINTS_SIMULTANEE);
+   fillWithRand<RectCollision>(m_Obstacles, RectCollision(m_ImageObstacle), NbObstacles);
+   fillWithRand<CircleCollision>(m_Points, CircleCollision(m_ImagePoint), NB_POINTS_SIMULTANEE);
 }
 
 void Gameplay::Stop()
 {
+   // Ces deux premiers sont regénérés au Start();
+   //m_Obstacles.clear();
+   //m_Points.clear();
+
    m_QueueSerpent.clear();
    m_QueueToPrint.clear();
 }
@@ -72,27 +73,25 @@ void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
 
    for (int i = 0; i < m_Obstacles.size(); ++i)
    {
-      if (Utility::CvRect1TouchesRect2(PositionIRobot, m_Obstacles[i]))
+      if (m_Obstacles[i].Touches(PositionIRobot))
       {
          m_Game->m_QTCyberSerpent.UI_AfficherLose();
-         return;
       }
    }
 
 
    for (int i = NB_QUEUE_NOCOLLISION; i < m_QueueToPrint.size(); ++i)
    {
-      if (Utility::CvRect1TouchesRect2(PositionIRobot, m_QueueToPrint[i]))
+      if (m_QueueToPrint[i].Touches(PositionIRobot))
       {
          m_Game->m_QTCyberSerpent.UI_AfficherLose();
-         return;
       }
    }
 
    std::vector<int> toRemove;
    for (int i = 0; i < m_Points.size(); ++i)
    {
-      if (Utility::CvRect1TouchesRect2(PositionIRobot, m_Points[i]))
+      if (m_Points[i].Touches(PositionIRobot))
       {
          toRemove.push_back(i);
 
@@ -102,7 +101,7 @@ void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
    for (int i = 0; i < toRemove.size(); ++i)
    {
       m_Points.erase(m_Points.begin() + toRemove[i] - i);
-      m_Points.push_back(RandRect(m_ImagePoint));
+      m_Points.push_back(RandCollision(CircleCollision(m_ImagePoint)));
    }
 }
 
@@ -118,8 +117,8 @@ void Gameplay::HorsZone()
 
 cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
 {
-   mat = Utility::DrawRectVectorOnMat(m_Obstacles, std::move(mat));
-   mat = Utility::DrawRectVectorOnMat(m_Points, std::move(mat));
+   mat = Collision::DrawVec(m_Obstacles, std::move(mat));
+   mat = Collision::DrawVec(m_Points, std::move(mat));
 
    m_QueueToPrint.clear();
    for (int i = 0; i < m_Score; ++i)
@@ -130,29 +129,36 @@ cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
          m_QueueToPrint.push_back(m_QueueSerpent[pos]);
    }
 
-   mat = Utility::DrawRectVectorOnMat(m_QueueToPrint, std::move(mat));
+   mat = Collision::DrawVec(m_QueueToPrint, std::move(mat));
 
    return mat;
 }
 
 
 // PRIVATE
-
-void Gameplay::fillWithRandRects(std::vector<RectImage>& vec, RectImage rectimage, int amount)
+template<class T>
+void Gameplay::fillWithRand(std::vector<T>& vec, const T& col, int amount) const
 {
-
    vec.clear();
    for (int i = 0; i < amount; ++i)
    {
-      vec.push_back(RandRect(rectimage));
+      vec.push_back(RandCollision(col));
    }
 }
 
-RectImage Gameplay::RandRect(RectImage rectImage)
+RectCollision Gameplay::RandCollision(RectCollision rect) const
 {
-   RectImage nouveau(rectImage);
+   RectCollision nouveau(rect);
    nouveau.x = Utility::RandMinMax(0, m_ZoneJeu.width - nouveau.width);
    nouveau.y = Utility::RandMinMax(0, m_ZoneJeu.height - nouveau.height);
+   return nouveau;
+}
+
+CircleCollision Gameplay::RandCollision(CircleCollision circ) const
+{
+   CircleCollision nouveau(circ);
+   nouveau.x = Utility::RandMinMax(0, m_ZoneJeu.width - (nouveau.rayon*2));
+   nouveau.y = Utility::RandMinMax(0, m_ZoneJeu.height - (nouveau.rayon*2));
    return nouveau;
 }
 
@@ -173,7 +179,7 @@ void Gameplay::IncrementScore()
 
 void Gameplay::AddQueueInvis(cv::Rect PositionIRobot)
 {
-	RectImage img = RectImage(m_ImageQueue);
+	RectCollision img = RectCollision(m_ImageQueue);
    Utility::PutRect1InCenterOfRect2(img, PositionIRobot);
 
 	m_QueueSerpent.push_back(img);
@@ -184,7 +190,7 @@ void Gameplay::AddQueueInvis(cv::Rect PositionIRobot)
    }
 }
 
-int Gameplay::GetQueuePosFromScore(int score)
+int Gameplay::GetQueuePosFromScore(int score) const
 {
    return ((score + NB_QUEUEIMPRIM_SAUTE)*NB_QUEUE_SAUTE);
 }
