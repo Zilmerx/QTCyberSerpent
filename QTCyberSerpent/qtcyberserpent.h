@@ -3,18 +3,20 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QApplication>
+#include <QApplication>
 #include <QMessageBox>
-#include <map>
-#include <functional>
-#include "ui_qtcyberserpent.h"
 #include <QKeyEvent>
 #include <qthread.h>
 #include <qpixmap.h>
+#include <qlistwidget.h>
 #include <QApplication>
 #include <qlabel.h>
-#include "GUIUpdater.h"
+
+#include <functional>
 #include <memory>
-#include <qlistwidget.h>
+
+#include "GUIUpdater.h"
+#include "ui_qtcyberserpent.h"
 
 
 class CyberSerpent;

@@ -1,6 +1,4 @@
-
 #include "CyberSerpent.h"
-#include <qtimer.h>
 #include "Settings.h"
 
 

@@ -3,9 +3,7 @@
 #include <vector>
 #include "opencv2\core.hpp"
 #include "Utility.h"
-#include <thread>
 #include "Collision.h"
-#include <atomic>
 #include "VideoAnalyzer.h"
 
 class CyberSerpent;
@@ -50,15 +48,15 @@ public:
    void LEFT();
    void DOWN();
 
-   // Modifie l'image en se servant des informations stockées dans cette instance de Gameplay.
-   cv::Mat ModifierImage(cv::Mat&& mat);
 private:
-
-   void HorsZone();
-
    // Thread qui fais différentes analyses en se servant de la position du IRobot, puis détecte les collisions.
    // S'occupe aussi d'appeller les fonctions liées, en cas de collision.
    void MettreAJourInfos(cv::Rect PositionIRobot);
+
+public:
+   // Modifie l'image en se servant des informations stockées dans cette instance de Gameplay.
+   cv::Mat ModifierImage(cv::Mat&& mat);
+private:
 
    // Mets "amount" cv::Rect dans le tableau, qui ont un x,y entre "0" et "MAPSIZE_X"/"MAPSIZE_Y".
    template<class T>
@@ -69,6 +67,8 @@ private:
    CircleCollision RandCollision(CircleCollision circ) const;
 
    void IncrementScore();
+
+   void HorsZone();
 
    void AddQueueInvis(cv::Rect PositionIRobot);
 

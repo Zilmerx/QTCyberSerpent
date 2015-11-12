@@ -1,5 +1,6 @@
+#pragma once
+
 #include <chrono>
-#include <string>
 #include <qstring.h>
 
 #include "opencv2\core.hpp"
@@ -29,6 +30,8 @@ const QString QT_DEFAULT_MAXSCORE = "1000";
 const QString QT_DEFAULT_NBOBSTACLE = "1";
 const QString QT_DEFAULT_CAMERANUM = "0";
 
+
+const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(30);
 
 
 //////////////// GAMEPLAY ///////////////

@@ -3,7 +3,6 @@
 #include "opencv2\highgui.hpp"
 #include "CyberSerpent.h"
 #include "Settings.h"
-#include <thread>
 
 // PUBLIC
 
@@ -105,16 +104,6 @@ void Gameplay::MettreAJourInfos(cv::Rect PositionIRobot)
    }
 }
 
-void Gameplay::HorsZone()
-{
-   m_CompteurHorsZone++;
-   m_Game->m_QTCyberSerpent.UI_PutMessageInList("HORS ZONE");
-   if (m_CompteurHorsZone >= NB_HORSZONE_MAX)
-   {
-      m_Game->m_QTCyberSerpent.UI_AfficherLose();
-   }
-}
-
 cv::Mat Gameplay::ModifierImage(cv::Mat&& mat)
 {
    mat = Collision::DrawVec(m_Obstacles, std::move(mat));
@@ -174,6 +163,16 @@ void Gameplay::IncrementScore()
    if (m_Score >= m_MaxScore)
    {
       m_Game->m_QTCyberSerpent.UI_AfficherWin();
+   }
+}
+
+void Gameplay::HorsZone()
+{
+   m_CompteurHorsZone++;
+   m_Game->m_QTCyberSerpent.UI_PutMessageInList("HORS ZONE");
+   if (m_CompteurHorsZone >= NB_HORSZONE_MAX)
+   {
+      m_Game->m_QTCyberSerpent.UI_AfficherLose();
    }
 }
 

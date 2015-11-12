@@ -1,4 +1,3 @@
-#include <chrono>
 #include <qobject.h>
 #include <string>
 #include <mutex>
@@ -18,7 +17,6 @@ public:
 
    void newError(const QString message);
 
-   const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(30);
    std::chrono::steady_clock::time_point lastRequestMessage;
    std::recursive_mutex m_MutexMessage;
    std::vector<QString> m_Vector;

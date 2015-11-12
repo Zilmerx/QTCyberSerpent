@@ -1,6 +1,5 @@
 #include "Settings.h"
 #include "ControleIRobot.h"
-#include "Utility.h"
 
 ControleIRobot::ControleIRobot(short vitesse)
 	: m_IRobotDriver{},

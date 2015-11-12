@@ -2,9 +2,6 @@
 #include <string>
 #include "CyberSerpent.h"
 #include "Utility.h"
-#include <qlist.h>
-#include <qfiledialog.h>
-#include <qgridlayout.h>
 #include "Settings.h"
 
 QTCyberSerpent::QTCyberSerpent(QWidget *parent)

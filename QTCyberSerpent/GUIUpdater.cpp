@@ -1,5 +1,5 @@
 #include "GUIUpdater.h"
-
+#include "Settings.h"
 
 
 GUIUpdater::GUIUpdater(QObject *parent) 
