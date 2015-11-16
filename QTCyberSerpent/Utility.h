@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "Collision.h"
+#include "Settings.h"
 
 #include "opencv2\imgproc.hpp"
 
@@ -80,10 +81,9 @@ public:
       return QImage();
    }
 
-   static void PutRect1InCenterOfRect2(RectCollision& rect1, cv::Rect& rect2)
+   static void PutRect1InCenterOfRect2(RectCollision& rect1, RectCollision& rect2)
    {
-      rect1.x = ((rect2.width - rect1.width) / 2) + rect2.x;
-      rect1.y = ((rect2.height - rect1.height) / 2) + rect2.y;
+      rect1.pos = cv::Point2d(((rect2.width - rect1.width) / 2) + rect2.pos.x, ((rect2.height - rect1.height) / 2) + rect2.pos.y);
    }
 
    static bool MatIsNull(const cv::Mat& mat)

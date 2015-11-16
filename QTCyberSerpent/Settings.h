@@ -13,7 +13,7 @@ const bool IS_DEBUG = true;
 // Délai entre chaque envoi de commande.
 const std::chrono::milliseconds INTERVAL_IROBOT = std::chrono::milliseconds(100);
 // Pourcentage de tournure du robot, pendant la conduite. Va de -DEGREE_TOURNURE à DEGREE_TOURNURE.
-const int IROBOT_DEGREE_TOURNURE = 75;
+const int IROBOT_DEGREE_TOURNURE = 60;
 // Incrémentation de la tournure du robot à chaque pesée de touche au clavier.
 const int IROBOT_DEGREE_INCREMENTATION = 25;
 
@@ -21,17 +21,19 @@ const short VITESSE_IROBOT = 350;
 
 
 ////////////// VIDEOANALYZER ///////////// 
-const double PRECISION_TEMPLATEMATCHING = 0.8;
+
+static bool TEMPLATEMATCHING_CALIBRE = false;
+static double PRECISION_TEMPLATEMATCHING = 1; // Mis a 1 au début, puis modifié avec la calibration
 
 
 //////////////////// QT ////////////////// 
 const QString QT_DEFAULT_PORTIROBOT = "COM3";
-const QString QT_DEFAULT_MAXSCORE = "1000";
+const QString QT_DEFAULT_MAXSCORE = "30";
 const QString QT_DEFAULT_NBOBSTACLE = "1";
 const QString QT_DEFAULT_CAMERANUM = "0";
 
 
-const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(30);
+const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(100);
 
 
 //////////////// GAMEPLAY ///////////////
@@ -41,7 +43,7 @@ const int NB_POINTS_SIMULTANEE = 5;
 const int NB_QUEUE_NOCOLLISION = 4;
 // Le nombre de blocs de la queue que l'on doit sauter avant d'imprimer le prochain.
 // Si NB_QUEUE_SAUTE = 5, cela veut dire qu'une image sur 5 sera affichée.
-const int NB_QUEUE_SAUTE = 3;
+const int NB_QUEUE_SAUTE = 5;
 // Le nombre de blocs de la queue que l'on doit sauter lors de l'impression (espace entre le bot et la queue).
 const int NB_QUEUEIMPRIM_SAUTE = 2;
 // Le nombre de detections hors zone qui doivent être fait avant de déclarer le joueur perdant.

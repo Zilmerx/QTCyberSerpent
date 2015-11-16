@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
+#include <condition_variable>
 #include "NullException.h"
 
 template <class T>
@@ -63,7 +65,8 @@ private:
 	T ValueGet;
 	T ValueSet;
 
-   std::mutex MutexGet;
+   std::mutex mutex;
+   std::condition_variable cond_var;
 
 public:
 
@@ -82,27 +85,43 @@ public:
 
    void Clear()
    {
-      ValueSet = T;
-      ValueGet = T;
+      ValueSet = T();
+      ValueGet = T();
    }
 
    T Get()
    {
-      std::lock_guard<std::mutex> lock(MutexGet);
+      return ValueGet;
+   }
+
+   T WaitGet()
+   {
+      std::unique_lock<std::mutex> lock(mutex);
+      while (!HasValue) cond_var.wait(lock);
 
       return ValueGet;
    }
 
 	void Set(const T& value)
 	{
+      std::unique_lock<std::mutex> lock(mutex);
+
       ValueSet = value;
+      HasValue = true;
+
+      cond_var.notify_all();
 
 		Switch();
 	}
 
 	void Set(T&& value)
 	{
+      std::unique_lock<std::mutex> lock(mutex);
+
       ValueSet = std::move(value);
+      HasValue = true;
+
+      cond_var.notify_all();
 
 		Switch();
 	}

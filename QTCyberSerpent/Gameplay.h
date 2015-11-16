@@ -1,29 +1,35 @@
 #pragma once
 
 #include <vector>
+#include <mutex>
+
 #include "opencv2\core.hpp"
 #include "Utility.h"
 #include "Collision.h"
-#include "VideoAnalyzer.h"
+
+#include "DoubleBuffer.h"
+#include "ThreadWrapper.h"
 
 class CyberSerpent;
 
 class Gameplay
 {
-public:
-   friend class VideoAnalyzer;
-
 private:
+
    CyberSerpent* m_Game;
 
    int m_Score;
    int m_MaxScore;
+   int m_MaxObstacles;
 
    int m_CompteurHorsZone;
 
    const cv::Mat m_ImageObstacle;
    const cv::Mat m_ImagePoint;
    const cv::Mat m_ImageQueue;
+   const cv::Mat m_IRobotTemplate;
+
+   RectCollision m_IRobotRect;
 
    cv::Rect m_ZoneJeu;                    // Définis la zone de jeu.
 
@@ -34,6 +40,10 @@ private:
    std::vector<RectCollision> m_QueueToPrint; // Contient la queue qui est affichée à l'utilisateur.
 
 public:
+
+   DoubleBuffer_Copie<cv::Mat> m_Input;
+   DoubleBuffer_Copie<cv::Mat> m_Output;
+
 	Gameplay();
 
    void Initialize(CyberSerpent* link);
@@ -49,14 +59,30 @@ public:
    void DOWN();
 
 private:
-   // Thread qui fais différentes analyses en se servant de la position du IRobot, puis détecte les collisions.
-   // S'occupe aussi d'appeller les fonctions liées, en cas de collision.
-   void MettreAJourInfos(cv::Rect PositionIRobot);
 
-public:
-   // Modifie l'image en se servant des informations stockées dans cette instance de Gameplay.
-   cv::Mat ModifierImage(cv::Mat&& mat);
-private:
+   ThreadWrapper m_ImageSplitter;
+   void Split();
+
+   DoubleBuffer_Copie<cv::Mat> m_AAnalyser;
+   DoubleBuffer_Copie<cv::Mat> m_AAfficher;
+
+   // THREADS
+   ThreadWrapper m_Detection;
+   void Detection();
+
+   std::mutex m_MutexPos;
+
+   ThreadWrapper m_MettreAJourInfos;
+   void MettreAJourInfos();
+
+   std::mutex m_MutexInfos;
+
+   ThreadWrapper m_ModifierImage;
+   void ModifierImage();
+
+   // Fonctions
+   void SpawnObstacles(cv::Rect PositionIRobot);
+   void SpawnPoints(cv::Rect PositionIRobot);
 
    // Mets "amount" cv::Rect dans le tableau, qui ont un x,y entre "0" et "MAPSIZE_X"/"MAPSIZE_Y".
    template<class T>
@@ -70,7 +96,7 @@ private:
 
    void HorsZone();
 
-   void AddQueueInvis(cv::Rect PositionIRobot);
+   void AddQueueInvis();
 
    int GetQueuePosFromScore(int score) const;
 };

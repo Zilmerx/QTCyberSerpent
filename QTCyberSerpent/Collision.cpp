@@ -4,15 +4,15 @@
 
 Collision::Collision()
 {
-   x = 0;
-   y = 0;
+   pos.x = 0;
+   pos.y = 0;
 }
 
 Collision::Collision(cv::Mat image)
    : m_Image{ image }
 {
-   x = 0;
-   y = 0;
+   pos.x = 0;
+   pos.y = 0;
 }
 
 bool Collision::operator==(const Collision& img1) const
@@ -20,16 +20,16 @@ bool Collision::operator==(const Collision& img1) const
    return (m_Image.data == img1.m_Image.data);
 }
 
-cv::Mat Collision::DrawVec(std::vector<RectCollision>& vec, cv::Mat&& DrawOn)
+cv::Mat Collision::DrawVec(const std::vector<RectCollision>& vec, cv::Mat&& DrawOn)
 {
    for (int i = 0; i < vec.size(); ++i)
    {
-      vec[i].Draw(std::move(DrawOn));
+      DrawOn = vec[i].Draw(std::move(DrawOn));
    }
    return std::move(DrawOn);
 }
 
-cv::Mat Collision::DrawVec(std::vector<CircleCollision>& vec, cv::Mat&& DrawOn)
+cv::Mat Collision::DrawVec(const std::vector<CircleCollision>& vec, cv::Mat&& DrawOn)
 {
    for (int i = 0; i < vec.size(); ++i)
    {
@@ -50,10 +50,11 @@ cv::Mat Collision::Draw(cv::Mat&& DrawOn) const
 
          if (val != COULEUR_NONPRINT)
          {
-            DrawOn.at<cv::Vec3b>(this->y + iy, this->x + ix) = val;
+            DrawOn.at<cv::Vec3b>(pos.y + iy, pos.x + ix) = val;
          }
       }
    }
+
    return DrawOn;
 }
  
@@ -74,17 +75,17 @@ RectCollision::RectCollision(cv::Mat image)
 
 bool RectCollision::Touches(const cv::Rect& rect) const
 {
-   return (x < rect.x + rect.width
-      && x + width > rect.x
-      && y < rect.y + rect.width
-      && y + width > rect.y);
+   return (pos.x < rect.x + rect.width
+      && pos.x + width > rect.x
+      && pos.y < rect.y + rect.width
+      && pos.y + width > rect.y);
 }
 
 bool RectCollision::Touches(const CircleCollision& circ) const
 {
    cv::Point2d circleDistance;
-   circleDistance.x = abs(circ.x - (circ.rayon/2) - x);
-   circleDistance.y = abs(circ.y - (circ.rayon/2) - y);
+   circleDistance.x = abs(circ.pos.x - (circ.rayon / 2) - pos.x);
+   circleDistance.y = abs(circ.pos.y - (circ.rayon / 2) - pos.y);
 
    if (circleDistance.x > (width / 2 + circ.rayon)) { return false; }
    if (circleDistance.y > (height / 2 + circ.rayon)) { return false; }
@@ -100,7 +101,7 @@ bool RectCollision::Touches(const CircleCollision& circ) const
 
 RectCollision::operator cv::Rect() const
 {
-   return cv::Rect(x, y, width, height);
+   return cv::Rect(pos.x, pos.y, width, height);
 }
 
 
@@ -119,8 +120,8 @@ CircleCollision::CircleCollision(cv::Mat image)
 bool CircleCollision::Touches(const cv::Rect& rect) const
 {
    RectCollision rectcol;
-   rectcol.x = rect.x;
-   rectcol.y = rect.y;
+   rectcol.pos.x = rect.x;
+   rectcol.pos.y = rect.y;
    rectcol.height = rect.height;
    rectcol.width = rect.width;
 

@@ -36,6 +36,9 @@
     <Filter Include="Header Files\Qt">
       <UniqueIdentifier>{d7e8424e-6fe8-4262-ad14-e64a561edfff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Gameplay">
+      <UniqueIdentifier>{7abc2d72-5539-4aa5-9932-d6ff506c7a71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="qtcyberserpent.cpp">
@@ -127,6 +130,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Collision.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadWrapper.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,6 +8,7 @@
 #include "opencv2\highgui.hpp"
 #include "opencv2\imgproc.hpp"
 
+#include "Gameplay.h"
 #include "DoubleBuffer.h"
 #include "Collision.h"
 
@@ -16,12 +17,14 @@ class CyberSerpent;
 
 class VideoAnalyzer
 {
+   friend class CyberSerpent;
+
+   Gameplay m_Gameplay;
 	CyberSerpent* m_Game;
-	std::string m_CamNumber;
-   cv::Mat m_IRobotTemplate;
+
+   cv::VideoCapture cap;
 
 public:
-   RectCollision m_IRobotRect;
 	VideoAnalyzer();
 
 	void Initialize(CyberSerpent* linked);
@@ -32,13 +35,9 @@ public:
 
 private:
 
-   bool RunCaptureImage;
-   std::thread ThreadCaptureImage;
+   ThreadWrapper m_CaptureImage;
    void CaptureImage();
 
-   DoubleBuffer_Copie<cv::Mat> m_ImageLue;
-
-   bool RunAnalyse;
-   std::thread ThreadAnalyse;
-   void Analyse();
+   ThreadWrapper m_Affichage;
+   void Affichage();
 };

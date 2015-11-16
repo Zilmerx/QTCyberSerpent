@@ -10,7 +10,13 @@ ControleIRobot::ControleIRobot(short vitesse)
 
 bool ControleIRobot::Start(const char* port)
 {
-	return m_IRobotDriver.Connecter(port);
+   if (m_IRobotDriver.Connecter(port))
+   {
+      DegreeTournure = 0;
+      ComputeNewSpeed();
+      return true;
+   }
+   return false;
 }
 
 void ControleIRobot::Stop()
@@ -20,7 +26,15 @@ void ControleIRobot::Stop()
 }
 
 
+void ControleIRobot::OnUpArrowKeyPress()
+{
+   PRECISION_TEMPLATEMATCHING += 0.05;
+}
 
+void ControleIRobot::OnDownArrowKeyPress()
+{
+   PRECISION_TEMPLATEMATCHING -= 0.05;
+}
 
 void ControleIRobot::OnLeftArrowKeyPress()
 {

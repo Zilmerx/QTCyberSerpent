@@ -139,11 +139,7 @@ void QTCyberSerpent::UI_AfficherWin()
 }
 void QTCyberSerpent::UI_AfficherLose()
 {
-   if (IS_DEBUG)
-   {
-      UI_PutMessageInList("PERDU");
-   }
-   else
+   if (!IS_DEBUG)
    {
       updater->afficherLose();
    }
@@ -195,7 +191,7 @@ void QTCyberSerpent::UI_CB_UpdateAfficherLose()
 void QTCyberSerpent::UI_CB_AddMessageInList()
 {
    std::lock_guard<std::recursive_mutex> lock(updater->m_MutexMessage);
-   for (int i = 0; i < updater->m_Vector.size() && i < 30; ++i)
+   for (int i = 0; i < updater->m_Vector.size(); ++i)
    {
       QListWidgetItem *item = new QListWidgetItem(updater->m_Vector[i]);
       item->setFlags(Qt::ItemIsEnabled);

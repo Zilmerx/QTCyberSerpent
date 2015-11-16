@@ -7,7 +7,7 @@ class CircleCollision;
 class Collision
 {
 public:
-   int x, y;
+   cv::Point pos;
    cv::Mat m_Image;
 
    Collision();
@@ -20,11 +20,11 @@ public:
 
    virtual bool Touches(const CircleCollision& circ) const = 0;
 
-   static cv::Mat DrawVec(std::vector<RectCollision>& vec, cv::Mat&& DrawOn);
+   static cv::Mat DrawVec(const std::vector<RectCollision>& vec, cv::Mat&& DrawOn);
 
-   static cv::Mat DrawVec(std::vector<CircleCollision>& vec, cv::Mat&& DrawOn);
+   static cv::Mat DrawVec(const std::vector<CircleCollision>& vec, cv::Mat&& DrawOn);
 
-   cv::Mat Collision::Draw(cv::Mat&& DrawOn) const;
+   cv::Mat Draw(cv::Mat&& DrawOn) const;
 };
 
 class RectCollision : public Collision

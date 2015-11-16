@@ -22,7 +22,6 @@ class CyberSerpent
 	friend VideoAnalyzer;
    friend Gameplay;
 
-	Gameplay m_Gameplay;
 	ControleIRobot m_IRobot;
 	QApplication m_QTApplication;
 	QTCyberSerpent m_QTCyberSerpent;

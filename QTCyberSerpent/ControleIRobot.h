@@ -19,6 +19,8 @@ public:
 	bool Start(const char* port);
 	void Stop();
 
+   void OnUpArrowKeyPress();
+   void OnDownArrowKeyPress();
 	void OnLeftArrowKeyPress();
 	void OnRightArrowKeyPress();
 

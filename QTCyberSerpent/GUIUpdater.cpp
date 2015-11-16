@@ -21,6 +21,12 @@ void GUIUpdater::newMessageInList(const QString message)
 {
    std::lock_guard<std::recursive_mutex> lock(m_MutexMessage);
    m_Vector.push_back(message);
+
+   if (m_Vector.size() > 30)
+   {
+      m_Vector.erase(m_Vector.begin());
+   }
+
    if ((std::chrono::steady_clock::now() - lastRequestMessage) >= REFRESH_INTERVAL_MESSAGE)
    {
       lastRequestMessage = std::chrono::steady_clock::now();

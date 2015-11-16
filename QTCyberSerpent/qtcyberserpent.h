@@ -27,6 +27,7 @@ class QTCyberSerpent : public QMainWindow
 {
    Q_OBJECT
 
+   friend class VideoAnalyzer;
    friend class CyberSerpent;
    friend class Gameplay;
 
