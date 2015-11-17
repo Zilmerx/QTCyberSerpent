@@ -139,7 +139,11 @@ void QTCyberSerpent::UI_AfficherWin()
 }
 void QTCyberSerpent::UI_AfficherLose()
 {
-   if (!IS_DEBUG)
+   if (IS_DEBUG)
+   {
+      //UI_PutMessageInList("PERDU");
+   }
+   else
    {
       updater->afficherLose();
    }

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <mutex>
+#include <chrono>
 
 #include "opencv2\core.hpp"
 #include "Utility.h"
@@ -9,6 +10,7 @@
 
 #include "DoubleBuffer.h"
 #include "ThreadWrapper.h"
+#include "Settings.h"
 
 class CyberSerpent;
 
@@ -33,6 +35,7 @@ private:
 
    cv::Rect m_ZoneJeu;                    // Définis la zone de jeu.
 
+   std::vector<RectCollision> m_Cones;
    std::vector<RectCollision> m_Obstacles;    // Contient des obstacles.
    std::vector<CircleCollision> m_Points;     // Contient les trucs à manger.
 
@@ -82,7 +85,7 @@ private:
 
    // Fonctions
    void SpawnObstacles(cv::Rect PositionIRobot);
-   void SpawnPoints(cv::Rect PositionIRobot);
+   CircleCollision SpawnPoint(cv::Rect PositionIRobot);
 
    // Mets "amount" cv::Rect dans le tableau, qui ont un x,y entre "0" et "MAPSIZE_X"/"MAPSIZE_Y".
    template<class T>
@@ -96,6 +99,7 @@ private:
 
    void HorsZone();
 
+   std::chrono::steady_clock::time_point lastQueue;
    void AddQueueInvis();
 
    int GetQueuePosFromScore(int score) const;
