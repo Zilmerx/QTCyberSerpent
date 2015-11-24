@@ -1,3 +1,6 @@
 #pragma once
 
-struct NullException{};
+struct NullException
+{
+   NullException() = default;
+};

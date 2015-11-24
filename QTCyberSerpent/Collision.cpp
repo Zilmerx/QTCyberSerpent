@@ -17,7 +17,7 @@ Collision::Collision(cv::Mat image)
 
 bool Collision::operator==(const Collision& img1) const
 {
-   return (m_Image.m_Image.data == img1.m_Image.m_Image.data);
+   return (m_Image.data == img1.m_Image.data);
 }
 
 cv::Mat Collision::DrawVec(const std::vector<RectCollision>& vec, cv::Mat&& DrawOn)
@@ -40,9 +40,21 @@ cv::Mat Collision::DrawVec(const std::vector<CircleCollision>& vec, cv::Mat&& Dr
 
 cv::Mat Collision::Draw(cv::Mat&& DrawOn) const
 {
-   m_Image.m_Image.copyTo(DrawOn(cv::Rect(pos.x, pos.y, m_Image.m_Image.rows, m_Image.m_Image.cols)),
-      m_Image.m_Mask);
-  
+   for (int iy = 0; iy < m_Image.rows; ++iy)
+   {
+      for (int ix= 0; ix < m_Image.cols; ++ix)
+      {
+         cv::Vec3b val;
+
+         val = m_Image.at<cv::Vec3b>(iy, ix);
+
+         if (val != COULEUR_NONPRINT)
+         {
+            DrawOn.at<cv::Vec3b>(pos.y + iy, pos.x + ix) = val;
+         }
+      }
+   }
+
    return DrawOn;
 }
  
@@ -94,20 +106,11 @@ bool RectCollision::Touches(const CircleCollision& circ) const
    return (cornerDistance_sq <= pow(circ.rayon, 2));
 }
 
-RectCollision& RectCollision::operator = (RectCollision& other)
-{
-   std::swap(pos, other.pos);
-   std::swap(m_Image, other.m_Image);
-   std::swap(width, other.width);
-   std::swap(height, other.height);
-
-   return *this;
-}
-
 RectCollision::operator cv::Rect() const
 {
    return cv::Rect(pos.x, pos.y, width, height);
 }
+
 
 CircleCollision::CircleCollision()
    : Collision()
@@ -135,13 +138,4 @@ bool CircleCollision::Touches(const cv::Rect& rect) const
 bool CircleCollision::Touches(const CircleCollision& circ) const
 {
    return true;
-}
-
-CircleCollision& CircleCollision::operator = (CircleCollision& other)
-{
-   std::swap(pos, other.pos);
-   std::swap(m_Image, other.m_Image);
-   std::swap(rayon, other.rayon);
-
-   return *this;
 }

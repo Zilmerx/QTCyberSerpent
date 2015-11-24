@@ -1,7 +1,5 @@
 #pragma once
 #include "opencv2\core.hpp"
-#include "MaskedMat.h"
-#include <memory>
 
 class RectCollision;
 class CircleCollision;
@@ -10,7 +8,7 @@ class Collision
 {
 public:
    cv::Point pos;
-   MaskedMat m_Image;
+   cv::Mat m_Image;
 
    Collision();
 
@@ -45,8 +43,6 @@ public:
    bool Touches(const CircleCollision& circ) const override;
 
    operator cv::Rect() const;
-
-   RectCollision& operator=(RectCollision& other);
 };
 
 class CircleCollision : public Collision
@@ -61,6 +57,4 @@ public:
    bool Touches(const cv::Rect& rect) const override;
 
    bool Touches(const CircleCollision& circ) const override;
-
-   CircleCollision& operator=(CircleCollision& other);
 };

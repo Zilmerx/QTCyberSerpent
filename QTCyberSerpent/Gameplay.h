@@ -5,7 +5,6 @@
 #include <chrono>
 
 #include "opencv2\core.hpp"
-
 #include "Utility.h"
 #include "Collision.h"
 
@@ -27,10 +26,10 @@ private:
 
    int m_CompteurHorsZone;
 
-   cv::Mat m_ImageObstacle;
-   cv::Mat m_ImagePoint;
-   cv::Mat m_ImageQueue;
-   cv::Mat m_IRobotTemplate;
+   const cv::Mat m_ImageObstacle;
+   const cv::Mat m_ImagePoint;
+   const cv::Mat m_ImageQueue;
+   const cv::Mat m_IRobotTemplate;
 
    RectCollision m_IRobotRect;
 
