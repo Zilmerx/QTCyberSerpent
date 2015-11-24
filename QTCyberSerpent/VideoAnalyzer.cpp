@@ -53,7 +53,7 @@ void VideoAnalyzer::CaptureImage()
    }
    else
    {
-      m_Gameplay.m_Input.Set(std::move(cv::imread("image.bmp", CV_32FC1)));
+      m_Gameplay.m_Input.Set(std::move(cv::imread("ImageFond.bmp", CV_32FC1)));
    }
 }
 
