@@ -135,5 +135,8 @@
     <ClInclude Include="ThreadWrapper.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="MaskedMat.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
