@@ -5,7 +5,8 @@
 
 VideoAnalyzer::VideoAnalyzer() 
    :m_CaptureImage{ std::bind(&VideoAnalyzer::CaptureImage, this) },
-   m_Affichage{ std::bind(&VideoAnalyzer::Affichage, this) }
+   m_Affichage{ std::bind(&VideoAnalyzer::Affichage, this) },
+   m_Gameplay{}
 {
 }
 

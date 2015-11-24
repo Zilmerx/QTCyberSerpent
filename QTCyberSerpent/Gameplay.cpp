@@ -1,7 +1,10 @@
 #include "Gameplay.h"
 #include "Utility.h"
-#include "opencv2\highgui.hpp"
 #include "CyberSerpent.h"
+
+#include "opencv2\core.hpp"
+#include "opencv2\highgui.hpp"
+#include "opencv2\imgproc.hpp"
 
 // PUBLIC
 
@@ -10,11 +13,6 @@ Gameplay::Gameplay()
    :m_Score{ 0 },
    m_MaxScore{ 0 },
    m_Game{ nullptr },
-   m_IRobotRect{ cv::imread("templateIRobot.bmp", CV_32FC1) },
-   m_ImageObstacle{ cv::imread("ImageObstacle.bmp", CV_32FC1) },
-   m_ImagePoint{ cv::imread("ImagePoint.bmp", CV_32FC1) },
-   m_ImageQueue{ cv::imread("ImageQueue.bmp", CV_32FC1) },
-   m_IRobotTemplate{ cv::imread("templateIRobot.bmp", CV_32FC1) },
    m_ImageSplitter{ std::bind(&Gameplay::Split, this) },
    m_Detection{ std::bind(&Gameplay::Detection ,this) },
    m_MettreAJourInfos{ std::bind(&Gameplay::MettreAJourInfos, this) },
@@ -45,6 +43,12 @@ void Gameplay::DOWN()
 void Gameplay::Initialize(CyberSerpent* link)
 {
    m_Game = link;
+
+   m_IRobotTemplate = cv::imread("./templateIRobot.bmp", CV_32FC1);
+   m_ImageObstacle = cv::imread("./imageObstacle.bmp", CV_32FC1);
+   m_ImagePoint = cv::imread("./imagePoint.bmp", CV_32FC1);
+   m_ImageQueue = cv::imread("./imageQueue.bmp", CV_32FC1);
+   m_IRobotRect = RectCollision(cv::imread("./templateIRobot.bmp", CV_32FC1));
 
    QRect rect = m_Game->m_QTCyberSerpent.m_LabelGameplay->geometry();
    m_ZoneJeu = cv::Rect(0, 0, rect.width(), rect.height());
@@ -245,7 +249,7 @@ void Gameplay::Detection()
          double MinVal = 0, MaxVal = 0;
          cv::Point MinLoc, MaxLoc;
 
-         cv::matchTemplate(mat, m_IRobotRect.m_Image, ImageResultat, CV_TM_CCOEFF);
+         cv::matchTemplate(mat, m_IRobotRect.m_Image.m_Image, ImageResultat, CV_TM_CCOEFF);
 
          cv::normalize(ImageResultat, ImageResultat, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
 
@@ -343,9 +347,9 @@ void Gameplay::ModifierImage()
    std::lock_guard<std::mutex> lock(m_MutexInfos);
 
    cv::Mat mat;
-   AddQueueInvis();
 
    mat = m_AAfficher.WaitGet();
+   AddQueueInvis();
 
    if (!Utility::MatIsNull(mat))
    {

@@ -56,4 +56,5 @@ const cv::Vec3b COULEUR_CONE_MAX = cv::Vec3b{ 0, 135, 255 };
 
 
 //////////////// COLLISION ///////////////
-const cv::Vec3b COULEUR_NONPRINT = cv::Vec3b{ 0, 255, 0 };
+const cv::Vec3b COULEUR_NONPRINT_MIN = cv::Vec3b{ 0, 0, 0 };
+const cv::Vec3b COULEUR_NONPRINT_MAX = cv::Vec3b{ 255, 255, 255 };
