@@ -34,8 +34,6 @@ public:
 
    RectCollision();
 
-   RectCollision(cv::Rect rect);
-
    RectCollision(cv::Mat image);
 
    bool Touches(const cv::Rect& rect) const override;

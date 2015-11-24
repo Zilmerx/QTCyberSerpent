@@ -73,13 +73,6 @@ RectCollision::RectCollision(cv::Mat image)
    height = image.rows;
 }
 
-RectCollision::RectCollision(cv::Rect rect)
-{
-   pos = rect.tl();
-   width = rect.width;
-   height = rect.height;
-}
-
 bool RectCollision::Touches(const cv::Rect& rect) const
 {
    return (pos.x < rect.x + rect.width

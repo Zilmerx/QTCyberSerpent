@@ -2,6 +2,7 @@
 #include "Utility.h"
 #include "opencv2\highgui.hpp"
 #include "CyberSerpent.h"
+#include "Settings.h"
 
 // PUBLIC
 
@@ -108,32 +109,35 @@ void Gameplay::SpawnObstacles(cv::Rect PositionIRobot)
    }
 }
 
-CircleCollision Gameplay::SpawnPoint(cv::Rect PositionIRobot)
+void Gameplay::SpawnPoints(cv::Rect PositionIRobot)
 {
-   CircleCollision point;
-
-   bool stop = false;
-   while (!stop)
+   while (m_Points.size() < NB_POINTS_SIMULTANEE)
    {
-      stop = true;
-      point = RandCollision(CircleCollision(m_ImagePoint));
+      CircleCollision point;
 
-      for (RectCollision rect : m_Obstacles)
+      bool stop = false;
+      while (!stop)
       {
-         if (rect.Touches(point))
+         stop = true;
+         point = RandCollision(CircleCollision(m_ImagePoint));
+
+         for (RectCollision rect : m_Obstacles)
+         {
+            if (rect.Touches(point))
+            {
+               stop = false;
+               break;
+            }
+         }
+
+         if (point.Touches(PositionIRobot))
          {
             stop = false;
-            break;
          }
       }
 
-      if (point.Touches(PositionIRobot))
-      {
-         stop = false;
-      }
+      m_Points.push_back(point);
    }
-
-   return point;
 }
 
 template<class T>
@@ -189,19 +193,14 @@ void Gameplay::HorsZone()
 
 void Gameplay::AddQueueInvis()
 {
-   if ((std::chrono::steady_clock::now() - lastQueue) >= REFRESH_INTERVAL_QUEUE)
+	RectCollision img = RectCollision(m_ImageQueue);
+   Utility::PutRect1InCenterOfRect2(img, m_IRobotRect);
+
+	m_QueueSerpent.push_back(img);
+
+   if (m_QueueSerpent.size() > GetQueuePosFromScore(m_MaxScore)) // Pour prévenir un éventuel overflow...
    {
-      lastQueue = std::chrono::steady_clock::now();
-
-      RectCollision img = RectCollision(m_ImageQueue);
-      Utility::PutRect1InCenterOfRect2(img, m_IRobotRect);
-
-      m_QueueSerpent.push_back(img);
-
-      if (m_QueueSerpent.size() > GetQueuePosFromScore(m_MaxScore)) // Pour prévenir un éventuel overflow...
-      {
-         m_QueueSerpent.erase(m_QueueSerpent.begin());
-      }
+      m_QueueSerpent.erase(m_QueueSerpent.begin());
    }
 }
 
@@ -229,9 +228,11 @@ void Gameplay::Split()
 
 void Gameplay::Detection()
 {
+   try
+   {
    cv::Mat mat;
 
-   mat = m_AAnalyser.WaitGet();
+   mat = m_AAnalyser.Get();
    
    if (!Utility::MatIsNull(mat))
    {
@@ -263,23 +264,14 @@ void Gameplay::Detection()
             m_CompteurHorsZone = 0;
          }
       }
-
-      cv::Mat inrange_output;
-
-      cv::inRange(mat, COULEUR_CONE_MIN, COULEUR_CONE_MAX, inrange_output);
-
-      std::vector<std::vector<cv::Point>> contours;
-      findContours(inrange_output, contours, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
-
-      std::vector<std::vector<cv::Point>> contours_poly(contours.size());
-
-      m_Cones.clear();
-      for (int i = 0; i < contours.size(); i++)
-      {
-         approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
-         m_Cones.push_back(RectCollision(cv::boundingRect(cv::Mat(contours_poly[i]))));
-      }
    }
+}
+catch (cv::Exception e)
+{
+   std::string s = e.what();
+   std::wstring widestr = std::wstring(s.begin(), s.end());
+   OutputDebugString(widestr.c_str());
+}
 }
 
 void Gameplay::MettreAJourInfos()
@@ -290,14 +282,6 @@ void Gameplay::MettreAJourInfos()
    for (int i = 0; i < m_Obstacles.size(); ++i)
    {
       if (m_Obstacles[i].Touches(m_IRobotRect))
-      {
-         m_Game->m_QTCyberSerpent.UI_AfficherLose();
-      }
-   }
-
-   for (int i = 0; i < m_Cones.size(); ++i)
-   {
-      if (m_Cones[i].Touches(m_IRobotRect))
       {
          m_Game->m_QTCyberSerpent.UI_AfficherLose();
       }
@@ -315,7 +299,7 @@ void Gameplay::MettreAJourInfos()
    {
       if (it->Touches(m_IRobotRect))
       {
-         std::swap(*it,SpawnPoint(m_IRobotRect));
+         it = m_Points.erase(it);
 
          IncrementScore(); // Check si gagné.
       }
@@ -331,10 +315,7 @@ void Gameplay::MettreAJourInfos()
          m_QueueToPrint.push_back(m_QueueSerpent[pos]);
    }
 
-   while (m_Points.size() < NB_POINTS_SIMULTANEE)
-   {
-      m_Points.push_back(SpawnPoint(m_IRobotRect));
-   }
+   SpawnPoints(m_IRobotRect);
    SpawnObstacles(m_IRobotRect);
 }
 
