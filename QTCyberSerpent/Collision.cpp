@@ -33,7 +33,7 @@ cv::Mat Collision::DrawVec(const std::vector<CircleCollision>& vec, cv::Mat&& Dr
 {
    for (int i = 0; i < vec.size(); ++i)
    {
-      vec[i].Draw(std::move(DrawOn));
+      DrawOn = vec[i].Draw(std::move(DrawOn));
    }
    return std::move(DrawOn);
 }
@@ -42,7 +42,7 @@ cv::Mat Collision::Draw(cv::Mat&& DrawOn) const
 {
    for (int iy = 0; iy < m_Image.rows; ++iy)
    {
-      for (int ix= 0; ix < m_Image.cols; ++ix)
+      for (int ix = 0; ix < m_Image.cols; ++ix)
       {
          cv::Vec3b val;
 
@@ -73,6 +73,13 @@ RectCollision::RectCollision(cv::Mat image)
    height = image.rows;
 }
 
+RectCollision::RectCollision(cv::Rect rect)
+{
+   pos = rect.tl();
+   width = rect.width;
+   height = rect.height;
+}
+
 bool RectCollision::Touches(const cv::Rect& rect) const
 {
    return (pos.x < rect.x + rect.width
@@ -97,6 +104,16 @@ bool RectCollision::Touches(const CircleCollision& circ) const
       pow((circleDistance.y - height / 2), 2);
 
    return (cornerDistance_sq <= pow(circ.rayon, 2));
+}
+
+RectCollision& RectCollision::operator=(RectCollision& other)
+{
+   std::swap(pos, other.pos);
+   std::swap(m_Image, other.m_Image);
+   std::swap(width, other.width);
+   std::swap(height, other.height);
+
+   return *this;
 }
 
 RectCollision::operator cv::Rect() const
@@ -131,4 +148,13 @@ bool CircleCollision::Touches(const cv::Rect& rect) const
 bool CircleCollision::Touches(const CircleCollision& circ) const
 {
    return true;
+}
+
+CircleCollision& CircleCollision::operator=(CircleCollision& other)
+{
+   std::swap(pos, other.pos);
+   std::swap(m_Image, other.m_Image);
+   std::swap(rayon, other.rayon);
+
+   return *this;
 }

@@ -34,6 +34,8 @@ public:
 
    RectCollision();
 
+   RectCollision(cv::Rect rect);
+
    RectCollision(cv::Mat image);
 
    bool Touches(const cv::Rect& rect) const override;
@@ -41,6 +43,8 @@ public:
    bool Touches(const CircleCollision& circ) const override;
 
    operator cv::Rect() const;
+
+   RectCollision& operator=(RectCollision& other);
 };
 
 class CircleCollision : public Collision
@@ -55,4 +59,6 @@ public:
    bool Touches(const cv::Rect& rect) const override;
 
    bool Touches(const CircleCollision& circ) const override;
+
+   CircleCollision& operator=(CircleCollision& other);
 };
