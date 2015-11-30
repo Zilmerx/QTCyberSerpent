@@ -141,7 +141,7 @@ void QTCyberSerpent::UI_AfficherLose()
 {
    if (IS_DEBUG)
    {
-      //UI_PutMessageInList("PERDU");
+      UI_PutMessageInList("PERDU");
    }
    else
    {

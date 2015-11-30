@@ -8,9 +8,7 @@ Le 15 Septembre 2015.
 
 int main(int argc, char *argv[])
 {
-   CyberSerpent jeu{ argc, argv };
+   std::unique_ptr<CyberSerpent> jeu = CyberSerpent::Creer_CyberSerpent(argc, argv);
 
-   jeu.Initialize();
-
-   jeu.Afficher();
+   jeu->Afficher();
 }

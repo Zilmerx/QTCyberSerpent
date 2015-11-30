@@ -29,6 +29,13 @@ bool CyberSerpent::Initialize()
 	return true;
 }
 
+std::unique_ptr<CyberSerpent> CyberSerpent::Creer_CyberSerpent(int argc, char *argv[])
+{
+   std::unique_ptr<CyberSerpent> p{ new CyberSerpent{ argc, argv } };
+   p->Initialize();
+   return p;
+}
+
 void CyberSerpent::Start()
 {
    if (m_State < CyberSerpentState::Initialized)

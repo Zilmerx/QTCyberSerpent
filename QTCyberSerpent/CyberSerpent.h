@@ -31,17 +31,21 @@ class CyberSerpent
    bool m_IsExecuting;
 public:
 
-	CyberSerpent(int argc, char *argv[]);
-	~CyberSerpent();
-
-	bool Initialize();
-
-	void Start();
+   static std::unique_ptr<CyberSerpent> Creer_CyberSerpent(int argc, char *argv[]);
 
    void Afficher();
+
+   ~CyberSerpent();
+
+private:
+
+   CyberSerpent(int argc, char *argv[]);
+
+   bool Initialize();
+
+	void Start();
 
    void Stop();
 
    void Delete();
-
 };

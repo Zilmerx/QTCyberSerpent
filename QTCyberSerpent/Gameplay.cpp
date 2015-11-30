@@ -121,7 +121,7 @@ void Gameplay::SpawnPoints(cv::Rect PositionIRobot)
          stop = true;
          point = RandCollision(CircleCollision(m_ImagePoint));
 
-         for (RectCollision rect : m_Obstacles)
+         for (const RectCollision& rect : m_Obstacles)
          {
             if (rect.Touches(point))
             {

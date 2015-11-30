@@ -43,7 +43,7 @@ const int NB_POINTS_SIMULTANEE = 5;
 const int NB_QUEUE_NOCOLLISION = 6;
 // Le nombre de blocs de la queue que l'on doit sauter avant d'imprimer le prochain.
 // Si NB_QUEUE_SAUTE = 5, cela veut dire qu'une image sur 5 sera affichée.
-const int NB_QUEUE_SAUTE = 10;
+const int NB_QUEUE_SAUTE = 80;
 // Le nombre de blocs de la queue que l'on doit sauter lors de l'impression (espace entre le bot et la queue).
 const int NB_QUEUEIMPRIM_SAUTE = 3;
 // Le nombre de detections hors zone qui doivent être fait avant de déclarer le joueur perdant.
