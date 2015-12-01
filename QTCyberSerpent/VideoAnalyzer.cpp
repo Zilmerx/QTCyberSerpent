@@ -19,7 +19,7 @@ void VideoAnalyzer::Initialize(CyberSerpent* linked)
 
 void VideoAnalyzer::Start(int camNum)
 {
-   cap.open(camNum);
+   cap = cv::VideoCapture(camNum);
 
    m_CaptureImage.Start();
    m_Affichage.Start();
@@ -33,6 +33,8 @@ void VideoAnalyzer::Stop()
    m_CaptureImage.Stop();
 
    m_Gameplay.Stop();
+
+   cap.release();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -41,19 +43,21 @@ void VideoAnalyzer::Stop()
 
 void VideoAnalyzer::CaptureImage()
 {
+   cv::Mat frame;
+
    // Lecture d'une nouvelle image.
-   if (!IS_DEBUG)
+   if (cap.isOpened())
    {
-      if (cap.isOpened())
-      {
-         cv::Mat mat;
-         cap >> mat;
-         m_Gameplay.m_Input.Set(mat);
-      }
+      cap >> frame;
    }
    else
    {
-      m_Gameplay.m_Input.Set(std::move(cv::imread("image.bmp", CV_32FC1)));
+      frame = cv::imread("image.bmp", IMAGETYPE);
+   }
+
+   if (!Utility::MatIsNull(frame))
+   {
+      m_Gameplay.m_Input.Set(std::move(frame));
    }
 }
 

@@ -84,8 +84,8 @@ bool RectCollision::Touches(const cv::Rect& rect) const
 {
    return (pos.x < rect.x + rect.width
       && pos.x + width > rect.x
-      && pos.y < rect.y + rect.width
-      && pos.y + width > rect.y);
+      && pos.y < rect.y + rect.height
+      && pos.y + height > rect.y);
 }
 
 bool RectCollision::Touches(const CircleCollision& circ) const

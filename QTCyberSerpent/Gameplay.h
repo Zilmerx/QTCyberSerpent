@@ -33,6 +33,7 @@ private:
 
    cv::Rect m_ZoneJeu;                    // Définis la zone de jeu.
 
+   std::vector<RectCollision> m_Cones;
    std::vector<RectCollision> m_Obstacles;    // Contient des obstacles.
    std::vector<CircleCollision> m_Points;     // Contient les trucs à manger.
 
@@ -70,6 +71,7 @@ private:
    ThreadWrapper m_Detection;
    void Detection();
 
+   std::mutex m_MutexCones;
    std::mutex m_MutexPos;
 
    ThreadWrapper m_MettreAJourInfos;

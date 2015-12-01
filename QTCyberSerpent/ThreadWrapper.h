@@ -1,5 +1,6 @@
 #include <thread>
 #include <functional>
+#include "Utility.h"
 
 class ThreadWrapper
 {
@@ -11,7 +12,14 @@ class ThreadWrapper
    {
       while (m_Run)
       {
-         m_Func();
+         try
+         {
+            m_Func();
+         }
+         catch (cv::Exception e)
+         {
+            Utility::Clog(e.what());
+         }
       }
    }
 
@@ -26,6 +34,11 @@ public:
    {
       m_Run = true;
       m_Thread = std::thread(&ThreadWrapper::Do, this);
+   }
+
+   bool IsRunning()
+   {
+      return m_Run;
    }
 
    void Stop()

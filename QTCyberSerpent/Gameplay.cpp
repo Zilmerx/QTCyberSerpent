@@ -11,16 +11,18 @@ Gameplay::Gameplay()
    :m_Score{ 0 },
    m_MaxScore{ 0 },
    m_Game{ nullptr },
-   m_IRobotRect{ cv::imread("templateIRobot.bmp", CV_32FC1) },
-   m_ImageObstacle{ cv::imread("ImageObstacle.bmp", CV_32FC1) },
-   m_ImagePoint{ cv::imread("ImagePoint.bmp", CV_32FC1) },
-   m_ImageQueue{ cv::imread("ImageQueue.bmp", CV_32FC1) },
-   m_IRobotTemplate{ cv::imread("templateIRobot.bmp", CV_32FC1) },
+   m_IRobotRect{ cv::imread("templateIRobot.bmp", IMAGETYPE) },
+   m_ImageObstacle{ cv::imread("ImageObstacle.bmp", IMAGETYPE) },
+   m_ImagePoint{ cv::imread("ImagePoint.bmp", IMAGETYPE) },
+   m_ImageQueue{ cv::imread("ImageQueue.bmp", IMAGETYPE) },
+   m_IRobotTemplate{ cv::imread("templateIRobot.bmp", IMAGETYPE) },
    m_ImageSplitter{ std::bind(&Gameplay::Split, this) },
    m_Detection{ std::bind(&Gameplay::Detection ,this) },
    m_MettreAJourInfos{ std::bind(&Gameplay::MettreAJourInfos, this) },
    m_ModifierImage{ std::bind(&Gameplay::ModifierImage, this) }
 {
+   m_IRobotRect.pos.x = -1;
+   m_IRobotRect.pos.y = -1;
 }
 
 #pragma endregion
@@ -53,6 +55,9 @@ void Gameplay::Initialize(CyberSerpent* link)
 
 void Gameplay::Start(int MaxScore, int NbObstacles)
 {
+   m_IRobotRect.pos.x = -1;
+   m_IRobotRect.pos.y = -1;
+
    m_Score = 0;
    m_MaxScore = MaxScore;
    m_MaxObstacles = NbObstacles;
@@ -78,7 +83,8 @@ void Gameplay::Stop()
    m_AAfficher.Clear();
    m_AAnalyser.Clear();
 
-   //m_Obstacles.clear(); Regeneré au Start(..);
+   m_Cones.clear();
+   m_Obstacles.clear();
    m_Points.clear();
    m_QueueSerpent.clear();
    m_QueueToPrint.clear();
@@ -127,6 +133,18 @@ void Gameplay::SpawnPoints(cv::Rect PositionIRobot)
             {
                stop = false;
                break;
+            }
+         }
+
+         {
+            std::lock_guard<std::mutex> lock(m_MutexCones);
+            for (const RectCollision& rect : m_Cones)
+            {
+               if (rect.Touches(point))
+               {
+                  stop = false;
+                  break;
+               }
             }
          }
 
@@ -209,6 +227,14 @@ int Gameplay::GetQueuePosFromScore(int score) const
    return ((score + NB_QUEUEIMPRIM_SAUTE)*NB_QUEUE_SAUTE);
 }
 
+void CalibrerTemplateMatch(double MaxVal)
+{
+   if (!TEMPLATEMATCHING_CALIBRE)
+   {
+      PRECISION_TEMPLATEMATCHING = MaxVal - 0.05;
+      TEMPLATEMATCHING_CALIBRE = true;
+   }
+}
 
 
 
@@ -222,35 +248,40 @@ int Gameplay::GetQueuePosFromScore(int score) const
 
 void Gameplay::Split()
 {
-   m_AAnalyser.Set(m_Input.WaitGet().clone());
-   m_AAfficher.Set(m_Input.Get());
+   cv::Mat mat1, mat2;
+   
+   mat1 = m_Input.WaitGet();
+   mat1.copyTo(mat2);
+
+   m_AAnalyser.Set(std::move(mat1));
+   m_AAfficher.Set(std::move(mat2));
 }
 
 void Gameplay::Detection()
 {
-   try
-   {
-   cv::Mat mat;
+   cv::Mat mat = m_AAnalyser.WaitGet();
 
-   mat = m_AAnalyser.Get();
-   
    if (!Utility::MatIsNull(mat))
    {
+      cv::GaussianBlur(mat, mat, cv::Size(3, 3), 3.0);
+
       // Analyse de la position du IRobot dans l'image.
       if (!Utility::MatIsNull(m_IRobotTemplate))
       {
          int NbColTemplate = mat.cols - m_IRobotTemplate.cols + 1;
          int NbRangTemplate = mat.rows - m_IRobotTemplate.rows + 1;
-         cv::Mat ImageResultat(NbRangTemplate, NbRangTemplate, CV_32FC1);
+         cv::Mat ImageResultat(NbRangTemplate, NbRangTemplate, mat.type());
 
          double MinVal = 0, MaxVal = 0;
          cv::Point MinLoc, MaxLoc;
 
-         cv::matchTemplate(mat, m_IRobotRect.m_Image, ImageResultat, CV_TM_CCOEFF);
+         cv::matchTemplate(mat, m_IRobotTemplate, ImageResultat, CV_TM_CCOEFF);
 
          cv::normalize(ImageResultat, ImageResultat, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
 
          cv::minMaxLoc(ImageResultat, &MinVal, &MaxVal, &MinLoc, &MaxLoc);
+
+         CalibrerTemplateMatch(MaxVal);
 
          if (PRECISION_TEMPLATEMATCHING <= MaxVal)
          {
@@ -260,36 +291,72 @@ void Gameplay::Detection()
                m_IRobotRect.pos.x = MaxLoc.x;
                m_IRobotRect.pos.y = MaxLoc.y;
             }
+            else
+            {
+               HorsZone();
+               std::lock_guard<std::mutex> lock(m_MutexPos);
+               m_IRobotRect.pos.x = -1;
+               m_IRobotRect.pos.y = -1;
+            }
 
             m_CompteurHorsZone = 0;
          }
       }
+
+      cv::Mat inrange_output;
+
+      cv::inRange(mat, COULEUR_CONE_MIN, COULEUR_CONE_MAX, inrange_output);
+
+      std::vector<std::vector<cv::Point>> contours;
+      findContours(inrange_output, contours, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
+
+      std::vector<std::vector<cv::Point>> contours_poly(contours.size());
+
+      {
+         std::lock_guard<std::mutex> lock(m_MutexCones);
+         m_Cones.clear();
+         for (int i = 0; i < contours.size(); i++)
+         {
+            approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
+            m_Cones.push_back(RectCollision(cv::boundingRect(cv::Mat(contours_poly[i]))));
+         }
+      }
    }
-}
-catch (cv::Exception e)
-{
-   std::string s = e.what();
-   std::wstring widestr = std::wstring(s.begin(), s.end());
-   OutputDebugString(widestr.c_str());
-}
 }
 
 void Gameplay::MettreAJourInfos()
 {
+   while (m_IRobotRect.pos.x == -1 || m_IRobotRect.pos.y == -1);
+
    std::lock_guard<std::mutex> lock(m_MutexPos);
    std::lock_guard<std::mutex> lock2(m_MutexInfos);
 
+   const RectCollision IRobotRect_local = m_IRobotRect;
+
+   if (IRobotRect_local.pos.x == -1 || IRobotRect_local.pos.y == -1) return;
+
    for (int i = 0; i < m_Obstacles.size(); ++i)
    {
-      if (m_Obstacles[i].Touches(m_IRobotRect))
+      if (m_Obstacles[i].Touches(IRobotRect_local))
       {
-         m_Game->m_QTCyberSerpent.UI_AfficherLose();
+         m_Game->m_QTCyberSerpent.UI_AfficherLose(); // Weird bug puts obstacles position and puts it in m_IRobotRect.
+      }
+   }
+
+   {
+      std::lock_guard<std::mutex> lock(m_MutexCones);
+      for (int i = 0; i < m_Cones.size(); ++i)
+      {
+         if (m_Cones[i].Touches(IRobotRect_local))
+         {
+            m_Game->m_QTCyberSerpent.UI_AfficherLose();
+         }
       }
    }
 
    for (int i = NB_QUEUE_NOCOLLISION; i < m_QueueToPrint.size(); ++i)
    {
-      if (m_QueueToPrint[i].Touches(m_IRobotRect))
+      if (m_QueueToPrint[i].Touches(IRobotRect_local))
       {
          m_Game->m_QTCyberSerpent.UI_AfficherLose();
       }
@@ -297,7 +364,7 @@ void Gameplay::MettreAJourInfos()
 
    for (auto it = m_Points.begin(); it != m_Points.end();)
    {
-      if (it->Touches(m_IRobotRect))
+      if (it->Touches(IRobotRect_local))
       {
          it = m_Points.erase(it);
 
@@ -315,8 +382,8 @@ void Gameplay::MettreAJourInfos()
          m_QueueToPrint.push_back(m_QueueSerpent[pos]);
    }
 
-   SpawnPoints(m_IRobotRect);
-   SpawnObstacles(m_IRobotRect);
+   SpawnPoints(IRobotRect_local);
+   SpawnObstacles(IRobotRect_local);
 }
 
 void Gameplay::ModifierImage()
@@ -332,19 +399,30 @@ void Gameplay::ModifierImage()
    {
       mat = Collision::DrawVec(m_Obstacles, std::move(mat));
 
+      {
+         std::lock_guard<std::mutex> lock(m_MutexCones);
+         for (const RectCollision rect : m_Cones)
+         {
+            cv::rectangle(mat, rect, cv::Scalar(255, 0, 0), 3);
+         }
+      }
+
       try
       {
          mat = Collision::DrawVec(m_Points, std::move(mat));
       }
-      catch (cv::Exception e)
+      catch (cv::Exception) // Exception bizarre juste avec les points...
       {
-         std::string s = e.what();
-         std::wstring widestr = std::wstring(s.begin(), s.end());
-         OutputDebugString(widestr.c_str());
       }
 
       if (IS_DEBUG)
+      {
          mat = m_IRobotRect.Draw(std::move(mat));
+      }
+      else
+      {
+         cv::rectangle(mat, m_IRobotRect, cv::Scalar(255, 0, 0), 3);
+      }
 
       m_Output.Set(std::move(Collision::DrawVec(m_QueueToPrint, std::move(mat))));
    }

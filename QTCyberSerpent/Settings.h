@@ -7,7 +7,8 @@
 
 
 ////////////////// CORE ////////////////// 
-const bool IS_DEBUG = true;
+const bool IS_DEBUG = false;
+const int IMAGETYPE = CV_32FC1;
 
 ///////////////// IROBOT ///////////////// 
 // Délai entre chaque envoi de commande.
@@ -15,7 +16,7 @@ const std::chrono::milliseconds INTERVAL_IROBOT = std::chrono::milliseconds(100)
 // Pourcentage de tournure du robot, pendant la conduite. Va de -DEGREE_TOURNURE à DEGREE_TOURNURE.
 const int IROBOT_DEGREE_TOURNURE = 60;
 // Incrémentation de la tournure du robot à chaque pesée de touche au clavier.
-const int IROBOT_DEGREE_INCREMENTATION = 25;
+const int IROBOT_DEGREE_INCREMENTATION = 20;
 
 const short VITESSE_IROBOT = 350;
 
@@ -51,8 +52,8 @@ const int NB_HORSZONE_MAX = 5;
 
 const std::chrono::milliseconds REFRESH_INTERVAL_QUEUE = std::chrono::milliseconds(15);
 
-const cv::Vec3b COULEUR_CONE_MIN = cv::Vec3b{ 0, 115, 235 };
-const cv::Vec3b COULEUR_CONE_MAX = cv::Vec3b{ 0, 135, 255 };
+const cv::Vec3b COULEUR_CONE_MIN = cv::Vec3b{ 0, 15, 118 };
+const cv::Vec3b COULEUR_CONE_MAX = cv::Vec3b{ 43, 67, 166 };
 
 
 //////////////// COLLISION ///////////////
