@@ -7,18 +7,20 @@
 
 
 ////////////////// CORE ////////////////// 
-const bool IS_DEBUG = false;
-const int IMAGETYPE = CV_32FC1;
+static const bool IS_DEBUG = false;
+static const bool BOUGER_ROBOT_AU_DEBUT = true;
+static const bool BOXES_DETECTION = true;
+static const int IMAGETYPE = CV_32FC1;
 
 ///////////////// IROBOT ///////////////// 
 // Délai entre chaque envoi de commande.
-const std::chrono::milliseconds INTERVAL_IROBOT = std::chrono::milliseconds(100);
+static const std::chrono::milliseconds INTERVAL_IROBOT = std::chrono::milliseconds(100);
 // Pourcentage de tournure du robot, pendant la conduite. Va de -DEGREE_TOURNURE à DEGREE_TOURNURE.
-const int IROBOT_DEGREE_TOURNURE = 60;
+static const int IROBOT_DEGREE_TOURNURE = 40;
 // Incrémentation de la tournure du robot à chaque pesée de touche au clavier.
-const int IROBOT_DEGREE_INCREMENTATION = 20;
+static const int IROBOT_DEGREE_INCREMENTATION = 20;
 
-const short VITESSE_IROBOT = 350;
+static const short VITESSE_IROBOT = 350;
 
 
 ////////////// VIDEOANALYZER ///////////// 
@@ -28,32 +30,32 @@ static double PRECISION_TEMPLATEMATCHING = 1; // Mis a 1 au début, puis modifié 
 
 
 //////////////////// QT ////////////////// 
-const QString QT_DEFAULT_PORTIROBOT = "COM3";
-const QString QT_DEFAULT_MAXSCORE = "30";
-const QString QT_DEFAULT_NBOBSTACLE = "1";
-const QString QT_DEFAULT_CAMERANUM = "0";
+static const QString QT_DEFAULT_PORTIROBOT = "COM3";
+static const QString QT_DEFAULT_MAXSCORE = "30";
+static const QString QT_DEFAULT_NBOBSTACLE = "1";
+static const QString QT_DEFAULT_CAMERANUM = "0";
 
 
-const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(200);
+static const std::chrono::milliseconds REFRESH_INTERVAL_MESSAGE = std::chrono::milliseconds(200);
 
 
 //////////////// GAMEPLAY ///////////////
 // Le nombre de points qui sont sur le terrain et peuvent être mangés par le robot.
-const int NB_POINTS_SIMULTANEE = 5;
+static const int NB_POINTS_SIMULTANEE = 5;
 // Le nombre de blocs de la queue que l'on doit sauter, lors du calcul de collision.
-const int NB_QUEUE_NOCOLLISION = 6;
+static const int NB_QUEUE_NOCOLLISION = 6;
 // Le nombre de blocs de la queue que l'on doit sauter avant d'imprimer le prochain.
 // Si NB_QUEUE_SAUTE = 5, cela veut dire qu'une image sur 5 sera affichée.
-const int NB_QUEUE_SAUTE = 80;
+static const int NB_QUEUE_SAUTE = 80;
 // Le nombre de blocs de la queue que l'on doit sauter lors de l'impression (espace entre le bot et la queue).
-const int NB_QUEUEIMPRIM_SAUTE = 3;
+static const int NB_QUEUEIMPRIM_SAUTE = 3;
 // Le nombre de detections hors zone qui doivent être fait avant de déclarer le joueur perdant.
-const int NB_HORSZONE_MAX = 5;
+static const int NB_HORSZONE_MAX = 5;
 
 const std::chrono::milliseconds REFRESH_INTERVAL_QUEUE = std::chrono::milliseconds(15);
 
-const cv::Vec3b COULEUR_CONE_MIN = cv::Vec3b{ 0, 15, 118 };
-const cv::Vec3b COULEUR_CONE_MAX = cv::Vec3b{ 43, 67, 166 };
+const cv::Vec3b COULEUR_CONE_MIN = cv::Vec3b{ 0, 5, 108 };
+const cv::Vec3b COULEUR_CONE_MAX = cv::Vec3b{ 53, 77, 176 };
 
 
 //////////////// COLLISION ///////////////

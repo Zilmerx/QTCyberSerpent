@@ -29,7 +29,7 @@ public:
 
 	void Initialize(CyberSerpent* linked);
 
-   void Start(int camNum);
+   bool Start(int camNum);
 
 	void Stop();
 

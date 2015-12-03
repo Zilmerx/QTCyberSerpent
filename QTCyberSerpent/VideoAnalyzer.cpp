@@ -17,14 +17,19 @@ void VideoAnalyzer::Initialize(CyberSerpent* linked)
    m_Gameplay.Initialize(linked);
 }
 
-void VideoAnalyzer::Start(int camNum)
+bool VideoAnalyzer::Start(int camNum)
 {
    cap = cv::VideoCapture(camNum);
+
+   if (!cap.isOpened())
+      return false;
 
    m_CaptureImage.Start();
    m_Affichage.Start();
 
    m_Gameplay.Start(m_Game->m_QTCyberSerpent.ui.lineEdit_MaxScore->text().toInt(), m_Game->m_QTCyberSerpent.ui.lineEdit_NbObstacles->text().toInt());
+
+   return true;
 }
 
 void VideoAnalyzer::Stop()

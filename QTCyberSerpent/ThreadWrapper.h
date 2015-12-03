@@ -12,14 +12,7 @@ class ThreadWrapper
    {
       while (m_Run)
       {
-         try
-         {
-            m_Func();
-         }
-         catch (cv::Exception e)
-         {
-            Utility::Clog(e.what());
-         }
+         m_Func();
       }
    }
 
@@ -43,7 +36,14 @@ public:
 
    void Stop()
    {
-      m_Run = false;
-      m_Thread.join();
+      try
+      {
+         m_Run = false;
+         m_Thread.join();
+      }
+      catch (std::system_error e)
+      {
+         Utility::Clog(e.what());
+      }
    }
 };

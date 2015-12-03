@@ -8,14 +8,6 @@
 #include "ControleIRobot.h"
 #include "Utility.h"
 
-enum CyberSerpentState
-{
-   Uninitialized,
-   Initialized,
-   Started,
-   Stopped
-};
-
 class CyberSerpent
 {
 	friend QTCyberSerpent;
@@ -27,7 +19,6 @@ class CyberSerpent
 	QTCyberSerpent m_QTCyberSerpent;
 	VideoAnalyzer m_VideoAnalyzer;
 
-   CyberSerpentState m_State;
    bool m_IsExecuting;
 public:
 
@@ -46,6 +37,4 @@ private:
 	void Start();
 
    void Stop();
-
-   void Delete();
 };

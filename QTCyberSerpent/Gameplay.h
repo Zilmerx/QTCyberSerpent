@@ -29,7 +29,7 @@ private:
    const cv::Mat m_ImageQueue;
    const cv::Mat m_IRobotTemplate;
 
-   RectCollision m_IRobotRect;
+   CircleCollision m_IRobot;
 
    cv::Rect m_ZoneJeu;                    // Définis la zone de jeu.
 
@@ -49,7 +49,7 @@ public:
 
    void Initialize(CyberSerpent* link);
 
-	void Start(int MaxScore, int NbObstacles);
+   void Start(int MaxScore, int NbObstacles);
 
 	void Stop();
 
@@ -101,4 +101,6 @@ private:
    void AddQueueInvis();
 
    int GetQueuePosFromScore(int score) const;
+
+   cv::Mat TryImread(std::string&& path) const;
 };

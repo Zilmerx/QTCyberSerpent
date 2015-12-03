@@ -8,11 +8,11 @@ class Collision
 {
 public:
    cv::Point pos;
-   cv::Mat m_Image;
+   const cv::Mat* m_Image;
 
    Collision();
 
-   Collision(cv::Mat image);
+   Collision(const cv::Mat& image);
 
    bool operator==(const Collision& img1) const;
 
@@ -36,7 +36,7 @@ public:
 
    RectCollision(cv::Rect rect);
 
-   RectCollision(cv::Mat image);
+   RectCollision(const cv::Mat& image);
 
    bool Touches(const cv::Rect& rect) const override;
 
@@ -54,11 +54,15 @@ public:
 
    CircleCollision();
 
-   CircleCollision(cv::Mat image);
+   CircleCollision(const cv::Mat& image);
+
+   cv::Point2d Center() const;
 
    bool Touches(const cv::Rect& rect) const override;
 
    bool Touches(const CircleCollision& circ) const override;
+
+   operator cv::Rect() const;
 
    CircleCollision& operator=(CircleCollision& other);
 };

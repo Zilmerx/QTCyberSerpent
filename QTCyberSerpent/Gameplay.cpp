@@ -11,18 +11,19 @@ Gameplay::Gameplay()
    :m_Score{ 0 },
    m_MaxScore{ 0 },
    m_Game{ nullptr },
-   m_IRobotRect{ cv::imread("templateIRobot.bmp", IMAGETYPE) },
-   m_ImageObstacle{ cv::imread("ImageObstacle.bmp", IMAGETYPE) },
-   m_ImagePoint{ cv::imread("ImagePoint.bmp", IMAGETYPE) },
-   m_ImageQueue{ cv::imread("ImageQueue.bmp", IMAGETYPE) },
-   m_IRobotTemplate{ cv::imread("templateIRobot.bmp", IMAGETYPE) },
+   m_ImageObstacle{ TryImread("ImageObstacle.bmp") },
+   m_ImagePoint{ TryImread("ImagePoint.bmp") },
+   m_ImageQueue{ TryImread("ImageQueue.bmp") },
+   m_IRobotTemplate{ TryImread("templateIRobot.bmp") },
    m_ImageSplitter{ std::bind(&Gameplay::Split, this) },
    m_Detection{ std::bind(&Gameplay::Detection ,this) },
    m_MettreAJourInfos{ std::bind(&Gameplay::MettreAJourInfos, this) },
    m_ModifierImage{ std::bind(&Gameplay::ModifierImage, this) }
 {
-   m_IRobotRect.pos.x = -1;
-   m_IRobotRect.pos.y = -1;
+   m_IRobot.pos.x = -1;
+   m_IRobot.pos.y = -1;
+
+   m_IRobot = CircleCollision(m_IRobotTemplate);
 }
 
 #pragma endregion
@@ -30,19 +31,19 @@ Gameplay::Gameplay()
 // Debug
 void Gameplay::UP()
 {
-   m_IRobotRect.pos.y -= 5;
+   m_IRobot.pos.y -= 5;
 }
 void Gameplay::RIGHT()
 {
-   m_IRobotRect.pos.x += 5;
+   m_IRobot.pos.x += 5;
 }
 void Gameplay::LEFT()
 {
-   m_IRobotRect.pos.x -= 5;
+   m_IRobot.pos.x -= 5;
 }
 void Gameplay::DOWN()
 {
-   m_IRobotRect.pos.y += 5;
+   m_IRobot.pos.y += 5;
 }
 
 void Gameplay::Initialize(CyberSerpent* link)
@@ -55,8 +56,8 @@ void Gameplay::Initialize(CyberSerpent* link)
 
 void Gameplay::Start(int MaxScore, int NbObstacles)
 {
-   m_IRobotRect.pos.x = -1;
-   m_IRobotRect.pos.y = -1;
+   m_IRobot.pos.x = -1;
+   m_IRobot.pos.y = -1;
 
    m_Score = 0;
    m_MaxScore = MaxScore;
@@ -211,8 +212,8 @@ void Gameplay::HorsZone()
 
 void Gameplay::AddQueueInvis()
 {
-	RectCollision img = RectCollision(m_ImageQueue);
-   Utility::PutRect1InCenterOfRect2(img, m_IRobotRect);
+   RectCollision img = RectCollision(m_ImageQueue);
+   Utility::PutRect1InCenterOfRect2<RectCollision>(img, m_IRobot);
 
 	m_QueueSerpent.push_back(img);
 
@@ -231,7 +232,7 @@ void CalibrerTemplateMatch(double MaxVal)
 {
    if (!TEMPLATEMATCHING_CALIBRE)
    {
-      PRECISION_TEMPLATEMATCHING = MaxVal - 0.05;
+      PRECISION_TEMPLATEMATCHING = MaxVal - 0.15;
       TEMPLATEMATCHING_CALIBRE = true;
    }
 }
@@ -250,7 +251,7 @@ void Gameplay::Split()
 {
    cv::Mat mat1, mat2;
    
-   mat1 = m_Input.WaitGet();
+   mat1 = m_Input.Get();
    mat1.copyTo(mat2);
 
    m_AAnalyser.Set(std::move(mat1));
@@ -270,7 +271,7 @@ void Gameplay::Detection()
       {
          int NbColTemplate = mat.cols - m_IRobotTemplate.cols + 1;
          int NbRangTemplate = mat.rows - m_IRobotTemplate.rows + 1;
-         cv::Mat ImageResultat(NbRangTemplate, NbRangTemplate, mat.type());
+         cv::Mat ImageResultat(NbRangTemplate, NbColTemplate, mat.type());
 
          double MinVal = 0, MaxVal = 0;
          cv::Point MinLoc, MaxLoc;
@@ -288,15 +289,15 @@ void Gameplay::Detection()
             if (!IS_DEBUG)
             {
                std::lock_guard<std::mutex> lock(m_MutexPos);
-               m_IRobotRect.pos.x = MaxLoc.x;
-               m_IRobotRect.pos.y = MaxLoc.y;
+               m_IRobot.pos.x = MaxLoc.x;
+               m_IRobot.pos.y = MaxLoc.y;
             }
             else
             {
                HorsZone();
                std::lock_guard<std::mutex> lock(m_MutexPos);
-               m_IRobotRect.pos.x = -1;
-               m_IRobotRect.pos.y = -1;
+               m_IRobot.pos.x = -1;
+               m_IRobot.pos.y = -1;
             }
 
             m_CompteurHorsZone = 0;
@@ -326,12 +327,13 @@ void Gameplay::Detection()
 
 void Gameplay::MettreAJourInfos()
 {
-   while (m_IRobotRect.pos.x == -1 || m_IRobotRect.pos.y == -1);
+   while (m_IRobot.pos.x == -1 || m_IRobot.pos.y == -1);
 
-   std::lock_guard<std::mutex> lock(m_MutexPos);
-   std::lock_guard<std::mutex> lock2(m_MutexInfos);
+   std::lock_guard<std::mutex> infolock(m_MutexInfos);
 
-   const RectCollision IRobotRect_local = m_IRobotRect;
+   std::unique_lock<std::mutex> poslock(m_MutexPos);
+   const CircleCollision IRobotRect_local = m_IRobot;
+   poslock.unlock();
 
    if (IRobotRect_local.pos.x == -1 || IRobotRect_local.pos.y == -1) return;
 
@@ -399,11 +401,12 @@ void Gameplay::ModifierImage()
    {
       mat = Collision::DrawVec(m_Obstacles, std::move(mat));
 
+      if (BOXES_DETECTION)
       {
          std::lock_guard<std::mutex> lock(m_MutexCones);
          for (const RectCollision rect : m_Cones)
          {
-            cv::rectangle(mat, rect, cv::Scalar(255, 0, 0), 3);
+            cv::rectangle(mat, rect, cv::Scalar(255, 0, 0), 2);
          }
       }
 
@@ -417,13 +420,28 @@ void Gameplay::ModifierImage()
 
       if (IS_DEBUG)
       {
-         mat = m_IRobotRect.Draw(std::move(mat));
+         mat = m_IRobot.Draw(std::move(mat));
       }
-      else
+      else if (BOXES_DETECTION)
       {
-         cv::rectangle(mat, m_IRobotRect, cv::Scalar(255, 0, 0), 3);
+         cv::circle(mat, m_IRobot.Center(), m_IRobot.rayon, cv::Scalar(255, 0, 0), 2);
       }
 
       m_Output.Set(std::move(Collision::DrawVec(m_QueueToPrint, std::move(mat))));
    }
+}
+
+cv::Mat Gameplay::TryImread(std::string&& path) const
+{
+   cv::Mat mat;
+   for (int i = 0; i < 5; ++i)
+   {
+      mat = cv::imread(path, IMAGETYPE);
+      if (!Utility::MatIsNull(mat))
+      {
+         return mat;
+      }
+   }
+   exit(1);
+   return mat;
 }

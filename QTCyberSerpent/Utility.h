@@ -16,7 +16,6 @@ class Utility
 private:
    Utility(){}
 
-   static std::ofstream myfile;
 public:
    static void Initialize()
    {
@@ -82,19 +81,20 @@ public:
       return QImage();
    }
 
-   static void PutRect1InCenterOfRect2(RectCollision& rect1, const RectCollision& rect2)
+   template<class T>
+   static void PutRect1InCenterOfRect2(T& rect1, const cv::Rect& rect2)
    {
-      rect1.pos = cv::Point2d(((rect2.width - rect1.width) / 2) + rect2.pos.x, ((rect2.height - rect1.height) / 2) + rect2.pos.y);
+      rect1.pos.x = ((rect2.width - rect1.width) / 2) + rect2.x;
+      rect1.pos.y = ((rect2.height - rect1.height) / 2) + rect2.y;
    }
 
    static bool MatIsNull(const cv::Mat& mat)
    {
-      return !(!mat.empty() && mat.data && mat.rows > 0 && mat.cols > 0);
+      return (mat.empty() && !mat.data && mat.rows <= 0 && mat.cols <= 0);
    }
 
    static void Clog(const char* s)
    {
       std::clog << s << "\r\n";
    }
-
 };

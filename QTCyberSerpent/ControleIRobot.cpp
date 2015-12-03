@@ -1,6 +1,10 @@
 #include "Settings.h"
 #include "ControleIRobot.h"
 
+#include <chrono>
+#include <thread>
+#include <future>
+
 ControleIRobot::ControleIRobot(short vitesse)
 	: m_IRobotDriver{},
 	VITESSE{ vitesse },
@@ -13,7 +17,16 @@ bool ControleIRobot::Start(const char* port)
    if (m_IRobotDriver.Connecter(port))
    {
       DegreeTournure = 0;
-      ComputeNewSpeed();
+      if (BOUGER_ROBOT_AU_DEBUT)
+      {
+         std::async(std::launch::async, [this]() 
+         {
+            std::this_thread::sleep_for(std::chrono::seconds{ 3 });
+
+            ComputeNewSpeed();
+         });
+
+      }
       return true;
    }
    return false;
